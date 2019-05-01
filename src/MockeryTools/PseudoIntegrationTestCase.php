@@ -97,7 +97,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
      *
      * @param mixed $service
      */
-    private function replaceService(string $serviceName, $service): void
+    protected function replaceService(string $serviceName, $service): void
     {
         $this->container->removeService($serviceName);
         $this->container->addService($serviceName, $service);
