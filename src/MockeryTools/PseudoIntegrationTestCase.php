@@ -68,6 +68,15 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
 
     /**
+     * @return mixed
+     */
+    protected function getService(string $serviceName)
+    {
+        return $this->container->getService($serviceName);
+    }
+
+
+    /**
      * @return mixed[]
      */
     private function loadMockServices(): array
