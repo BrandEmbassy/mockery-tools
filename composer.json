@@ -1,0 +1,15 @@
+{
+    "name": "brandembassy/mockery-tools",
+    "license": "proprietary",
+    "autoload": {
+        "psr-4": {
+            "BE\\MockeryTools\\": "src/MockeryTools"
+        }
+    },
+    "require": {
+        "nette/di": "^3.0",
+        "guzzlehttp/guzzle": "^6.3",
+        "mockery/mockery": "^1.2",
+        "phpunit/phpunit": "^8.1"
+    }
+}
