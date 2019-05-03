@@ -6,7 +6,7 @@ use DateTimeImmutable;
 
 trait DateTimeAssertions
 {
-    public static function assertEqualsDateTimeTimestamps(
+    public static function assertDateTimeTimestampsEquals(
         DateTimeImmutable $expectedDateTimeImmutable,
         DateTimeImmutable $dateTimeImmutable
     ): void {
