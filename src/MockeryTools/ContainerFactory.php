@@ -16,7 +16,7 @@ class ContainerFactory
         string $tempDirectory,
         string $key
     ): Container {
-        $loader = new ContainerLoader($tempDirectory);
+        $loader = new ContainerLoader($tempDirectory, true);
 
         $class = $loader->load(
             static function (Compiler $compiler) use ($configs): void {
