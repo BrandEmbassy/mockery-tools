@@ -175,7 +175,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
      */
-    public function expectGoldPlatformAuthorizedRequest(
+    public function expectGoldenPlatformRequest(
         string $method,
         string $platformEndpoint,
         string $goldenKey,
@@ -197,7 +197,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
      */
-    public function expectGoldPlatformAuthorizedRequestFail(
+    public function expectGoldenPlatformRequestFail(
         string $method,
         string $platformEndpoint,
         string $goldenKey,
