@@ -175,6 +175,52 @@ abstract class PseudoIntegrationTestCase extends TestCase
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
      */
+    public function expectGoldPlatformAuthorizedRequest(
+        string $method,
+        string $platformEndpoint,
+        string $goldenKey,
+        array $responseBody = [],
+        array $requestOptions = []
+    ): void {
+        $url = $this->getPlatformApiHost() . $platformEndpoint;
+
+        $this->expectRequest(
+            $method,
+            $url,
+            $responseBody,
+            $requestOptions + [RequestOptions::HEADERS => ['X-Api-Token' => $goldenKey]]
+        );
+    }
+
+
+    /**
+     * @param mixed[] $responseBody
+     * @param mixed[] $requestOptions
+     */
+    public function expectGoldPlatformAuthorizedRequestFail(
+        string $method,
+        string $platformEndpoint,
+        string $goldenKey,
+        int $errorCode = 400,
+        array $responseBody = [],
+        array $requestOptions = []
+    ): void {
+        $url = $this->getPlatformApiHost() . $platformEndpoint;
+
+        $this->expectRequestFail(
+            $method,
+            $url,
+            $errorCode,
+            $responseBody,
+            $requestOptions + [RequestOptions::HEADERS => ['X-Api-Token' => $goldenKey]]
+        );
+    }
+
+
+    /**
+     * @param mixed[] $responseBody
+     * @param mixed[] $requestOptions
+     */
     protected function expectAuthorizedRequestFail(
         string $method,
         string $url,
