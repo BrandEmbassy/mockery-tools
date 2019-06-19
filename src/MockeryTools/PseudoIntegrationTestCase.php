@@ -4,7 +4,9 @@ namespace BE\MockeryTools;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Psr7\Request as PsrRequest;
+use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response as PsrResponse;
 use GuzzleHttp\RequestOptions;
 use Mockery;
@@ -175,6 +177,24 @@ abstract class PseudoIntegrationTestCase extends TestCase
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
      */
+    public function expectPlatformAuthorizedRequestFail(
+        string $method,
+        string $platformEndpoint,
+        string $bearerToken,
+        int $errorCode,
+        array $responseBody = [],
+        array $requestOptions = []
+    ): void {
+        $url = $this->getPlatformApiHost() . $platformEndpoint;
+
+        $this->expectAuthorizedRequestFail($method, $url, $bearerToken, $errorCode, $responseBody, $requestOptions);
+    }
+
+
+    /**
+     * @param mixed[] $responseBody
+     * @param mixed[] $requestOptions
+     */
     public function expectGoldenPlatformRequest(
         string $method,
         string $platformEndpoint,
@@ -252,12 +272,16 @@ abstract class PseudoIntegrationTestCase extends TestCase
     ): void {
         $psrResponse = new PsrResponse($errorCode, [], Json::encode($responseBody));
 
-        $clientException = new ClientException('Client error', new PsrRequest($method, $url), $psrResponse);
+        $guzzleException = new ClientException('Client error', new PsrRequest($method, $url), $psrResponse);
+
+        if ($errorCode >= 500) {
+            $guzzleException = new ServerException('Server error', new Request($method, $url), $psrResponse);
+        }
 
         $this->httpClientMock->shouldReceive('request')
             ->with($method, $url, $requestOptions ?? Mockery::any())
             ->once()
-            ->andThrow($clientException);
+            ->andThrow($guzzleException);
     }
 
 
