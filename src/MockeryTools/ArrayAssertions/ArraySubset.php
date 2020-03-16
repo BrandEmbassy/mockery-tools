@@ -1,18 +1,25 @@
 <?php declare(strict_types = 1);
 
-namespace BE\MockeryTools;
+namespace BrandEmbassy\MockeryTools\ArrayAssertions;
 
+use ArrayObject;
 use PHPUnit\Framework\Constraint\Constraint;
 use SebastianBergmann\Comparator\ComparisonFailure;
+use function array_replace_recursive;
+use function is_array;
+use function var_export;
 
-class ArraySubset extends Constraint
+final class ArraySubset extends Constraint
 {
     /**
-     * @var iterable
+     * @var iterable|mixed[]
      */
     private $subset;
 
 
+    /**
+     * @param iterable|mixed[] $subset
+     */
     public function __construct(iterable $subset)
     {
         $this->subset = $subset;
@@ -20,16 +27,18 @@ class ArraySubset extends Constraint
 
 
     /**
-     * @param iterable $other
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
      *
-     * @return bool|void
+     * @param mixed $other
+     *
+     * @return boolean|void
      */
     public function evaluate($other, string $description = '', bool $returnResult = false)
     {
         $other = $this->toArray($other);
         $this->subset = $this->toArray($this->subset);
 
-        $patched = \array_replace_recursive($other, $this->subset);
+        $patched = array_replace_recursive($other, $this->subset);
 
         $result = $other === $patched;
 
@@ -41,8 +50,8 @@ class ArraySubset extends Constraint
             $f = new ComparisonFailure(
                 $patched,
                 $other,
-                \var_export($patched, true),
-                \var_export($other, true)
+                var_export($patched, true),
+                var_export($other, true)
             );
 
             $this->fail($other, $description, $f);
@@ -56,24 +65,28 @@ class ArraySubset extends Constraint
     }
 
 
+    /**
+     * @param mixed $other
+     */
     protected function failureDescription($other): string
     {
         return 'an array ' . $this->toString();
     }
 
 
+    /**
+     * @param iterable|mixed[] $other
+     *
+     * @return mixed[]
+     */
     private function toArray(iterable $other): array
     {
-        if (\is_array($other)) {
+        if (is_array($other)) {
             return $other;
         }
 
-        if ($other instanceof \ArrayObject) {
+        if ($other instanceof ArrayObject) {
             return $other->getArrayCopy();
-        }
-
-        if ($other instanceof \Traversable) {
-            return \iterator_to_array($other);
         }
 
         // Keep BC even if we know that array would not be the expected one
