@@ -1,15 +1,16 @@
 <?php declare(strict_types = 1);
 
-namespace BE\MockeryTools;
+namespace BrandEmbassy\MockeryTools;
 
 use DateTimeImmutable;
+use PHPUnit\Framework\Assert;
 
-trait DateTimeAssertions
+final class DateTimeAssertions
 {
     public static function assertDateTimeTimestampsEquals(
         DateTimeImmutable $expectedDateTimeImmutable,
         DateTimeImmutable $dateTimeImmutable
     ): void {
-        self::assertEquals($expectedDateTimeImmutable->getTimestamp(), $dateTimeImmutable->getTimestamp());
+        Assert::assertSame($expectedDateTimeImmutable->getTimestamp(), $dateTimeImmutable->getTimestamp());
     }
 }

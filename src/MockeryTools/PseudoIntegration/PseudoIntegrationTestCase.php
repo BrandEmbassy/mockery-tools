@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace BE\MockeryTools;
+namespace BrandEmbassy\MockeryTools\PseudoIntegration;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
@@ -8,15 +8,17 @@ use GuzzleHttp\Psr7\Request as PsrRequest;
 use GuzzleHttp\Psr7\Response as PsrResponse;
 use GuzzleHttp\RequestOptions;
 use Mockery;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Mockery\MockInterface;
 use Nette\DI\Container;
-use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use PHPUnit\Framework\TestCase;
 use function md5;
 
 abstract class PseudoIntegrationTestCase extends TestCase
 {
+    use MockeryPHPUnitIntegration;
+
     /**
      * @var mixed[]
      */
@@ -28,16 +30,19 @@ abstract class PseudoIntegrationTestCase extends TestCase
     protected $container;
 
     /**
-     * @var Client|MockInterface
+     * @var Client&MockInterface
      */
     protected $httpClientMock;
 
 
     public function setUp(): void
     {
+        /** @var Client&MockInterface $httpClient */
+        $httpClient = $this->container->getByType(Client::class);
+
+        $this->httpClientMock = $httpClient;
         $this->container = $this->createContainer();
         $this->replacedServices = $this->loadMockServices();
-        $this->httpClientMock = $this->container->getByType(Client::class);
 
         parent::setUp();
     }
@@ -57,13 +62,11 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
     private function createContainer(): Container
     {
-        $container = ContainerFactory::create(
+        return ContainerFactory::create(
             $this->getConfigFiles(),
             $this->getTempDirectory(),
             'pseudo-integration-' . md5(__CLASS__)
         );
-
-        return $container;
     }
 
 
@@ -105,18 +108,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
 
     /**
-     * @return mixed[]
-     */
-    protected function loadArrayFromJsonFile(string $filePath): array
-    {
-        $fileContent = FileSystem::read($filePath);
-
-        return Json::decode($fileContent, Json::FORCE_ARRAY);
-    }
-
-
-    /**
-     * @param mixed[]      $responseBody
+     * @param mixed[] $responseBody
      * @param mixed[]|null $requestOptions
      */
     protected function expectRequest(
@@ -301,5 +293,5 @@ abstract class PseudoIntegrationTestCase extends TestCase
     abstract protected function getTempDirectory(): string;
 
 
-    abstract protected function getPlatformApiHost();
+    abstract protected function getPlatformApiHost(): string;
 }

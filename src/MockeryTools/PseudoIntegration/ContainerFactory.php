@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace BE\MockeryTools;
+namespace BrandEmbassy\MockeryTools\PseudoIntegration;
 
 use Nette\DI\Compiler;
 use Nette\DI\Container;

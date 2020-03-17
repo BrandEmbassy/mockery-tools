@@ -1,15 +1,27 @@
 {
-    "name": "brandembassy/mockery-tools",
-    "license": "proprietary",
-    "autoload": {
-        "psr-4": {
-            "BE\\MockeryTools\\": "src/MockeryTools"
-        }
-    },
-    "require": {
-        "nette/di": "^2.4 || ^3.0",
-        "guzzlehttp/guzzle": "^6.3",
-        "mockery/mockery": "^1.2",
-        "phpunit/phpunit": "^8.1"
+  "name": "brandembassy/mockery-tools",
+  "license": "proprietary",
+  "autoload": {
+    "psr-4": {
+      "BrandEmbassy\\MockeryTools\\": "src/MockeryTools"
     }
+  },
+  "require": {
+    "php": ">= 7.2",
+    "nette/di": "^2.4 || ^3.0",
+    "guzzlehttp/guzzle": "^6.3",
+    "mockery/mockery": "^1.3",
+    "phpunit/phpunit": "^8.5"
+  },
+  "require-dev": {
+    "roave/security-advisories": "dev-master",
+    "brandembassy/coding-standard": "^8.1"
+  },
+  "scripts": {
+    "phpcs": "./vendor/bin/phpcs --standard=BrandEmbassyCodingStandard src",
+    "phpcbf": "./vendor/bin/phpcbf --standard=BrandEmbassyCodingStandard src",
+    "phpstan": "./vendor/bin/phpstan analyze -c phpstan.neon src",
+    "phpunit": "vendor/bin/phpunit src --no-coverage",
+    "phpunit-cc": "vendor/bin/phpunit src"
+  }
 }

@@ -1,25 +1,32 @@
 <?php declare(strict_types = 1);
 
-namespace BE\MockeryTools;
+namespace BrandEmbassy\MockeryTools;
 
-use Nette\Utils\FileSystem;
+use PHPUnit\Framework\Assert;
 use Psr\Http\Message\ResponseInterface;
+use function str_replace;
 
-trait SnapshotAssertions
+final class SnapshotAssertions
 {
     public static function assertSnapshot(string $snapshotFile, string $testedOutput): void
     {
-        $snapshot = FileSystem::read($snapshotFile);
+        $snapshot = FileLoader::loadAsString($snapshotFile);
 
-        $snapshot = str_replace(['  ', "\n", "\r", "\t"], '', $snapshot);
-        $testedOutput = str_replace(['  ', "\n", "\r", "\t"], '', $testedOutput);
+        $normalizedSnapshot = self::normalizeHtmlInput($snapshot);
+        $testedOutput = self::normalizeHtmlInput($testedOutput);
 
-        self::assertEquals($snapshot, $testedOutput);
+        Assert::assertSame($normalizedSnapshot, $testedOutput);
     }
 
 
     public static function assertResponseSnapshot(string $snapshotFile, ResponseInterface $response): void
     {
         self::assertSnapshot($snapshotFile, (string)$response->getBody());
+    }
+
+
+    private static function normalizeHtmlInput(string $input): string
+    {
+        return str_replace(['  ', "\n", "\r", "\t"], '', $input);
     }
 }
