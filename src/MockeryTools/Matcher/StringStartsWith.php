@@ -17,9 +17,10 @@ final class StringStartsWith extends MatcherAbstract
 
 
     /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
      *
-     * @param string $actual
+     * @param mixed $actual
      */
     public function match(&$actual): bool
     {
