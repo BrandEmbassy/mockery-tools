@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace BrandEmbassy\MockeryTools;
+namespace BrandEmbassy\MockeryTools\DateTime;
 
 use DateTimeImmutable;
 use PHPUnit\Framework\Assert;

@@ -2,10 +2,12 @@
 
 namespace BrandEmbassy\MockeryTools\Matcher;
 
+use BrandEmbassy\MockeryTools\String\StringStartsWithMatcher;
+
 final class Matcher
 {
-    public static function stringStartsWith(string $expected): StringStartsWith
+    public static function stringStartsWith(string $expected): StringStartsWithMatcher
     {
-        return new StringStartsWith($expected);
+        return new StringStartsWithMatcher($expected);
     }
 }

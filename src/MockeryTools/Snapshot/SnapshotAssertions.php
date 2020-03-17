@@ -1,7 +1,8 @@
 <?php declare(strict_types = 1);
 
-namespace BrandEmbassy\MockeryTools;
+namespace BrandEmbassy\MockeryTools\Snapshot;
 
+use BrandEmbassy\MockeryTools\FileLoader;
 use PHPUnit\Framework\Assert;
 use Psr\Http\Message\ResponseInterface;
 use function str_replace;

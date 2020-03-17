@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace BrandEmbassy\MockeryTools\Matcher;
+namespace BrandEmbassy\MockeryTools\String;
 
 use Mockery\Matcher\MatcherAbstract;
 use Nette\Utils\Strings;
@@ -8,7 +8,7 @@ use Nette\Utils\Strings;
 /**
  * @property string $_expected
  */
-final class StringStartsWith extends MatcherAbstract
+final class StringStartsWithMatcher extends MatcherAbstract
 {
     public function __construct(string $expected)
     {

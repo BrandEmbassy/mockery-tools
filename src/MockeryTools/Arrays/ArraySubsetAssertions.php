@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace BrandEmbassy\MockeryTools\ArrayAssertions;
+namespace BrandEmbassy\MockeryTools\Arrays;
 
 use PHPUnit\Framework\Assert;
 
@@ -12,7 +12,7 @@ final class ArraySubsetAssertions
      */
     public static function assertArrayContainsSubset(array $expectedArraySubset, array $array): void
     {
-        $constraint = new ArraySubset($expectedArraySubset);
+        $constraint = new ArraySubsetConstraint($expectedArraySubset);
 
         Assert::assertThat($array, $constraint);
     }

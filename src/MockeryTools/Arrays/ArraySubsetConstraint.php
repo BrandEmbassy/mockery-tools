@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace BrandEmbassy\MockeryTools\ArrayAssertions;
+namespace BrandEmbassy\MockeryTools\Arrays;
 
 use ArrayObject;
 use PHPUnit\Framework\Constraint\Constraint;
@@ -9,7 +9,7 @@ use function array_replace_recursive;
 use function is_array;
 use function var_export;
 
-final class ArraySubset extends Constraint
+final class ArraySubsetConstraint extends Constraint
 {
     /**
      * @var iterable|mixed[]
