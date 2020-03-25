@@ -3,3 +3,6 @@ includes:
 
 parameters:
     ignoreErrors:
+        -
+            message: '#Calling once without Mockery\\Adapter\\Phpunit\\MockeryPHPUnitIntegration trait.#'
+            path: src/MockeryTools/Http/HttpClientMockBuilder.php
