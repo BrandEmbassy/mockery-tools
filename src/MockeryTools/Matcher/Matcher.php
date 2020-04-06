@@ -3,9 +3,9 @@
 namespace BrandEmbassy\MockeryTools\Matcher;
 
 use BrandEmbassy\MockeryTools\DateTime\DateTimeAsAtomMatcher;
+use BrandEmbassy\MockeryTools\Http\HttpRequestMatcher;
 use BrandEmbassy\MockeryTools\String\StringStartsWithMatcher;
 use BrandEmbassy\MockeryTools\Uri\UriMatcher;
-use Psr\Http\Message\UriInterface;
 
 final class Matcher
 {
@@ -24,5 +24,18 @@ final class Matcher
     public static function uri(string $expectedUri): UriMatcher
     {
         return new UriMatcher($expectedUri);
+    }
+
+
+    /**
+     * @param string[][] $expectedHeaders
+     */
+    public static function httpRequest(
+        string $expectedMethod,
+        string $expectedUri,
+        array $expectedHeaders = [],
+        string $expectedBody = ''
+    ): HttpRequestMatcher {
+        return new HttpRequestMatcher($expectedMethod, $expectedUri, $expectedHeaders, $expectedBody);
     }
 }
