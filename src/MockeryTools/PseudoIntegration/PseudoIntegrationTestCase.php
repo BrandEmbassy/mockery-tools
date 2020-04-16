@@ -13,6 +13,7 @@ use Mockery\MockInterface;
 use Nette\DI\Container;
 use Nette\Utils\Json;
 use PHPUnit\Framework\TestCase;
+use function implode;
 use function md5;
 
 abstract class PseudoIntegrationTestCase extends TestCase
@@ -65,7 +66,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
         return ContainerFactory::create(
             $this->getConfigFiles(),
             $this->getTempDirectory(),
-            'pseudo-integration-' . md5(__CLASS__)
+            'pseudo-integration-' . md5(implode('-', $this->getConfigFiles()))
         );
     }
 
