@@ -1,0 +1,10 @@
+{
+  "int_as_int": 5,
+  "float_as_float": 6.78,
+  "bool_as_bool": false,
+  "int_as_string": "5",
+  "float_as_string": "6.78",
+  "string_as_int": 8,
+  "string_as_float": 8.1,
+  "string_as_bool": true
+}
