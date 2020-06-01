@@ -1,0 +1,10 @@
+{
+  "int_as_int": "%intId%",
+  "float_as_float": "%floatId%",
+  "bool_as_bool": "%boolVal%",
+  "int_as_string": "%intId|string%",
+  "float_as_string": "%floatId|string%",
+  "string_as_int": "%stringId|int%",
+  "string_as_float": "%stringId|float%",
+  "string_as_bool": "%stringId|bool%"
+}
