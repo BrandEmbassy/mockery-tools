@@ -51,11 +51,15 @@ final class FileLoader
 
 
     /**
-     * @throws IOException
+     * @throws LogicException
      */
     public static function loadAsString(string $filePath): string
     {
-        return FileSystem::read($filePath);
+        try {
+            return FileSystem::read($filePath);
+        } catch (IOException $exception) {
+            throw new LogicException('Cannot load file ' . $filePath . ': ' . $exception->getMessage());
+        }
     }
 
 
