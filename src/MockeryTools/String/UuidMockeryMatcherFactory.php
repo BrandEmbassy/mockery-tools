@@ -18,7 +18,7 @@ final class UuidMockeryMatcherFactory
             static function (UuidInterface $uuid) use ($expected): bool {
                 $uuidMatcher = Matcher::uuid($expected);
 
-                return $uuidMatcher->match($expected);
+                return $uuidMatcher->match($uuid);
             }
         );
     }
