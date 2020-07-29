@@ -3,6 +3,7 @@
 namespace BrandEmbassy\MockeryTools\Matcher;
 
 use BrandEmbassy\MockeryTools\DateTime\DateTimeAsAtomMatcher;
+use BrandEmbassy\MockeryTools\DateTime\DateTimeAsTimestampMatcher;
 use BrandEmbassy\MockeryTools\Http\HttpRequestMatcher;
 use BrandEmbassy\MockeryTools\String\StringStartsWithMatcher;
 use BrandEmbassy\MockeryTools\String\UuidMatcher;
@@ -25,6 +26,12 @@ final class Matcher
     public static function dateTimeAsAtom(string $expectedDateTimeInAtom): DateTimeAsAtomMatcher
     {
         return new DateTimeAsAtomMatcher($expectedDateTimeInAtom);
+    }
+
+
+    public static function dateTimeAsTimestamp(int $expectedDateTimeTimestamp): DateTimeAsTimestampMatcher
+    {
+        return new DateTimeAsTimestampMatcher($expectedDateTimeTimestamp);
     }
 
 
