@@ -2,6 +2,7 @@
 
 namespace BrandEmbassy\MockeryTools\DateTime;
 
+use DateTime;
 use DateTimeImmutable;
 use PHPUnit\Framework\Assert;
 
@@ -12,5 +13,21 @@ final class DateTimeAssertions
         DateTimeImmutable $dateTimeImmutable
     ): void {
         Assert::assertSame($expectedDateTimeImmutable->getTimestamp(), $dateTimeImmutable->getTimestamp());
+    }
+
+
+    public static function assertDateTimeTimestampEqualsDateTime(
+        int $expectedTimestamp,
+        DateTimeImmutable $dateTime
+    ): void {
+        Assert::assertSame($expectedTimestamp, $dateTime->getTimestamp());
+    }
+
+
+    public static function assertDateTimeAtomEqualsDateTime(
+        string $expectedDateTimeInAtom,
+        DateTimeImmutable $dateTime
+    ): void {
+        Assert::assertSame($expectedDateTimeInAtom, $dateTime->format(DateTime::ATOM));
     }
 }
