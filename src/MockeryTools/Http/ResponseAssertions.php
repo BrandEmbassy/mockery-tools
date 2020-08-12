@@ -20,6 +20,9 @@ final class ResponseAssertions
     }
 
 
+    /**
+     * @param mixed[] $expectedArray
+     */
     public static function assertJsonResponseEqualsArray(array $expectedArray, ResponseInterface $response): void
     {
         $expectedJson = Json::encode($expectedArray);
@@ -28,6 +31,9 @@ final class ResponseAssertions
     }
 
 
+    /**
+     * @param array<string, string> $expectedHeaders
+     */
     public static function assertResponseHeaders(array $expectedHeaders, ResponseInterface $response): void
     {
         foreach ($expectedHeaders as $headerName => $headerValue) {
