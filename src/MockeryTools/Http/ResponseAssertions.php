@@ -13,7 +13,13 @@ final class ResponseAssertions
 {
     public static function assertEmptyResponse(ResponseInterface $response): void
     {
-        Assert::assertSame('', self::getResponseBody($response));
+        self::assertResponseBody('', $response);
+    }
+
+
+    public static function assertResponseBody(string $expectedResponseBody, ResponseInterface $response): void
+    {
+        Assert::assertSame($expectedResponseBody, self::getResponseBody($response));
     }
 
 
