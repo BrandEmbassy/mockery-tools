@@ -2,6 +2,7 @@
 
 namespace BrandEmbassy\MockeryTools\Http;
 
+use BrandEmbassy\MockeryTools\Arrays\ArraySubsetAssertions;
 use BrandEmbassy\MockeryTools\FileLoader;
 use BrandEmbassy\MockeryTools\Json\JsonValuesReplacer;
 use BrandEmbassy\MockeryTools\Snapshot\SnapshotAssertions;
@@ -77,6 +78,25 @@ final class ResponseAssertions
 
         Assert::assertJsonStringEqualsJsonString($expectedJson, ResponseBodyParser::parseAsString($response));
         self::assertResponseStatusCode($expectedStatusCode, $response);
+    }
+
+
+    public static function assertJsonResponseContainsField(string $fieldName, ResponseInterface $response): void
+    {
+        $responseBody = ResponseBodyParser::parseAsArray($response);
+        Assert::assertArrayHasKey($fieldName, $responseBody);
+    }
+
+
+    /**
+     * @param mixed[] $expectedSubset
+     */
+    public static function assertJsonResponseContainsArraySubset(
+        array $expectedSubset,
+        ResponseInterface $response
+    ): void {
+        $responseBody = ResponseBodyParser::parseAsArray($response);
+        ArraySubsetAssertions::assertArrayContainsSubset($expectedSubset, $responseBody);
     }
 
 
