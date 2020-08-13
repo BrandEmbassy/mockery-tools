@@ -2,20 +2,45 @@
 
 namespace BrandEmbassy\MockeryTools\Http;
 
+use BrandEmbassy\MockeryTools\FileLoader;
+use BrandEmbassy\MockeryTools\Json\JsonValuesReplacer;
+use BrandEmbassy\MockeryTools\Snapshot\SnapshotAssertions;
 use Nette\Utils\Json;
 use PHPUnit\Framework\Assert;
 use Psr\Http\Message\ResponseInterface;
 
 final class ResponseAssertions
 {
-    public static function assertJsonResponseEqualsJsonFile(string $jsonFilePath, ResponseInterface $response): void
+    public static function assertEmptyResponse(ResponseInterface $response): void
     {
-        Assert::assertJsonStringEqualsJsonFile($jsonFilePath, self::getResponseBody($response));
+        Assert::assertSame('', self::getResponseBody($response));
     }
 
 
-    public static function assertJsonResponseEqualsJsonString(string $expectedJson, ResponseInterface $response): void
-    {
+    /**
+     * @param array<string, mixed> $valuesToReplace
+     */
+    public static function assertJsonResponseEqualsJsonFile(
+        string $jsonFilePath,
+        ResponseInterface $response,
+        array $valuesToReplace = []
+    ): void {
+        $expectedJson = FileLoader::loadJsonStringFromJsonFileAndReplace($jsonFilePath, $valuesToReplace);
+
+        Assert::assertJsonStringEqualsJsonString($expectedJson, self::getResponseBody($response));
+    }
+
+
+    /**
+     * @param array<string, mixed> $valuesToReplace
+     */
+    public static function assertJsonResponseEqualsJsonString(
+        string $expectedJson,
+        ResponseInterface $response,
+        array $valuesToReplace = []
+    ): void {
+        $expectedJson = JsonValuesReplacer::replace($valuesToReplace, $expectedJson);
+
         Assert::assertJsonStringEqualsJsonString($expectedJson, self::getResponseBody($response));
     }
 
@@ -28,6 +53,12 @@ final class ResponseAssertions
         $expectedJson = Json::encode($expectedArray);
 
         Assert::assertJsonStringEqualsJsonString($expectedJson, self::getResponseBody($response));
+    }
+
+
+    public static function assertHtmlResponseSnapshot(string $snapshotFile, ResponseInterface $response): void
+    {
+        SnapshotAssertions::assertResponseSnapshot($snapshotFile, $response);
     }
 
 
