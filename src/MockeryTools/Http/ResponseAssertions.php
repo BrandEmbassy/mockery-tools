@@ -141,7 +141,7 @@ final class ResponseAssertions
         int $expectedStatusCode,
         ResponseInterface $response
     ): void {
-        self::assertResponseHeader(self::HEADER_LOCATION, $expectedLocation, $response);
+        self::assertResponseHeader($expectedLocation, self::HEADER_LOCATION, $response);
         self::assertResponseStatusCode($expectedStatusCode, $response);
     }
 }
