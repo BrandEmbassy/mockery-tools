@@ -11,7 +11,7 @@ use Psr\Http\Message\ResponseInterface;
 
 final class ResponseAssertions
 {
-    const HEADER_LOCATION = 'Location';
+    private const HEADER_LOCATION = 'Location';
 
 
     public static function assertEmptyResponse(ResponseInterface $response): void
