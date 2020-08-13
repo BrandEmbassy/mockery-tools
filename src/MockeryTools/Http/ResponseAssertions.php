@@ -11,6 +11,9 @@ use Psr\Http\Message\ResponseInterface;
 
 final class ResponseAssertions
 {
+    const HEADER_LOCATION = 'Location';
+
+
     public static function assertEmptyResponse(ResponseInterface $response): void
     {
         self::assertResponseBody('', $response);
@@ -91,6 +94,16 @@ final class ResponseAssertions
     public static function assertResponseStatusCode(int $expectedStatusCode, ResponseInterface $response): void
     {
         Assert::assertSame($expectedStatusCode, $response->getStatusCode());
+    }
+
+
+    public static function assertRedirectResponse(
+        string $expectedLocation,
+        int $expectedStatusCode,
+        ResponseInterface $response
+    ): void {
+        self::assertResponseHeader(self::HEADER_LOCATION, $expectedLocation, $response);
+        self::assertResponseStatusCode($expectedStatusCode, $response);
     }
 
 
