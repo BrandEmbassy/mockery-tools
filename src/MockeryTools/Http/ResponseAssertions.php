@@ -12,17 +12,24 @@ use Psr\Http\Message\ResponseInterface;
 final class ResponseAssertions
 {
     private const HEADER_LOCATION = 'Location';
+    private const STATUS_CODE_200 = 200;
 
 
-    public static function assertEmptyResponse(ResponseInterface $response): void
-    {
-        self::assertResponseBody('', $response);
+    public static function assertEmptyResponse(
+        ResponseInterface $response,
+        int $expectedStatusCode = self::STATUS_CODE_200
+    ): void {
+        self::assertResponseBody('', $response, $expectedStatusCode);
     }
 
 
-    public static function assertResponseBody(string $expectedResponseBody, ResponseInterface $response): void
-    {
+    public static function assertResponseBody(
+        string $expectedResponseBody,
+        ResponseInterface $response,
+        int $expectedStatusCode = self::STATUS_CODE_200
+    ): void {
         Assert::assertSame($expectedResponseBody, self::getResponseBody($response));
+        self::assertResponseStatusCode($expectedStatusCode, $response);
     }
 
 
@@ -32,11 +39,13 @@ final class ResponseAssertions
     public static function assertJsonResponseEqualsJsonFile(
         string $jsonFilePath,
         ResponseInterface $response,
+        int $expectedStatusCode = self::STATUS_CODE_200,
         array $valuesToReplace = []
     ): void {
         $expectedJson = FileLoader::loadJsonStringFromJsonFileAndReplace($jsonFilePath, $valuesToReplace);
 
         Assert::assertJsonStringEqualsJsonString($expectedJson, self::getResponseBody($response));
+        self::assertResponseStatusCode($expectedStatusCode, $response);
     }
 
 
@@ -46,28 +55,38 @@ final class ResponseAssertions
     public static function assertJsonResponseEqualsJsonString(
         string $expectedJson,
         ResponseInterface $response,
+        int $expectedStatusCode = self::STATUS_CODE_200,
         array $valuesToReplace = []
     ): void {
         $expectedJson = JsonValuesReplacer::replace($valuesToReplace, $expectedJson);
 
         Assert::assertJsonStringEqualsJsonString($expectedJson, self::getResponseBody($response));
+        self::assertResponseStatusCode($expectedStatusCode, $response);
     }
 
 
     /**
      * @param mixed[] $expectedArray
      */
-    public static function assertJsonResponseEqualsArray(array $expectedArray, ResponseInterface $response): void
-    {
+    public static function assertJsonResponseEqualsArray(
+        array $expectedArray,
+        ResponseInterface $response,
+        int $expectedStatusCode = self::STATUS_CODE_200
+    ): void {
         $expectedJson = Json::encode($expectedArray);
 
         Assert::assertJsonStringEqualsJsonString($expectedJson, self::getResponseBody($response));
+        self::assertResponseStatusCode($expectedStatusCode, $response);
     }
 
 
-    public static function assertHtmlResponseSnapshot(string $snapshotFile, ResponseInterface $response): void
-    {
+    public static function assertHtmlResponseSnapshot(
+        string $snapshotFile,
+        ResponseInterface $response,
+        int $expectedStatusCode = self::STATUS_CODE_200
+    ): void {
         SnapshotAssertions::assertResponseSnapshot($snapshotFile, $response);
+        self::assertResponseStatusCode($expectedStatusCode, $response);
     }
 
 
