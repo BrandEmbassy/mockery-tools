@@ -28,7 +28,7 @@ final class ResponseAssertions
         ResponseInterface $response,
         int $expectedStatusCode = self::STATUS_CODE_200
     ): void {
-        Assert::assertSame($expectedResponseBody, self::getResponseBody($response));
+        Assert::assertSame($expectedResponseBody, ResponseBodyParser::parseAsString($response));
         self::assertResponseStatusCode($expectedStatusCode, $response);
     }
 
@@ -44,7 +44,7 @@ final class ResponseAssertions
     ): void {
         $expectedJson = FileLoader::loadJsonStringFromJsonFileAndReplace($jsonFilePath, $valuesToReplace);
 
-        Assert::assertJsonStringEqualsJsonString($expectedJson, self::getResponseBody($response));
+        Assert::assertJsonStringEqualsJsonString($expectedJson, ResponseBodyParser::parseAsString($response));
         self::assertResponseStatusCode($expectedStatusCode, $response);
     }
 
@@ -60,7 +60,7 @@ final class ResponseAssertions
     ): void {
         $expectedJson = JsonValuesReplacer::replace($valuesToReplace, $expectedJson);
 
-        Assert::assertJsonStringEqualsJsonString($expectedJson, self::getResponseBody($response));
+        Assert::assertJsonStringEqualsJsonString($expectedJson, ResponseBodyParser::parseAsString($response));
         self::assertResponseStatusCode($expectedStatusCode, $response);
     }
 
@@ -75,7 +75,7 @@ final class ResponseAssertions
     ): void {
         $expectedJson = Json::encode($expectedArray);
 
-        Assert::assertJsonStringEqualsJsonString($expectedJson, self::getResponseBody($response));
+        Assert::assertJsonStringEqualsJsonString($expectedJson, ResponseBodyParser::parseAsString($response));
         self::assertResponseStatusCode($expectedStatusCode, $response);
     }
 
@@ -123,11 +123,5 @@ final class ResponseAssertions
     ): void {
         self::assertResponseHeader(self::HEADER_LOCATION, $expectedLocation, $response);
         self::assertResponseStatusCode($expectedStatusCode, $response);
-    }
-
-
-    private static function getResponseBody(ResponseInterface $response): string
-    {
-        return (string)$response->getBody();
     }
 }
