@@ -8,6 +8,9 @@ use PHPUnit\Framework\Assert;
 
 final class JsonAssertions
 {
+    /**
+     * @param array<string, mixed> $valuesToReplace
+     */
     public static function assertJsonEqualsFile(
         string $expectedJson,
         string $filePath,
@@ -18,6 +21,9 @@ final class JsonAssertions
     }
 
 
+    /**
+     * @param array<string, mixed> $valuesToReplace
+     */
     public static function assertArrayEqualsFile(
         array $expectedArray,
         string $filePath,
