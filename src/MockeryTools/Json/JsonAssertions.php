@@ -22,6 +22,7 @@ final class JsonAssertions
 
 
     /**
+     * @param mixed[] $expectedArray
      * @param array<string, mixed> $valuesToReplace
      */
     public static function assertArrayEqualsFile(
