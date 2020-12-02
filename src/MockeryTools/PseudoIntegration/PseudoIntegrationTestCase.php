@@ -120,7 +120,20 @@ abstract class PseudoIntegrationTestCase extends TestCase
     ): void {
         $encodedResponseBody = $responseBody === null ? null : Json::encode($responseBody);
 
-        $psrResponse = new PsrResponse(200, [], $encodedResponseBody);
+        $this->expectRequestWithStringResponse($method, $url, $encodedResponseBody, $requestOptions);
+    }
+
+
+    /**
+     * @param mixed[]|null $requestOptions
+     */
+    protected function expectRequestWithStringResponse(
+        string $method,
+        string $url,
+        ?string $responseBody = null,
+        ?array $requestOptions = null
+    ): void {
+        $psrResponse = new PsrResponse(200, [], $responseBody);
 
         $this->httpClientMock->shouldReceive('request')
             ->with($method, $url, $requestOptions ?? Mockery::any())
@@ -162,7 +175,13 @@ abstract class PseudoIntegrationTestCase extends TestCase
     ): void {
         $url = $this->getPlatformApiHost() . $platformEndpoint;
 
-        $this->expectAuthorizedRequest($method, $url, $bearerToken, $responseBody, $requestOptions);
+        $this->expectAuthorizedRequest(
+            $method,
+            $url,
+            $bearerToken,
+            $responseBody,
+            $requestOptions
+        );
     }
 
 
@@ -231,6 +250,27 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
 
     /**
+     * @param mixed[] $requestOptions
+     */
+    protected function expectAuthorizedRequestWithStringResponseFail(
+        string $method,
+        string $url,
+        string $bearerToken,
+        int $errorCode = 400,
+        ?string $responseBody = null,
+        array $requestOptions = []
+    ): void {
+        $this->expectRequestWithStringResponseFail(
+            $method,
+            $url,
+            $errorCode,
+            $responseBody,
+            $requestOptions + [RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $bearerToken]]
+        );
+    }
+
+
+    /**
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
      */
@@ -265,7 +305,27 @@ abstract class PseudoIntegrationTestCase extends TestCase
     ): void {
         $encodedResponseBody = $responseBody === null ? null : Json::encode($responseBody);
 
-        $psrResponse = new PsrResponse($errorCode, [], $encodedResponseBody);
+        $this->expectRequestWithStringResponseFail(
+            $method,
+            $url,
+            $errorCode,
+            $encodedResponseBody,
+            $requestOptions
+        );
+    }
+
+
+    /**
+     * @param mixed[] $requestOptions
+     */
+    protected function expectRequestWithStringResponseFail(
+        string $method,
+        string $url,
+        int $errorCode = 400,
+        ?string $responseBody = null,
+        ?array $requestOptions = null
+    ): void {
+        $psrResponse = new PsrResponse($errorCode, [], $responseBody);
 
         $guzzleException = RequestException::create(new PsrRequest($method, $url), $psrResponse);
 
