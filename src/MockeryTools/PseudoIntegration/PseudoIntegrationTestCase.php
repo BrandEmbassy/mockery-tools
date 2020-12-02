@@ -131,7 +131,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
         string $method,
         string $url,
         ?string $responseBody = null,
-        ?array $requestOptions = null
+        ?array $requestOptions = []
     ): void {
         $psrResponse = new PsrResponse(200, [], $responseBody);
 
