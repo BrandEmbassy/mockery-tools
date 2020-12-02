@@ -130,7 +130,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
     protected function expectRequestWithStringResponse(
         string $method,
         string $url,
-        ?string $responseBody = null,
+        ?string $responseBody = '',
         ?array $requestOptions = []
     ): void {
         $psrResponse = new PsrResponse(200, [], $responseBody);
@@ -257,7 +257,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
         string $url,
         string $bearerToken,
         int $errorCode = 400,
-        ?string $responseBody = null,
+        ?string $responseBody = '',
         array $requestOptions = []
     ): void {
         $this->expectRequestWithStringResponseFail(
@@ -301,7 +301,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
         string $url,
         int $errorCode = 400,
         ?array $responseBody = null,
-        ?array $requestOptions = null
+        ?array $requestOptions = []
     ): void {
         $encodedResponseBody = $responseBody === null ? null : Json::encode($responseBody);
 
@@ -322,8 +322,8 @@ abstract class PseudoIntegrationTestCase extends TestCase
         string $method,
         string $url,
         int $errorCode = 400,
-        ?string $responseBody = null,
-        ?array $requestOptions = null
+        ?string $responseBody = '',
+        ?array $requestOptions = []
     ): void {
         $psrResponse = new PsrResponse($errorCode, [], $responseBody);
 
