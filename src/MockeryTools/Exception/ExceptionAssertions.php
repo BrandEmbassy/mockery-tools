@@ -39,7 +39,7 @@ final class ExceptionAssertions
                 );
             }
             if ($expectedExceptionMessage !== null
-                && strpos($exception->getMessage(), $expectedExceptionMessage) !== false
+                && strpos($exception->getMessage(), $expectedExceptionMessage) === false
             ) {
                 TestCase::fail(
                     sprintf(
