@@ -8,13 +8,15 @@ use Nette\IOException;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
+use stdClass;
+use function assert;
+use function is_array;
+use function is_object;
 
 final class FileLoader
 {
     /**
      * @return mixed[]
-     *
-     * @throws LogicException
      */
     public static function loadArrayFromJsonFile(string $jsonFilePath): array
     {
@@ -22,25 +24,38 @@ final class FileLoader
     }
 
 
+    public static function loadObjectFromJsonFile(string $jsonFilePath): stdClass
+    {
+        return self::loadObjectFromJsonFileAndReplace($jsonFilePath, []);
+    }
+
+
     /**
-     * @param mixed[] $valuesToReplace
+     * @param array<string, string> $valuesToReplace
      *
      * @return mixed[]
-     *
-     * @throws LogicException
      */
     public static function loadArrayFromJsonFileAndReplace(string $jsonFilePath, array $valuesToReplace): array
     {
         $fileContents = self::loadJsonStringFromJsonFileAndReplace($jsonFilePath, $valuesToReplace);
 
-        return self::decodeJson($jsonFilePath, $fileContents);
+        return self::decodeJsonAsArray($jsonFilePath, $fileContents);
     }
 
 
     /**
-     * @param mixed[] $valuesToReplace
-     *
-     * @throws LogicException
+     * @param array<string, string> $valuesToReplace
+     */
+    public static function loadObjectFromJsonFileAndReplace(string $jsonFilePath, array $valuesToReplace): stdClass
+    {
+        $fileContents = self::loadJsonStringFromJsonFileAndReplace($jsonFilePath, $valuesToReplace);
+
+        return self::decodeJsonAsObject($jsonFilePath, $fileContents);
+    }
+
+
+    /**
+     * @param array<string, string> $valuesToReplace
      */
     public static function loadJsonStringFromJsonFileAndReplace(string $jsonFilePath, array $valuesToReplace): string
     {
@@ -50,9 +65,6 @@ final class FileLoader
     }
 
 
-    /**
-     * @throws LogicException
-     */
     public static function loadAsString(string $filePath): string
     {
         try {
@@ -64,16 +76,35 @@ final class FileLoader
 
 
     /**
-     * @return mixed[]
-     *
-     * @throws LogicException
+     * @return mixed[]|stdClass
      */
-    private static function decodeJson(string $jsonFilePath, string $fileContents): array
+    private static function decodeJson(string $jsonFilePath, string $fileContents, bool $asArray)
     {
         try {
-            return Json::decode($fileContents, Json::FORCE_ARRAY);
+            return Json::decode($fileContents, $asArray ? Json::FORCE_ARRAY : 0);
         } catch (JsonException $exception) {
             throw new LogicException('File ' . $jsonFilePath . ' is not JSON: ' . $exception->getMessage());
         }
+    }
+
+
+    /**
+     * @return mixed[]
+     */
+    private static function decodeJsonAsArray(string $jsonFilePath, string $fileContents): array
+    {
+        $array = self::decodeJson($jsonFilePath, $fileContents, true);
+        assert(is_array($array));
+
+        return $array;
+    }
+
+
+    private static function decodeJsonAsObject(string $jsonFilePath, string $fileContents): stdClass
+    {
+        $object = self::decodeJson($jsonFilePath, $fileContents, false);
+        assert(is_object($object));
+
+        return $object;
     }
 }
