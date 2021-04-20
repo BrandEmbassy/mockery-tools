@@ -39,11 +39,12 @@ abstract class PseudoIntegrationTestCase extends TestCase
     public function setUp(): void
     {
         $this->container = $this->createContainer();
-        $this->replacedServices = $this->loadMockServices();
 
         /** @var Client&MockInterface $httpClient */
         $httpClient = $this->container->getByType(Client::class);
         $this->httpClientMock = $httpClient;
+
+        $this->replacedServices = $this->loadMockServices();
 
         parent::setUp();
     }
