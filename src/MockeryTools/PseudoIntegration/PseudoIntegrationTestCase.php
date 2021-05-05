@@ -207,7 +207,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
      */
-    public function expectPlatformAuthorizedRequestDfo3(
+    public function expectDfo3PlatformAuthorizedRequest(
         string $method,
         string $platformEndpoint,
         string $bearerToken,
@@ -230,7 +230,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
      */
-    public function expectPlatformAuthorizedRequestDfo3Fail(
+    public function expectDfo3PlatformAuthorizedRequestFail(
         string $method,
         string $platformEndpoint,
         string $bearerToken,
