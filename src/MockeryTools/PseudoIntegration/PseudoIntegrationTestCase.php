@@ -207,6 +207,47 @@ abstract class PseudoIntegrationTestCase extends TestCase
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
      */
+    public function expectDfo3PlatformAuthorizedRequest(
+        string $method,
+        string $platformEndpoint,
+        string $bearerToken,
+        ?array $responseBody = null,
+        array $requestOptions = []
+    ): void {
+        $url = $this->getPlatformApiHostDfo3() . $platformEndpoint;
+
+        $this->expectAuthorizedRequest(
+            $method,
+            $url,
+            $bearerToken,
+            $responseBody,
+            $requestOptions
+        );
+    }
+
+
+    /**
+     * @param mixed[] $responseBody
+     * @param mixed[] $requestOptions
+     */
+    public function expectDfo3PlatformAuthorizedRequestFail(
+        string $method,
+        string $platformEndpoint,
+        string $bearerToken,
+        int $errorCode,
+        ?array $responseBody = null,
+        array $requestOptions = []
+    ): void {
+        $url = $this->getPlatformApiHostDfo3() . $platformEndpoint;
+
+        $this->expectAuthorizedRequestFail($method, $url, $bearerToken, $errorCode, $responseBody, $requestOptions);
+    }
+
+
+    /**
+     * @param mixed[] $responseBody
+     * @param mixed[] $requestOptions
+     */
     public function expectGoldenPlatformRequest(
         string $method,
         string $platformEndpoint,
@@ -355,4 +396,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
 
     abstract protected function getPlatformApiHost(): string;
+
+
+    abstract protected function getPlatformApiHostDfo3(): string;
 }
