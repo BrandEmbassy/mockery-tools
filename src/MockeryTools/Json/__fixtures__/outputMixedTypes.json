@@ -6,5 +6,9 @@
   "float_as_string": "6.78",
   "string_as_int": 8,
   "string_as_float": 8.1,
-  "string_as_bool": true
+  "string_as_bool": true,
+  "null_as_null": null,
+  "null_as_string": null,
+  "null_as_int": null,
+  "null_as_float": null
 }

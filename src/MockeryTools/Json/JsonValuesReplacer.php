@@ -39,11 +39,21 @@ final class JsonValuesReplacer
             }
 
             $keys[] = sprintf('"%s"', self::decorateReplacementKey($key, 'int'));
-            $values[] = (string)(int)$value;
+            $values[] = $value === null ? 'null' : (string)(int)$value;
             $keys[] = sprintf('"%s"', self::decorateReplacementKey($key, 'float'));
-            $values[] = (string)(float)$value;
+            $values[] = $value === null ? 'null' : (string)(float)$value;
             $keys[] = sprintf('"%s"', self::decorateReplacementKey($key, 'bool'));
             $values[] = (bool)$value ? 'true' : 'false';
+
+            if ($value === null) {
+                $keys[] = sprintf('"%s"', self::decorateReplacementKey($key, 'string'));
+                $values[] = 'null';
+                $keys[] = sprintf('"%s"', self::decorateReplacementKey($key));
+                $values[] = 'null';
+
+                continue;
+            }
+
             $keys[] = self::decorateReplacementKey($key);
             $values[] = (string)$value;
         }
