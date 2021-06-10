@@ -17,6 +17,7 @@ final class JsonValuesReplacerTest extends TestCase
                 'floatId' => 6.78,
                 'stringId' => '8.1',
                 'boolVal' => false,
+                'nullValue' => null,
             ],
             $inputJson
         );

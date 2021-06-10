@@ -6,5 +6,9 @@
   "float_as_string": "%floatId|string%",
   "string_as_int": "%stringId|int%",
   "string_as_float": "%stringId|float%",
-  "string_as_bool": "%stringId|bool%"
+  "string_as_bool": "%stringId|bool%",
+  "null_as_null": "%nullValue%",
+  "null_as_string": "%nullValue|string%",
+  "null_as_int": "%nullValue|int%",
+  "null_as_float": "%nullValue|float%"
 }
