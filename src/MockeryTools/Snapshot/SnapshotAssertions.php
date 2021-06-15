@@ -3,7 +3,7 @@
 namespace BrandEmbassy\MockeryTools\Snapshot;
 
 use BrandEmbassy\MockeryTools\FileLoader;
-use PHPUnit\Framework\Assert;
+use BrandEmbassy\MockeryTools\Html\HtmlAssertions;
 use Psr\Http\Message\ResponseInterface;
 use function array_keys;
 use function array_map;
@@ -15,10 +15,9 @@ final class SnapshotAssertions
 {
     public static function assertSnapshot(string $snapshotFile, string $testedOutput): void
     {
-        $normalizedSnapshot = self::loadNormalizedSnapshot($snapshotFile);
-        $testedOutput = self::normalizeHtmlInput($testedOutput);
+        $snapshot = FileLoader::loadAsString($snapshotFile);
 
-        Assert::assertSame($normalizedSnapshot, $testedOutput);
+        HtmlAssertions::assertSameHtmlStrings($snapshot, $testedOutput);
     }
 
 
@@ -30,7 +29,7 @@ final class SnapshotAssertions
         string $testedOutput,
         array $valuesToReplace
     ): void {
-        $snapshot = self::loadNormalizedSnapshot($snapshotFile);
+        $snapshot = FileLoader::loadAsString($snapshotFile);
         $keys = array_map(
             static function (string $key): string {
                 return sprintf('{{%s}}', $key);
@@ -43,28 +42,12 @@ final class SnapshotAssertions
             $snapshot
         );
 
-        $testedOutput = self::normalizeHtmlInput($testedOutput);
-
-        Assert::assertSame($snapshotWithReplacedValues, $testedOutput);
+        HtmlAssertions::assertSameHtmlStrings($snapshotWithReplacedValues, $testedOutput);
     }
 
 
     public static function assertResponseSnapshot(string $snapshotFile, ResponseInterface $response): void
     {
         self::assertSnapshot($snapshotFile, (string)$response->getBody());
-    }
-
-
-    private static function normalizeHtmlInput(string $input): string
-    {
-        return str_replace(['  ', "\n", "\r", "\t"], '', $input);
-    }
-
-
-    private static function loadNormalizedSnapshot(string $snapshotFile): string
-    {
-        $snapshot = FileLoader::loadAsString($snapshotFile);
-
-        return self::normalizeHtmlInput($snapshot);
     }
 }
