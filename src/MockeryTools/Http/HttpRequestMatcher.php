@@ -3,9 +3,9 @@
 namespace BrandEmbassy\MockeryTools\Http;
 
 use Mockery\Matcher\MatcherAbstract;
-use Nette\Utils\Json;
 use Psr\Http\Message\RequestInterface;
 use function assert;
+use function is_array;
 
 final class HttpRequestMatcher extends MatcherAbstract
 {
@@ -20,7 +20,7 @@ final class HttpRequestMatcher extends MatcherAbstract
     private $expectedUri;
 
     /**
-     * @var string[][]
+     * @var array<string, string|array<int, string>>
      */
     private $expectedHeaders;
 
@@ -31,7 +31,7 @@ final class HttpRequestMatcher extends MatcherAbstract
 
 
     /**
-     * @param string[][] $expectedHeaders
+     * @param array<string, string|array<int, string>> $expectedHeaders
      */
     public function __construct(
         string $expectedMethod,
@@ -43,8 +43,12 @@ final class HttpRequestMatcher extends MatcherAbstract
 
         $this->expectedMethod = $expectedMethod;
         $this->expectedUri = $expectedUri;
-        $this->expectedHeaders = $expectedHeaders;
         $this->expectedBody = $expectedBody;
+
+        $this->expectedHeaders = [];
+        foreach ($expectedHeaders as $headerName => $headerValue) {
+            $this->expectedHeaders[$headerName] = is_array($headerValue) ? $headerValue : [$headerValue];
+        }
     }
 
 
@@ -58,12 +62,9 @@ final class HttpRequestMatcher extends MatcherAbstract
     {
         assert($actual instanceof RequestInterface);
 
-        $actualHeaders = Json::encode($actual->getHeaders());
-        $expectedHeaders = Json::encode($this->expectedHeaders);
-
         $isMatching = $actual->getMethod() === $this->expectedMethod;
         $isMatching = $isMatching && (string)$actual->getUri() === $this->expectedUri;
-        $isMatching = $isMatching && $actualHeaders === $expectedHeaders;
+        $isMatching = $isMatching && $this->containsExpectedHeaders($actual);
         $isMatching = $isMatching && (string)$actual->getBody() === $this->expectedBody;
 
         return $isMatching;
@@ -73,5 +74,21 @@ final class HttpRequestMatcher extends MatcherAbstract
     public function __toString(): string
     {
         return '<HttpRequest:' . $this->expectedUri . '>';
+    }
+
+
+    private function containsExpectedHeaders(RequestInterface $request): bool
+    {
+        $requestHeaders = $request->getHeaders();
+        foreach ($this->expectedHeaders as $headerName => $headerValues) {
+            if (!isset($requestHeaders[$headerName])) {
+                return false;
+            }
+            if ($requestHeaders[$headerName][0] !== $headerValues[0]) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

@@ -3,13 +3,9 @@
 namespace BrandEmbassy\MockeryTools\Http;
 
 use BrandEmbassy\MockeryTools\Exception\ExceptionAssertions;
-use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\ConnectException;
-use GuzzleHttp\Exception\InvalidArgumentException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\ServerException;
-use GuzzleHttp\Exception\TransferException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\RequestOptions;
@@ -124,20 +120,20 @@ final class HttpClientMockBuilderTest extends TestCase
     /**
      * @dataProvider requestExceptionProvider
      *
-     * @param class-string<RequestException> $exceptionToThrowClassname
+     * @param class-string<RequestException> $expectedExceptionClassname
      *
      * @throws Throwable
      */
     public function testRequestExceptionIsThrownOnSend(
-        string $exceptionToThrowClassname
+        string $expectedExceptionClassname,
+        int $statusCode
     ): void {
         $httpClientMock = HttpClientMockBuilder::create(self::BASE_PATH, self::HEADERS)
             ->expectFailedSend(
                 'POST',
                 '/users',
-                $exceptionToThrowClassname,
                 ['name' => 'Prokop Buben'],
-                401,
+                $statusCode,
                 ['error' => 'You shall not pass!']
             )
             ->build();
@@ -150,11 +146,11 @@ final class HttpClientMockBuilderTest extends TestCase
         );
 
         ExceptionAssertions::assertExceptionCallback(
-            $exceptionToThrowClassname,
-            static function (RequestException $exception): void {
+            $expectedExceptionClassname,
+            static function (RequestException $exception) use ($statusCode): void {
                 $response = $exception->getResponse();
                 assert($response !== null);
-                Assert::assertSame(401, $response->getStatusCode());
+                Assert::assertSame($statusCode, $response->getStatusCode());
                 Assert::assertSame('{"error":"You shall not pass!"}', (string)$response->getBody());
             },
             static function () use ($httpClientMock, $request): void {
@@ -165,72 +161,22 @@ final class HttpClientMockBuilderTest extends TestCase
 
 
     /**
-     * @return array<string, array<string, class-string>>
+     * @return array<string, array<string, mixed>>
      */
     public function requestExceptionProvider(): array
     {
         return [
-            'Bad response' => [
-                'exceptionToThrowClassname' => BadResponseException::class,
+            'Client failure 400' => [
+                'expectedExceptionClassname' => ClientException::class,
+                'statusCode' => 400,
             ],
-            'Client failure' => [
-                'exceptionToThrowClassname' => ClientException::class,
+            'Client failure 404' => [
+                'expectedExceptionClassname' => ClientException::class,
+                'statusCode' => 404,
             ],
             'Server failure' => [
-                'exceptionToThrowClassname' => ServerException::class,
-            ],
-        ];
-    }
-
-
-    /**
-     * @dataProvider someGeneralGuzzleExceptionProvider
-     *
-     * @param class-string<Throwable> $exceptionToThrowClassname
-     *
-     * @throws Throwable
-     */
-    public function testSomeGeneralGuzzleExceptionIsThrownOnSend(
-        string $exceptionToThrowClassname
-    ): void {
-        $httpClientMock = HttpClientMockBuilder::create(self::BASE_PATH, self::HEADERS)
-            ->expectFailedSend(
-                'POST',
-                '/users',
-                $exceptionToThrowClassname,
-                ['name' => 'Prokop Buben'],
-                401,
-                ['error' => 'You shall not pass!']
-            )
-            ->build();
-
-        $request = new Request(
-            'POST',
-            new Uri('https://api.com/v2/users'),
-            self::HEADERS,
-            '{"name":"Prokop Buben"}'
-        );
-
-        $this->expectException($exceptionToThrowClassname);
-
-        $httpClientMock->send($request);
-    }
-
-
-    /**
-     * @return array<string, array<string, class-string>>
-     */
-    public function someGeneralGuzzleExceptionProvider(): array
-    {
-        return [
-            'Transfer failure' => [
-                'exceptionToThrowClassname' => TransferException::class,
-            ],
-            'Connection failure' => [
-                'exceptionToThrowClassname' => ConnectException::class,
-            ],
-            'Invalid argument' => [
-                'exceptionToThrowClassname' => InvalidArgumentException::class,
+                'expectedExceptionClassname' => ServerException::class,
+                'statusCode' => 500,
             ],
         ];
     }

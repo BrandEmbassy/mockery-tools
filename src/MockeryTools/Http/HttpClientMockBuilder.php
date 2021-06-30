@@ -3,21 +3,15 @@
 namespace BrandEmbassy\MockeryTools\Http;
 
 use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Exception\ConnectException;
-use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\RequestOptions;
 use Mockery;
-use Mockery\Matcher\Closure;
 use Mockery\MockInterface;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
-use Psr\Http\Message\RequestInterface;
-use function assert;
-use function is_a;
 
 final class HttpClientMockBuilder
 {
@@ -67,24 +61,24 @@ final class HttpClientMockBuilder
 
 
     /**
-     * @param array<string, mixed> $expectedResponseBody
-     * @param array<string, mixed> $requestBody
+     * @param array<string, mixed> $responseData
+     * @param array<string, mixed> $expectedRequestData
      *
      * @throws JsonException
      */
     public function expectRequest(
-        string $httpMethod,
-        string $endpoint,
-        array $expectedResponseBody = [],
-        array $requestBody = []
+        string $expectedHttpMethod,
+        string $expectedEndpoint,
+        array $responseData = [],
+        array $expectedRequestData = []
     ): self {
-        $responseBody = Json::encode($expectedResponseBody);
+        $responseBody = Json::encode($responseData);
 
         $this->httpClientMock->shouldReceive('request')
             ->with(
-                $httpMethod,
-                $this->createRequestUrl($endpoint),
-                $this->createRequestOptions($httpMethod, $requestBody)
+                $expectedHttpMethod,
+                $this->createRequestUrl($expectedEndpoint),
+                $this->createRequestOptions($expectedHttpMethod, $expectedRequestData)
             )
             ->once()
             ->andReturn(new Response(200, [], $responseBody));
@@ -94,36 +88,35 @@ final class HttpClientMockBuilder
 
 
     /**
-     * @param mixed[] $expectedResponseBody
-     * @param mixed[] $requestBody
+     * @param mixed[] $responseData
+     * @param mixed[] $expectedRequestData
      *
      * @throws JsonException
      */
     public function expectFailedRequest(
-        string $httpMethod,
-        string $endpoint,
-        array $expectedResponseBody = [],
-        array $requestBody = [],
-        int $errorCode = 400
+        string $expectedHttpMethod,
+        string $expectedEndpoint,
+        array $responseData = [],
+        array $expectedRequestData = [],
+        int $errorCodeToReturn = 400
     ): self {
         $request = new Request(
-            $httpMethod,
-            $this->createRequestUrl($endpoint),
+            $expectedHttpMethod,
+            $this->createRequestUrl($expectedEndpoint),
             $this->expectedHeaders,
-            Json::encode($requestBody)
+            Json::encode($expectedRequestData)
         );
-        $response = new Response($errorCode, [], Json::encode($expectedResponseBody));
-
-        $requestException = RequestException::create($request, $response);
+        $response = new Response($errorCodeToReturn, [], Json::encode($responseData));
+        $exceptionToThrow = RequestException::create($request, $response);
 
         $this->httpClientMock->shouldReceive('request')
             ->with(
-                $httpMethod,
-                $this->createRequestUrl($endpoint),
-                $this->createRequestOptions($httpMethod, $requestBody)
+                $expectedHttpMethod,
+                $this->createRequestUrl($expectedEndpoint),
+                $this->createRequestOptions($expectedHttpMethod, $expectedRequestData)
             )
             ->once()
-            ->andThrow($requestException);
+            ->andThrow($exceptionToThrow);
 
         return $this;
     }
@@ -143,11 +136,7 @@ final class HttpClientMockBuilder
     ): self {
         $responseBody = Json::encode($responseData);
         $expectedRequestBody = Json::encode($expectedRequestData);
-        $requestMatcher = $this->createRequestMatcher(
-            $expectedHttpMethod,
-            $this->createRequestUrl($expectedEndpoint),
-            $expectedRequestBody
-        );
+        $requestMatcher = $this->createRequestMatcher($expectedHttpMethod, $expectedEndpoint, $expectedRequestBody);
 
         $this->httpClientMock->shouldReceive('send')
             ->with($requestMatcher)
@@ -161,19 +150,16 @@ final class HttpClientMockBuilder
     /**
      * @param array<string, mixed> $responseData
      * @param array<string, mixed> $expectedRequestData
-     * @param class-string $guzzleExceptionClassname
      *
      * @throws JsonException
      */
     public function expectFailedSend(
         string $expectedHttpMethod,
         string $expectedEndpoint,
-        string $guzzleExceptionClassname,
         array $expectedRequestData = [],
-        int $errorCode = 400,
+        int $errorCodeToReturn = 400,
         array $responseData = []
     ): self {
-        assert(is_a($guzzleExceptionClassname, GuzzleException::class, true));
         $expectedRequestBody = Json::encode($expectedRequestData);
         $request = new Request(
             $expectedHttpMethod,
@@ -181,13 +167,9 @@ final class HttpClientMockBuilder
             $this->expectedHeaders,
             $expectedRequestBody
         );
-        $response = new Response($errorCode, [], Json::encode($responseData));
-        $exceptionToThrow = $this->getExceptionToThrow($guzzleExceptionClassname, $request, $response, $errorCode);
-        $requestMatcher = $this->createRequestMatcher(
-            $expectedHttpMethod,
-            $this->createRequestUrl($expectedEndpoint),
-            $expectedRequestBody
-        );
+        $response = new Response($errorCodeToReturn, [], Json::encode($responseData));
+        $requestMatcher = $this->createRequestMatcher($expectedHttpMethod, $expectedEndpoint, $expectedRequestBody);
+        $exceptionToThrow = RequestException::create($request, $response);
 
         $this->httpClientMock->shouldReceive('send')
             ->with($requestMatcher)
@@ -221,61 +203,16 @@ final class HttpClientMockBuilder
     }
 
 
-    private function containsExpectedHeaders(RequestInterface $request): bool
-    {
-        $requestHeaders = $request->getHeaders();
-        foreach ($this->expectedHeaders as $headerName => $headerValue) {
-            if (!isset($requestHeaders[$headerName])) {
-                return false;
-            }
-            if ($requestHeaders[$headerName][0] !== $headerValue) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-
     private function createRequestMatcher(
         string $expectedHttpMethod,
-        string $expectedUri,
+        string $expectedEndpoint,
         string $expectedRequestBody
-    ): Closure {
-        return Mockery::on(
-            function (
-                RequestInterface $request
-            ) use (
-                $expectedHttpMethod,
-                $expectedUri,
-                $expectedRequestBody
-            ): bool {
-                return $request->getMethod() === $expectedHttpMethod
-                    && (string)$request->getUri() === $expectedUri
-                    && (string)$request->getBody() === $expectedRequestBody
-                    && $this->containsExpectedHeaders($request);
-            }
+    ): HttpRequestMatcher {
+        return new HttpRequestMatcher(
+            $expectedHttpMethod,
+            $this->createRequestUrl($expectedEndpoint),
+            $this->expectedHeaders,
+            $expectedRequestBody
         );
-    }
-
-
-    /**
-     * @param class-string<GuzzleException> $guzzleExceptionClassname
-     */
-    private function getExceptionToThrow(
-        string $guzzleExceptionClassname,
-        Request $request,
-        Response $response,
-        int $errorCode
-    ): GuzzleException {
-        if (is_a($guzzleExceptionClassname, RequestException::class, true)) {
-            return new $guzzleExceptionClassname('Request call failure', $request, $response);
-        }
-
-        if (is_a($guzzleExceptionClassname, ConnectException::class, true)) {
-            return new $guzzleExceptionClassname('Request call failure', $request);
-        }
-
-        return new $guzzleExceptionClassname('Request call failure', $errorCode);
     }
 }
