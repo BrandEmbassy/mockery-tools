@@ -68,7 +68,8 @@ final class HttpClientMockBuilder
         string $expectedHttpMethod,
         string $expectedEndpoint,
         array $responseDataToReturn = [],
-        ?array $expectedRequestData = null
+        ?array $expectedRequestData = null,
+        int $statusCodeToReturn = 200
     ): self {
         $responseBody = Json::encode($responseDataToReturn);
 
@@ -79,7 +80,7 @@ final class HttpClientMockBuilder
                 new HttpRequestOptionsMatcher($this->expectedHeaders, $expectedRequestData)
             )
             ->once()
-            ->andReturn(new Response(200, [], $responseBody));
+            ->andReturn(new Response($statusCodeToReturn, [], $responseBody));
 
         return $this;
     }
@@ -130,7 +131,8 @@ final class HttpClientMockBuilder
         string $expectedHttpMethod,
         string $expectedEndpoint,
         array $responseDataToReturn = [],
-        ?array $expectedRequestData = null
+        ?array $expectedRequestData = null,
+        int $statusCodeToReturn = 200
     ): self {
         $responseBody = Json::encode($responseDataToReturn);
         $expectedRequestBody = $expectedRequestData !== null ? Json::encode($expectedRequestData) : '';
@@ -139,7 +141,7 @@ final class HttpClientMockBuilder
         $this->httpClientMock->shouldReceive('send')
             ->with($requestMatcher)
             ->once()
-            ->andReturn(new Response(200, [], $responseBody));
+            ->andReturn(new Response($statusCodeToReturn, [], $responseBody));
 
         return $this;
     }
