@@ -56,7 +56,7 @@ final class HttpClientMockBuilderTest extends TestCase
     public function testClientExceptionIsThrown(): void
     {
         $httpClientMock = HttpClientMockBuilder::create(self::BASE_PATH, self::HEADERS)
-            ->expectFailedRequest('GET', '/users/25', ['error' => 'User not found'], [], 404)
+            ->expectFailedRequest('GET', '/users/25', ['error' => 'User not found'], null, 404)
             ->build();
 
         $this->expectException(ClientException::class);
@@ -79,7 +79,7 @@ final class HttpClientMockBuilderTest extends TestCase
     public function testServerExceptionIsThrown(): void
     {
         $httpClientMock = HttpClientMockBuilder::create(self::BASE_PATH, self::HEADERS)
-            ->expectFailedRequest('GET', '/users/25', ['error' => 'Internal server error'], [], 500)
+            ->expectFailedRequest('GET', '/users/25', ['error' => 'Internal server error'], null, 500)
             ->build();
 
         $this->expectException(ServerException::class);
@@ -99,21 +99,41 @@ final class HttpClientMockBuilderTest extends TestCase
     /**
      * @throws Throwable
      */
-    public function testSendWithSuccess(): void
+    public function testSendGetWithSuccess(): void
     {
         $httpClientMock = HttpClientMockBuilder::create(self::BASE_PATH, self::HEADERS)
-            ->expectSend('GET', '/users/25', ['name' => 'Prokop Buben'], ['id' => 25])
+            ->expectSend('GET', '/users/25', ['name' => 'Prokop Buben'])
             ->build();
 
         $request = new Request(
             'GET',
             new Uri('https://api.com/v2/users/25'),
-            self::HEADERS,
-            '{"id":25}'
+            self::HEADERS
         );
         $response = $httpClientMock->send($request);
 
         Assert::assertSame('{"name":"Prokop Buben"}', (string)$response->getBody());
+    }
+
+
+    /**
+     * @throws Throwable
+     */
+    public function testSendPostWithSuccess(): void
+    {
+        $httpClientMock = HttpClientMockBuilder::create(self::BASE_PATH, self::HEADERS)
+            ->expectSend('POST', '/users', ['id' => 25], ['name' => 'Prokop Buben'])
+            ->build();
+
+        $request = new Request(
+            'POST',
+            new Uri('https://api.com/v2/users'),
+            self::HEADERS,
+            '{"name":"Prokop Buben"}'
+        );
+        $response = $httpClientMock->send($request);
+
+        Assert::assertSame('{"id":25}', (string)$response->getBody());
     }
 
 
