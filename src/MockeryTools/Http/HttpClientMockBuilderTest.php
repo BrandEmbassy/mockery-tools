@@ -2,12 +2,18 @@
 
 namespace BrandEmbassy\MockeryTools\Http;
 
+use BrandEmbassy\MockeryTools\Exception\ExceptionAssertions;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\ServerException;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\RequestOptions;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
+use Throwable;
+use function assert;
 
 final class HttpClientMockBuilderTest extends TestCase
 {
@@ -17,6 +23,9 @@ final class HttpClientMockBuilderTest extends TestCase
     private const HEADERS = ['Authorization' => 'Bearer thisIsSomeToken'];
 
 
+    /**
+     * @throws Throwable
+     */
     public function testExpectedTwoRequests(): void
     {
         $httpClientMock = HttpClientMockBuilder::create(self::BASE_PATH, self::HEADERS)
@@ -41,6 +50,9 @@ final class HttpClientMockBuilderTest extends TestCase
     }
 
 
+    /**
+     * @throws Throwable
+     */
     public function testClientExceptionIsThrown(): void
     {
         $httpClientMock = HttpClientMockBuilder::create(self::BASE_PATH, self::HEADERS)
@@ -61,6 +73,9 @@ final class HttpClientMockBuilderTest extends TestCase
     }
 
 
+    /**
+     * @throws Throwable
+     */
     public function testServerExceptionIsThrown(): void
     {
         $httpClientMock = HttpClientMockBuilder::create(self::BASE_PATH, self::HEADERS)
@@ -78,5 +93,91 @@ final class HttpClientMockBuilderTest extends TestCase
             'https://api.com/v2/users/25',
             [RequestOptions::HEADERS => self::HEADERS]
         );
+    }
+
+
+    /**
+     * @throws Throwable
+     */
+    public function testSendWithSuccess(): void
+    {
+        $httpClientMock = HttpClientMockBuilder::create(self::BASE_PATH, self::HEADERS)
+            ->expectSend('GET', '/users/25', ['name' => 'Prokop Buben'], ['id' => 25])
+            ->build();
+
+        $request = new Request(
+            'GET',
+            new Uri('https://api.com/v2/users/25'),
+            self::HEADERS,
+            '{"id":25}'
+        );
+        $response = $httpClientMock->send($request);
+
+        Assert::assertSame('{"name":"Prokop Buben"}', (string)$response->getBody());
+    }
+
+
+    /**
+     * @dataProvider requestExceptionProvider
+     *
+     * @param class-string<RequestException> $expectedExceptionClassname
+     *
+     * @throws Throwable
+     */
+    public function testRequestExceptionIsThrownOnSend(
+        string $expectedExceptionClassname,
+        int $statusCode
+    ): void {
+        $httpClientMock = HttpClientMockBuilder::create(self::BASE_PATH, self::HEADERS)
+            ->expectFailedSend(
+                'POST',
+                '/users',
+                ['name' => 'Prokop Buben'],
+                $statusCode,
+                ['error' => 'You shall not pass!']
+            )
+            ->build();
+
+        $request = new Request(
+            'POST',
+            new Uri('https://api.com/v2/users'),
+            self::HEADERS,
+            '{"name":"Prokop Buben"}'
+        );
+
+        ExceptionAssertions::assertExceptionCallback(
+            $expectedExceptionClassname,
+            static function (RequestException $exception) use ($statusCode): void {
+                $response = $exception->getResponse();
+                assert($response !== null);
+                Assert::assertSame($statusCode, $response->getStatusCode());
+                Assert::assertSame('{"error":"You shall not pass!"}', (string)$response->getBody());
+            },
+            static function () use ($httpClientMock, $request): void {
+                $httpClientMock->send($request);
+            }
+        );
+    }
+
+
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    public function requestExceptionProvider(): array
+    {
+        return [
+            'Client failure 400' => [
+                'expectedExceptionClassname' => ClientException::class,
+                'statusCode' => 400,
+            ],
+            'Client failure 404' => [
+                'expectedExceptionClassname' => ClientException::class,
+                'statusCode' => 404,
+            ],
+            'Server failure' => [
+                'expectedExceptionClassname' => ServerException::class,
+                'statusCode' => 500,
+            ],
+        ];
     }
 }

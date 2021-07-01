@@ -61,24 +61,24 @@ final class HttpClientMockBuilder
 
 
     /**
-     * @param mixed[] $expectedResponseBody
-     * @param mixed[] $requestBody
+     * @param array<string, mixed> $responseDataToReturn
+     * @param array<string, mixed> $expectedRequestData
      *
      * @throws JsonException
      */
     public function expectRequest(
-        string $httpMethod,
-        string $endpoint,
-        array $expectedResponseBody = [],
-        array $requestBody = []
+        string $expectedHttpMethod,
+        string $expectedEndpoint,
+        array $responseDataToReturn = [],
+        array $expectedRequestData = []
     ): self {
-        $responseBody = Json::encode($expectedResponseBody);
+        $responseBody = Json::encode($responseDataToReturn);
 
         $this->httpClientMock->shouldReceive('request')
             ->with(
-                $httpMethod,
-                $this->createRequestUrl($endpoint),
-                $this->createRequestOptions($httpMethod, $requestBody)
+                $expectedHttpMethod,
+                $this->createRequestUrl($expectedEndpoint),
+                $this->createRequestOptions($expectedHttpMethod, $expectedRequestData)
             )
             ->once()
             ->andReturn(new Response(200, [], $responseBody));
@@ -88,52 +88,109 @@ final class HttpClientMockBuilder
 
 
     /**
-     * @param mixed[] $expectedResponseBody
-     * @param mixed[] $requestBody
+     * @param mixed[] $responseDataToReturn
+     * @param mixed[] $expectedRequestData
      *
      * @throws JsonException
      */
     public function expectFailedRequest(
-        string $httpMethod,
-        string $endpoint,
-        array $expectedResponseBody = [],
-        array $requestBody = [],
-        int $errorCode = 400
+        string $expectedHttpMethod,
+        string $expectedEndpoint,
+        array $responseDataToReturn = [],
+        array $expectedRequestData = [],
+        int $errorCodeToReturn = 400
     ): self {
         $request = new Request(
-            $httpMethod,
-            $this->createRequestUrl($endpoint),
+            $expectedHttpMethod,
+            $this->createRequestUrl($expectedEndpoint),
             $this->expectedHeaders,
-            Json::encode($requestBody)
+            Json::encode($expectedRequestData)
         );
-        $response = new Response($errorCode, [], Json::encode($expectedResponseBody));
-
-        $requestException = RequestException::create($request, $response);
+        $response = new Response($errorCodeToReturn, [], Json::encode($responseDataToReturn));
+        $exceptionToThrow = RequestException::create($request, $response);
 
         $this->httpClientMock->shouldReceive('request')
             ->with(
-                $httpMethod,
-                $this->createRequestUrl($endpoint),
-                $this->createRequestOptions($httpMethod, $requestBody)
+                $expectedHttpMethod,
+                $this->createRequestUrl($expectedEndpoint),
+                $this->createRequestOptions($expectedHttpMethod, $expectedRequestData)
             )
             ->once()
-            ->andThrow($requestException);
+            ->andThrow($exceptionToThrow);
 
         return $this;
     }
 
 
     /**
-     * @param mixed[] $requestBody
+     * @param array<string, mixed> $responseDataToReturn
+     * @param array<string, mixed> $expectedRequestData
      *
-     * @return mixed[]
+     * @throws JsonException
      */
-    private function createRequestOptions(string $httpMethod, array $requestBody = []): array
+    public function expectSend(
+        string $expectedHttpMethod,
+        string $expectedEndpoint,
+        array $responseDataToReturn = [],
+        array $expectedRequestData = []
+    ): self {
+        $responseBody = Json::encode($responseDataToReturn);
+        $expectedRequestBody = Json::encode($expectedRequestData);
+        $requestMatcher = $this->createRequestMatcher($expectedHttpMethod, $expectedEndpoint, $expectedRequestBody);
+
+        $this->httpClientMock->shouldReceive('send')
+            ->with($requestMatcher)
+            ->once()
+            ->andReturn(new Response(200, [], $responseBody));
+
+        return $this;
+    }
+
+
+    /**
+     * @param array<string, mixed> $responseDataToReturn
+     * @param array<string, mixed> $expectedRequestData
+     *
+     * @throws JsonException
+     */
+    public function expectFailedSend(
+        string $expectedHttpMethod,
+        string $expectedEndpoint,
+        array $expectedRequestData = [],
+        int $errorCodeToReturn = 400,
+        array $responseDataToReturn = []
+    ): self {
+        $expectedRequestBody = Json::encode($expectedRequestData);
+        $request = new Request(
+            $expectedHttpMethod,
+            $this->createRequestUrl($expectedEndpoint),
+            $this->expectedHeaders,
+            $expectedRequestBody
+        );
+        $response = new Response($errorCodeToReturn, [], Json::encode($responseDataToReturn));
+        $requestMatcher = $this->createRequestMatcher($expectedHttpMethod, $expectedEndpoint, $expectedRequestBody);
+        $exceptionToThrow = RequestException::create($request, $response);
+
+        $this->httpClientMock->shouldReceive('send')
+            ->with($requestMatcher)
+            ->once()
+            ->andThrows($exceptionToThrow);
+
+        return $this;
+    }
+
+
+    /**
+     * @param array<string, mixed> $requestData
+     *
+     * @return array<string, mixed>
+     */
+    private function createRequestOptions(string $httpMethod, array $requestData = []): array
     {
         $requestOptions = [RequestOptions::HEADERS => $this->expectedHeaders];
 
         if (Strings::upper($httpMethod) !== 'GET') {
-            $requestOptions[RequestOptions::JSON] = $requestBody;
+            $requestOptions[RequestOptions::JSON] = $requestData;
         }
 
         return $requestOptions;
@@ -143,5 +200,19 @@ final class HttpClientMockBuilder
     private function createRequestUrl(string $endpoint): string
     {
         return $this->basePath . $endpoint;
+    }
+
+
+    private function createRequestMatcher(
+        string $expectedHttpMethod,
+        string $expectedEndpoint,
+        string $expectedRequestBody
+    ): HttpRequestMatcher {
+        return new HttpRequestMatcher(
+            $expectedHttpMethod,
+            $this->createRequestUrl($expectedEndpoint),
+            $this->expectedHeaders,
+            $expectedRequestBody
+        );
     }
 }
