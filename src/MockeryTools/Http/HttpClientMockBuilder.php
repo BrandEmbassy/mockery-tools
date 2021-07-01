@@ -6,12 +6,10 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\RequestOptions;
 use Mockery;
 use Mockery\MockInterface;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
-use Nette\Utils\Strings;
 
 final class HttpClientMockBuilder
 {
@@ -62,7 +60,7 @@ final class HttpClientMockBuilder
 
     /**
      * @param array<string, mixed> $responseDataToReturn
-     * @param array<string, mixed> $expectedRequestData
+     * @param array<string, mixed>|null $expectedRequestData
      *
      * @throws JsonException
      */
@@ -70,7 +68,7 @@ final class HttpClientMockBuilder
         string $expectedHttpMethod,
         string $expectedEndpoint,
         array $responseDataToReturn = [],
-        array $expectedRequestData = []
+        ?array $expectedRequestData = null
     ): self {
         $responseBody = Json::encode($responseDataToReturn);
 
@@ -78,7 +76,7 @@ final class HttpClientMockBuilder
             ->with(
                 $expectedHttpMethod,
                 $this->createRequestUrl($expectedEndpoint),
-                $this->createRequestOptions($expectedHttpMethod, $expectedRequestData)
+                new HttpRequestOptionsMatcher($this->expectedHeaders, $expectedRequestData)
             )
             ->once()
             ->andReturn(new Response(200, [], $responseBody));
@@ -89,7 +87,7 @@ final class HttpClientMockBuilder
 
     /**
      * @param mixed[] $responseDataToReturn
-     * @param mixed[] $expectedRequestData
+     * @param mixed[]|null $expectedRequestData
      *
      * @throws JsonException
      */
@@ -97,7 +95,7 @@ final class HttpClientMockBuilder
         string $expectedHttpMethod,
         string $expectedEndpoint,
         array $responseDataToReturn = [],
-        array $expectedRequestData = [],
+        ?array $expectedRequestData = null,
         int $errorCodeToReturn = 400
     ): self {
         $request = new Request(
@@ -113,7 +111,7 @@ final class HttpClientMockBuilder
             ->with(
                 $expectedHttpMethod,
                 $this->createRequestUrl($expectedEndpoint),
-                $this->createRequestOptions($expectedHttpMethod, $expectedRequestData)
+                new HttpRequestOptionsMatcher($this->expectedHeaders, $expectedRequestData)
             )
             ->once()
             ->andThrow($exceptionToThrow);
@@ -132,10 +130,10 @@ final class HttpClientMockBuilder
         string $expectedHttpMethod,
         string $expectedEndpoint,
         array $responseDataToReturn = [],
-        array $expectedRequestData = []
+        ?array $expectedRequestData = null
     ): self {
         $responseBody = Json::encode($responseDataToReturn);
-        $expectedRequestBody = Json::encode($expectedRequestData);
+        $expectedRequestBody = $expectedRequestData !== null ? Json::encode($expectedRequestData) : '';
         $requestMatcher = $this->createRequestMatcher($expectedHttpMethod, $expectedEndpoint, $expectedRequestBody);
 
         $this->httpClientMock->shouldReceive('send')
@@ -156,11 +154,11 @@ final class HttpClientMockBuilder
     public function expectFailedSend(
         string $expectedHttpMethod,
         string $expectedEndpoint,
-        array $expectedRequestData = [],
+        ?array $expectedRequestData = null,
         int $errorCodeToReturn = 400,
         array $responseDataToReturn = []
     ): self {
-        $expectedRequestBody = Json::encode($expectedRequestData);
+        $expectedRequestBody = $expectedRequestData !== null ? Json::encode($expectedRequestData) : '';
         $request = new Request(
             $expectedHttpMethod,
             $this->createRequestUrl($expectedEndpoint),
@@ -177,23 +175,6 @@ final class HttpClientMockBuilder
             ->andThrows($exceptionToThrow);
 
         return $this;
-    }
-
-
-    /**
-     * @param array<string, mixed> $requestData
-     *
-     * @return array<string, mixed>
-     */
-    private function createRequestOptions(string $httpMethod, array $requestData = []): array
-    {
-        $requestOptions = [RequestOptions::HEADERS => $this->expectedHeaders];
-
-        if (Strings::upper($httpMethod) !== 'GET') {
-            $requestOptions[RequestOptions::JSON] = $requestData;
-        }
-
-        return $requestOptions;
     }
 
 
