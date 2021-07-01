@@ -61,7 +61,7 @@ final class HttpClientMockBuilder
 
 
     /**
-     * @param array<string, mixed> $responseData
+     * @param array<string, mixed> $responseDataToReturn
      * @param array<string, mixed> $expectedRequestData
      *
      * @throws JsonException
@@ -69,10 +69,10 @@ final class HttpClientMockBuilder
     public function expectRequest(
         string $expectedHttpMethod,
         string $expectedEndpoint,
-        array $responseData = [],
+        array $responseDataToReturn = [],
         array $expectedRequestData = []
     ): self {
-        $responseBody = Json::encode($responseData);
+        $responseBody = Json::encode($responseDataToReturn);
 
         $this->httpClientMock->shouldReceive('request')
             ->with(
@@ -88,7 +88,7 @@ final class HttpClientMockBuilder
 
 
     /**
-     * @param mixed[] $responseData
+     * @param mixed[] $responseDataToReturn
      * @param mixed[] $expectedRequestData
      *
      * @throws JsonException
@@ -96,7 +96,7 @@ final class HttpClientMockBuilder
     public function expectFailedRequest(
         string $expectedHttpMethod,
         string $expectedEndpoint,
-        array $responseData = [],
+        array $responseDataToReturn = [],
         array $expectedRequestData = [],
         int $errorCodeToReturn = 400
     ): self {
@@ -106,7 +106,7 @@ final class HttpClientMockBuilder
             $this->expectedHeaders,
             Json::encode($expectedRequestData)
         );
-        $response = new Response($errorCodeToReturn, [], Json::encode($responseData));
+        $response = new Response($errorCodeToReturn, [], Json::encode($responseDataToReturn));
         $exceptionToThrow = RequestException::create($request, $response);
 
         $this->httpClientMock->shouldReceive('request')
@@ -123,7 +123,7 @@ final class HttpClientMockBuilder
 
 
     /**
-     * @param array<string, mixed> $responseData
+     * @param array<string, mixed> $responseDataToReturn
      * @param array<string, mixed> $expectedRequestData
      *
      * @throws JsonException
@@ -131,10 +131,10 @@ final class HttpClientMockBuilder
     public function expectSend(
         string $expectedHttpMethod,
         string $expectedEndpoint,
-        array $responseData = [],
+        array $responseDataToReturn = [],
         array $expectedRequestData = []
     ): self {
-        $responseBody = Json::encode($responseData);
+        $responseBody = Json::encode($responseDataToReturn);
         $expectedRequestBody = Json::encode($expectedRequestData);
         $requestMatcher = $this->createRequestMatcher($expectedHttpMethod, $expectedEndpoint, $expectedRequestBody);
 
@@ -148,7 +148,7 @@ final class HttpClientMockBuilder
 
 
     /**
-     * @param array<string, mixed> $responseData
+     * @param array<string, mixed> $responseDataToReturn
      * @param array<string, mixed> $expectedRequestData
      *
      * @throws JsonException
@@ -158,7 +158,7 @@ final class HttpClientMockBuilder
         string $expectedEndpoint,
         array $expectedRequestData = [],
         int $errorCodeToReturn = 400,
-        array $responseData = []
+        array $responseDataToReturn = []
     ): self {
         $expectedRequestBody = Json::encode($expectedRequestData);
         $request = new Request(
@@ -167,7 +167,7 @@ final class HttpClientMockBuilder
             $this->expectedHeaders,
             $expectedRequestBody
         );
-        $response = new Response($errorCodeToReturn, [], Json::encode($responseData));
+        $response = new Response($errorCodeToReturn, [], Json::encode($responseDataToReturn));
         $requestMatcher = $this->createRequestMatcher($expectedHttpMethod, $expectedEndpoint, $expectedRequestBody);
         $exceptionToThrow = RequestException::create($request, $response);
 
