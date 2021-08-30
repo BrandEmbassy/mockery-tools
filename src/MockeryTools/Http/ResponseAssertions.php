@@ -101,7 +101,7 @@ final class ResponseAssertions
 
 
     /**
-     * @param array<string, mixed> $valuesToReplace
+     * @param array<string, string> $valuesToReplace
      */
     public static function assertHtmlResponseSnapshot(
         string $snapshotFile,
