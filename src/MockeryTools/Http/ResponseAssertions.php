@@ -100,12 +100,16 @@ final class ResponseAssertions
     }
 
 
+    /**
+     * @param array<string, mixed> $valuesToReplace
+     */
     public static function assertHtmlResponseSnapshot(
         string $snapshotFile,
         ResponseInterface $response,
-        int $expectedStatusCode = self::STATUS_CODE_200
+        int $expectedStatusCode = self::STATUS_CODE_200,
+        array $valuesToReplace = []
     ): void {
-        SnapshotAssertions::assertResponseSnapshot($snapshotFile, $response);
+        SnapshotAssertions::assertResponseSnapshot($snapshotFile, $response, $valuesToReplace);
         self::assertResponseStatusCode($expectedStatusCode, $response);
     }
 

@@ -46,8 +46,20 @@ final class SnapshotAssertions
     }
 
 
-    public static function assertResponseSnapshot(string $snapshotFile, ResponseInterface $response): void
-    {
+    /**
+     * @param array<string, string> $valuesToReplace
+     */
+    public static function assertResponseSnapshot(
+        string $snapshotFile, 
+        ResponseInterface $response,
+        array $valuesToReplace = []
+    ): void {
+        if ($valuesToReplace !== []) {
+            self::assertSnapshotAndReplace($snapshotFile, (string)$response->getBody(), $valuesToReplace);
+
+            return;
+        }
+
         self::assertSnapshot($snapshotFile, (string)$response->getBody());
     }
 }
