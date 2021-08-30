@@ -50,7 +50,7 @@ final class SnapshotAssertions
      * @param array<string, string> $valuesToReplace
      */
     public static function assertResponseSnapshot(
-        string $snapshotFile, 
+        string $snapshotFile,
         ResponseInterface $response,
         array $valuesToReplace = []
     ): void {
