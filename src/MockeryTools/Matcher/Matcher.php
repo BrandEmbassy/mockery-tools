@@ -4,6 +4,7 @@ namespace BrandEmbassy\MockeryTools\Matcher;
 
 use BrandEmbassy\MockeryTools\DateTime\DateTimeAsAtomMatcher;
 use BrandEmbassy\MockeryTools\DateTime\DateTimeAsTimestampMatcher;
+use BrandEmbassy\MockeryTools\Enum\EnumValueMatcher;
 use BrandEmbassy\MockeryTools\Http\HttpRequestMatcher;
 use BrandEmbassy\MockeryTools\String\StringStartsWithMatcher;
 use BrandEmbassy\MockeryTools\String\UuidMatcher;
@@ -38,6 +39,15 @@ final class Matcher
     public static function uri(string $expectedUri): UriMatcher
     {
         return new UriMatcher($expectedUri);
+    }
+
+
+    /**
+     * @param mixed $expectedValue
+     */
+    public static function enumValue($expectedValue): EnumValueMatcher
+    {
+        return new EnumValueMatcher($expectedValue);
     }
 
 
