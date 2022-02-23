@@ -9,7 +9,10 @@ use function is_int;
 use function sprintf;
 use function str_replace;
 
-final class JsonValuesReplacer
+/**
+ * @final
+ */
+class JsonValuesReplacer
 {
     use StaticClass;
 

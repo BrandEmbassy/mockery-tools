@@ -15,7 +15,10 @@ use PHPUnit\Framework\TestCase;
 use Throwable;
 use function assert;
 
-final class HttpClientMockBuilderTest extends TestCase
+/**
+ * @final
+ */
+class HttpClientMockBuilderTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 

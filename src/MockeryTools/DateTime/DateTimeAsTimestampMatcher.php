@@ -6,7 +6,10 @@ use DateTimeImmutable;
 use Mockery\Matcher\MatcherAbstract;
 use function assert;
 
-final class DateTimeAsTimestampMatcher extends MatcherAbstract
+/**
+ * @final
+ */
+class DateTimeAsTimestampMatcher extends MatcherAbstract
 {
     /**
      * @var int

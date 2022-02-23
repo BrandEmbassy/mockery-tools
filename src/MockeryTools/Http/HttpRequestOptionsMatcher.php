@@ -9,7 +9,10 @@ use Nette\Utils\JsonException;
 use function assert;
 use function is_array;
 
-final class HttpRequestOptionsMatcher extends MatcherAbstract
+/**
+ * @final
+ */
+class HttpRequestOptionsMatcher extends MatcherAbstract
 {
     /**
      * @var array<string, string>

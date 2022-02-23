@@ -7,7 +7,10 @@ use Mockery;
 use Mockery\Matcher\Closure;
 use Ramsey\Uuid\UuidInterface;
 
-final class UuidMockeryMatcherFactory
+/**
+ * @final
+ */
+class UuidMockeryMatcherFactory
 {
     /**
      * @deprecated use Matcher::uuid($expected) directly

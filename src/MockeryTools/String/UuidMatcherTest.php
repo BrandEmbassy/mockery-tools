@@ -6,7 +6,10 @@ use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 
-final class UuidMatcherTest extends TestCase
+/**
+ * @final
+ */
+class UuidMatcherTest extends TestCase
 {
     /**
      * @dataProvider uuidDataProvider

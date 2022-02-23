@@ -7,7 +7,10 @@ use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
-final class EnumValueMatcherTest extends TestCase
+/**
+ * @final
+ */
+class EnumValueMatcherTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 

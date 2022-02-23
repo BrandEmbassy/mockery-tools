@@ -10,7 +10,10 @@ use BrandEmbassy\MockeryTools\String\StringStartsWithMatcher;
 use BrandEmbassy\MockeryTools\String\UuidMatcher;
 use BrandEmbassy\MockeryTools\Uri\UriMatcher;
 
-final class Matcher
+/**
+ * @final
+ */
+class Matcher
 {
     public static function stringStartsWith(string $expectedStartsWith): StringStartsWithMatcher
     {

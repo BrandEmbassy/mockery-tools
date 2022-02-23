@@ -9,7 +9,10 @@ use function array_replace_recursive;
 use function is_array;
 use function var_export;
 
-final class ArraySubsetConstraint extends Constraint
+/**
+ * @final
+ */
+class ArraySubsetConstraint extends Constraint
 {
     /**
      * @var iterable|mixed[]

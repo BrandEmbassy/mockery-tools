@@ -5,7 +5,10 @@ namespace BrandEmbassy\MockeryTools\Html;
 use PHPUnit\Framework\Assert;
 use function str_replace;
 
-final class HtmlAssertions
+/**
+ * @final
+ */
+class HtmlAssertions
 {
     public static function assertSameHtmlStrings(string $expectedHtml, string $actualHtml): void
     {

@@ -6,7 +6,10 @@ use Mockery\Matcher\MatcherAbstract;
 use Ramsey\Uuid\UuidInterface;
 use function assert;
 
-final class UuidMatcher extends MatcherAbstract
+/**
+ * @final
+ */
+class UuidMatcher extends MatcherAbstract
 {
     public function __construct(string $expected)
     {

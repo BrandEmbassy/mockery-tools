@@ -10,7 +10,10 @@ use function get_class;
 use function sprintf;
 use function strpos;
 
-final class ExceptionAssertions
+/**
+ * @final
+ */
+class ExceptionAssertions
 {
     use StaticClass;
 

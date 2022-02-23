@@ -13,7 +13,10 @@ use function assert;
 use function is_array;
 use function is_object;
 
-final class FileLoader
+/**
+ * @final
+ */
+class FileLoader
 {
     /**
      * @return mixed[]

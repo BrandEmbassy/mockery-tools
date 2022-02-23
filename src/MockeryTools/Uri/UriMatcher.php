@@ -6,8 +6,10 @@ use Mockery\Matcher\MatcherAbstract;
 
 /**
  * @property string $_expected
+ *
+ * @final
  */
-final class UriMatcher extends MatcherAbstract
+class UriMatcher extends MatcherAbstract
 {
     public function __construct(string $expected)
     {

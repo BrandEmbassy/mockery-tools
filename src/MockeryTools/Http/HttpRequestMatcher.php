@@ -7,7 +7,10 @@ use Psr\Http\Message\RequestInterface;
 use function assert;
 use function is_array;
 
-final class HttpRequestMatcher extends MatcherAbstract
+/**
+ * @final
+ */
+class HttpRequestMatcher extends MatcherAbstract
 {
     /**
      * @var string

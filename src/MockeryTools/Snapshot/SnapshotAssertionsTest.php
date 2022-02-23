@@ -5,7 +5,10 @@ namespace BrandEmbassy\MockeryTools\Snapshot;
 use Nette\Utils\FileSystem;
 use PHPUnit\Framework\TestCase;
 
-final class SnapshotAssertionsTest extends TestCase
+/**
+ * @final
+ */
+class SnapshotAssertionsTest extends TestCase
 {
     public function testSnapshotIsAsserted(): void
     {
