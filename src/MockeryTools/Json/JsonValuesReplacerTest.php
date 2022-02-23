@@ -6,7 +6,10 @@ use Nette\Utils\FileSystem;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
-final class JsonValuesReplacerTest extends TestCase
+/**
+ * @final
+ */
+class JsonValuesReplacerTest extends TestCase
 {
     public function testLoadsJsonWithMixedTypesAndCorrectlyReplaces(): void
     {

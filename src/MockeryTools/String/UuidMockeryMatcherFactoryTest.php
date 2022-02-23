@@ -8,7 +8,10 @@ use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use TypeError;
 
-final class UuidMockeryMatcherFactoryTest extends TestCase
+/**
+ * @final
+ */
+class UuidMockeryMatcherFactoryTest extends TestCase
 {
     private const DOES_MATCH = true;
     private const DOES_NOT_MATCH = false;

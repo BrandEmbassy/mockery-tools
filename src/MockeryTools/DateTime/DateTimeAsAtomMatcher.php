@@ -7,7 +7,10 @@ use DateTimeImmutable;
 use Mockery\Matcher\MatcherAbstract;
 use function assert;
 
-final class DateTimeAsAtomMatcher extends MatcherAbstract
+/**
+ * @final
+ */
+class DateTimeAsAtomMatcher extends MatcherAbstract
 {
     /**
      * @var string

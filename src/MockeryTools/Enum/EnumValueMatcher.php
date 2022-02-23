@@ -6,7 +6,10 @@ use MabeEnum\Enum;
 use Mockery\Matcher\MatcherAbstract;
 use function assert;
 
-final class EnumValueMatcher extends MatcherAbstract
+/**
+ * @final
+ */
+class EnumValueMatcher extends MatcherAbstract
 {
     /**
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint

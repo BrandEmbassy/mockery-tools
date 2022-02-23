@@ -6,7 +6,10 @@ use DateTime;
 use DateTimeImmutable;
 use PHPUnit\Framework\Assert;
 
-final class DateTimeAssertions
+/**
+ * @final
+ */
+class DateTimeAssertions
 {
     public static function assertDateTimeTimestampsEquals(
         DateTimeImmutable $expectedDateTimeImmutable,

@@ -11,7 +11,10 @@ use function array_values;
 use function sprintf;
 use function str_replace;
 
-final class SnapshotAssertions
+/**
+ * @final
+ */
+class SnapshotAssertions
 {
     public static function assertSnapshot(string $snapshotFile, string $testedOutput): void
     {

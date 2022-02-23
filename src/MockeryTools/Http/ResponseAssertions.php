@@ -10,7 +10,10 @@ use Nette\Utils\Json;
 use PHPUnit\Framework\Assert;
 use Psr\Http\Message\ResponseInterface;
 
-final class ResponseAssertions
+/**
+ * @final
+ */
+class ResponseAssertions
 {
     private const HEADER_LOCATION = 'Location';
     private const STATUS_CODE_200 = 200;

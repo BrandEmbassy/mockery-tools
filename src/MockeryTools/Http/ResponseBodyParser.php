@@ -5,7 +5,10 @@ namespace BrandEmbassy\MockeryTools\Http;
 use Nette\Utils\Json;
 use Psr\Http\Message\ResponseInterface;
 
-final class ResponseBodyParser
+/**
+ * @final
+ */
+class ResponseBodyParser
 {
     public static function parseAsString(ResponseInterface $response): string
     {

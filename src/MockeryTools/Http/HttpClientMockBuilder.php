@@ -11,7 +11,10 @@ use Mockery\MockInterface;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 
-final class HttpClientMockBuilder
+/**
+ * @final
+ */
+class HttpClientMockBuilder
 {
     /**
      * @var ClientInterface&MockInterface
