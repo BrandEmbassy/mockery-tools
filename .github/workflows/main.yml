@@ -5,6 +5,12 @@ on: [pull_request, workflow_dispatch]
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        composer-update-cmd:
+          - "composer update"
+          - "composer update --prefer-lowest"
 
     steps:
       - name: Checkout
@@ -28,7 +34,7 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-
 
       - name: Install dependencies
-        run: composer install --no-progress --prefer-dist --optimize-autoloader
+        run: ${{ matrix.composer-update-cmd }} --no-progress --prefer-dist --optimize-autoloader
 
       - name: Run phpstan
         run: composer phpstan
