@@ -17,7 +17,7 @@ class ArraySubsetConstraint extends Constraint
     /**
      * @var iterable|mixed[]
      */
-    private $subset;
+    private iterable $subset;
 
 
     /**

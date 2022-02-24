@@ -12,10 +12,7 @@ use function assert;
  */
 class DateTimeAsAtomMatcher extends MatcherAbstract
 {
-    /**
-     * @var string
-     */
-    private $expectedDateTimeAsAtom;
+    private string $expectedDateTimeAsAtom;
 
 
     public function __construct(string $expectedDateTimeAsAtom)
