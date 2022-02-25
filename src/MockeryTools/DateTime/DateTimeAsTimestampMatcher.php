@@ -11,7 +11,10 @@ use function assert;
  */
 class DateTimeAsTimestampMatcher extends MatcherAbstract
 {
-    private int $dateTimeTimestamp;
+    /**
+     * @var int
+     */
+    private $dateTimeTimestamp;
 
 
     public function __construct(int $dateTimeTimestamp)

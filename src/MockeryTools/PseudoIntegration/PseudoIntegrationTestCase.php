@@ -23,9 +23,12 @@ abstract class PseudoIntegrationTestCase extends TestCase
     /**
      * @var mixed[]
      */
-    protected array $replacedServices;
+    protected $replacedServices;
 
-    protected Container $container;
+    /**
+     * @var Container
+     */
+    protected $container;
 
     /**
      * @var Client&MockInterface

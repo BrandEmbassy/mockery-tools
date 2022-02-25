@@ -21,12 +21,15 @@ class HttpClientMockBuilder
      */
     private $httpClientMock;
 
-    private string $basePath;
+    /**
+     * @var string
+     */
+    private $basePath;
 
     /**
      * @var array<string, string>
      */
-    private array $expectedHeaders;
+    private $expectedHeaders;
 
 
     /**

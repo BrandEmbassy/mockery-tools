@@ -12,16 +12,25 @@ use function is_array;
  */
 class HttpRequestMatcher extends MatcherAbstract
 {
-    private string $expectedMethod;
+    /**
+     * @var string
+     */
+    private $expectedMethod;
 
-    private string $expectedUri;
+    /**
+     * @var string
+     */
+    private $expectedUri;
 
     /**
      * @var array<string, string|array<int, string>>
      */
-    private array $expectedHeaders;
+    private $expectedHeaders;
 
-    private string $expectedBody;
+    /**
+     * @var string
+     */
+    private $expectedBody;
 
 
     /**

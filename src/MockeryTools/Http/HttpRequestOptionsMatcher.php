@@ -17,12 +17,12 @@ class HttpRequestOptionsMatcher extends MatcherAbstract
     /**
      * @var array<string, string>
      */
-    private array $expectedHeaders;
+    private $expectedHeaders;
 
     /**
      * @var mixed[]|null
      */
-    private ?array $expectedRequestData = null;
+    private $expectedRequestData;
 
 
     /**
