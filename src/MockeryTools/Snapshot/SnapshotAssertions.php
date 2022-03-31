@@ -5,6 +5,7 @@ namespace BrandEmbassy\MockeryTools\Snapshot;
 use BrandEmbassy\MockeryTools\FileLoader;
 use BrandEmbassy\MockeryTools\Html\HtmlAssertions;
 use Psr\Http\Message\ResponseInterface;
+use Spatie\Snapshots\MatchesSnapshots;
 use function array_keys;
 use function array_map;
 use function array_values;

@@ -1,6 +1,13 @@
 {
   "name": "brandembassy/mockery-tools",
   "license": "proprietary",
+  "prefer-stable": true,
+  "config": {
+    "sort-packages": true,
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  },
   "autoload": {
     "psr-4": {
       "BrandEmbassy\\MockeryTools\\": "src/MockeryTools"
@@ -8,6 +15,7 @@
   },
   "require": {
     "php": ">= 7.2 || ^8.0",
+    "ext-mbstring": "*",
     "guzzlehttp/guzzle": "^6.3 || ^7.0",
     "marc-mabe/php-enum": "^3.0",
     "mockery/mockery": "^1.3",
@@ -15,7 +23,7 @@
     "nette/utils": "^2.4 || ^3.0",
     "phpunit/phpunit": "^7.5 || ^8.5",
     "ramsey/uuid": "^3.0 || ^4.0",
-    "ext-mbstring": "*"
+    "spatie/phpunit-snapshot-assertions": "^4.2"
   },
   "require-dev": {
     "roave/security-advisories": "dev-master",
@@ -24,7 +32,7 @@
   "scripts": {
     "phpcs": "./vendor/bin/phpcs --standard=BrandEmbassyCodingStandard src",
     "phpcbf": "./vendor/bin/phpcbf --standard=BrandEmbassyCodingStandard src",
-    "phpstan": "./vendor/bin/phpstan analyze -c phpstan.neon src",
+    "phpstan": "./vendor/bin/phpstan analyze -c phpstan.neon src --memory-limit=-1",
     "phpunit": "vendor/bin/phpunit src --no-coverage",
     "phpunit-cc": "vendor/bin/phpunit src"
   }
