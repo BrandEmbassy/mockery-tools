@@ -5,10 +5,14 @@ namespace BrandEmbassy\MockeryTools\Http;
 use BrandEmbassy\MockeryTools\Arrays\ArraySubsetAssertions;
 use BrandEmbassy\MockeryTools\FileLoader;
 use BrandEmbassy\MockeryTools\Json\JsonValuesReplacer;
+use BrandEmbassy\MockeryTools\Snapshot\MatchesSnapshots;
 use BrandEmbassy\MockeryTools\Snapshot\SnapshotAssertions;
 use Nette\Utils\Json;
 use PHPUnit\Framework\Assert;
 use Psr\Http\Message\ResponseInterface;
+use function sprintf;
+use function trigger_error;
+use const E_USER_DEPRECATED;
 
 /**
  * @final
@@ -104,6 +108,8 @@ class ResponseAssertions
 
 
     /**
+     * @deprecated
+     *
      * @param array<string, string> $valuesToReplace
      */
     public static function assertHtmlResponseSnapshot(
@@ -112,6 +118,11 @@ class ResponseAssertions
         int $expectedStatusCode = self::STATUS_CODE_200,
         array $valuesToReplace = []
     ): void {
+        @trigger_error(
+            sprintf('Please use %s::assertResponseMatchesHtmlSnapshot instead.', MatchesSnapshots::class),
+            E_USER_DEPRECATED,
+        );
+
         SnapshotAssertions::assertResponseSnapshot($snapshotFile, $response, $valuesToReplace);
         self::assertResponseStatusCode($expectedStatusCode, $response);
     }

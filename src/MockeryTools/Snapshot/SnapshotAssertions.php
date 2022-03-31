@@ -34,15 +34,13 @@ class SnapshotAssertions
     ): void {
         $snapshot = FileLoader::loadAsString($snapshotFile);
         $keys = array_map(
-            static function (string $key): string {
-                return sprintf('{{%s}}', $key);
-            },
-            array_keys($valuesToReplace)
+            static fn (string $key): string => sprintf('{{%s}}', $key),
+            array_keys($valuesToReplace),
         );
         $snapshotWithReplacedValues = str_replace(
             $keys,
             array_values($valuesToReplace),
-            $snapshot
+            $snapshot,
         );
 
         HtmlAssertions::assertSameHtmlStrings($snapshotWithReplacedValues, $testedOutput);

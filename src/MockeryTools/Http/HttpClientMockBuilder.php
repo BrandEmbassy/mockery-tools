@@ -21,15 +21,12 @@ class HttpClientMockBuilder
      */
     private $httpClientMock;
 
-    /**
-     * @var string
-     */
-    private $basePath;
+    private string $basePath;
 
     /**
      * @var array<string, string>
      */
-    private $expectedHeaders;
+    private array $expectedHeaders;
 
 
     /**
@@ -80,7 +77,7 @@ class HttpClientMockBuilder
             ->with(
                 $expectedHttpMethod,
                 $this->createRequestUrl($expectedEndpoint),
-                new HttpRequestOptionsMatcher($this->expectedHeaders, $expectedRequestData)
+                new HttpRequestOptionsMatcher($this->expectedHeaders, $expectedRequestData),
             )
             ->once()
             ->andReturn(new Response($statusCodeToReturn, [], $responseBody));
@@ -106,7 +103,7 @@ class HttpClientMockBuilder
             $expectedHttpMethod,
             $this->createRequestUrl($expectedEndpoint),
             $this->expectedHeaders,
-            Json::encode($expectedRequestData)
+            Json::encode($expectedRequestData),
         );
         $response = new Response($errorCodeToReturn, [], Json::encode($responseDataToReturn));
         $exceptionToThrow = RequestException::create($request, $response);
@@ -115,7 +112,7 @@ class HttpClientMockBuilder
             ->with(
                 $expectedHttpMethod,
                 $this->createRequestUrl($expectedEndpoint),
-                new HttpRequestOptionsMatcher($this->expectedHeaders, $expectedRequestData)
+                new HttpRequestOptionsMatcher($this->expectedHeaders, $expectedRequestData),
             )
             ->once()
             ->andThrow($exceptionToThrow);
@@ -168,7 +165,7 @@ class HttpClientMockBuilder
             $expectedHttpMethod,
             $this->createRequestUrl($expectedEndpoint),
             $this->expectedHeaders,
-            $expectedRequestBody
+            $expectedRequestBody,
         );
         $response = new Response($errorCodeToReturn, [], Json::encode($responseDataToReturn));
         $requestMatcher = $this->createRequestMatcher($expectedHttpMethod, $expectedEndpoint, $expectedRequestBody);
@@ -198,7 +195,7 @@ class HttpClientMockBuilder
             $expectedHttpMethod,
             $this->createRequestUrl($expectedEndpoint),
             $this->expectedHeaders,
-            $expectedRequestBody
+            $expectedRequestBody,
         );
     }
 }

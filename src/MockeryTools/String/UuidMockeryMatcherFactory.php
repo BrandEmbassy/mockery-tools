@@ -22,7 +22,7 @@ class UuidMockeryMatcherFactory
                 $uuidMatcher = Matcher::uuid($expected);
 
                 return $uuidMatcher->match($uuid);
-            }
+            },
         );
     }
 }

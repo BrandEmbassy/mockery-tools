@@ -23,12 +23,9 @@ abstract class PseudoIntegrationTestCase extends TestCase
     /**
      * @var mixed[]
      */
-    protected $replacedServices;
+    protected array $replacedServices;
 
-    /**
-     * @var Container
-     */
-    protected $container;
+    protected Container $container;
 
     /**
      * @var Client&MockInterface
@@ -66,7 +63,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
         return ContainerFactory::create(
             $this->getConfigFiles(),
             $this->getTempDirectory(),
-            'pseudo-integration-' . md5(implode('-', $this->getConfigFiles()))
+            'pseudo-integration-' . md5(implode('-', $this->getConfigFiles())),
         );
     }
 
@@ -157,7 +154,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
             $method,
             $url,
             $responseBody,
-            $requestOptions + [RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $bearerToken]]
+            $requestOptions + [RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $bearerToken]],
         );
     }
 
@@ -180,7 +177,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
             $url,
             $bearerToken,
             $responseBody,
-            $requestOptions
+            $requestOptions,
         );
     }
 
@@ -221,7 +218,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
             $url,
             $bearerToken,
             $responseBody,
-            $requestOptions
+            $requestOptions,
         );
     }
 
@@ -261,7 +258,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
             $method,
             $url,
             $responseBody,
-            $requestOptions + [RequestOptions::HEADERS => ['X-Api-Token' => $goldenKey]]
+            $requestOptions + [RequestOptions::HEADERS => ['X-Api-Token' => $goldenKey]],
         );
     }
 
@@ -285,7 +282,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
             $url,
             $errorCode,
             $responseBody,
-            $requestOptions + [RequestOptions::HEADERS => ['X-Api-Token' => $goldenKey]]
+            $requestOptions + [RequestOptions::HEADERS => ['X-Api-Token' => $goldenKey]],
         );
     }
 
@@ -306,7 +303,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
             $url,
             $errorCode,
             $responseBody,
-            $requestOptions + [RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $bearerToken]]
+            $requestOptions + [RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $bearerToken]],
         );
     }
 
@@ -328,7 +325,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
             $url,
             $errorCode,
             $responseBody,
-            $requestOptions + [RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $bearerToken]]
+            $requestOptions + [RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $bearerToken]],
         );
     }
 
@@ -351,7 +348,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
             $url,
             $errorCode,
             $encodedResponseBody,
-            $requestOptions
+            $requestOptions,
         );
     }
 

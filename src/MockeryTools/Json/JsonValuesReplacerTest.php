@@ -22,12 +22,12 @@ class JsonValuesReplacerTest extends TestCase
                 'boolVal' => false,
                 'nullValue' => null,
             ],
-            $inputJson
+            $inputJson,
         );
 
         Assert::assertJsonStringEqualsJsonFile(
             __DIR__ . '/__fixtures__/outputMixedTypes.json',
-            $resultJson
+            $resultJson,
         );
     }
 }
