@@ -10,6 +10,9 @@ use BrandEmbassy\MockeryTools\Snapshot\SnapshotAssertions;
 use Nette\Utils\Json;
 use PHPUnit\Framework\Assert;
 use Psr\Http\Message\ResponseInterface;
+use function sprintf;
+use function trigger_error;
+use const E_USER_DEPRECATED;
 
 /**
  * @final
@@ -117,7 +120,7 @@ class ResponseAssertions
     ): void {
         @trigger_error(
             sprintf('Please use %s::assertResponseMatchesHtmlSnapshot instead.', MatchesSnapshots::class),
-            E_USER_DEPRECATED
+            E_USER_DEPRECATED,
         );
 
         SnapshotAssertions::assertResponseSnapshot($snapshotFile, $response, $valuesToReplace);

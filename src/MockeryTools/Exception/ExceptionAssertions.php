@@ -37,8 +37,8 @@ class ExceptionAssertions
                         'Exception "%s" expected, but given "%s" with message: "%s".',
                         $expectedExceptionClassName,
                         get_class($exception),
-                        $exception->getMessage()
-                    )
+                        $exception->getMessage(),
+                    ),
                 );
             }
             if ($expectedExceptionMessage !== null
@@ -48,8 +48,8 @@ class ExceptionAssertions
                     sprintf(
                         'Exception message "%s" does not contain expected "%s"',
                         $exception->getMessage(),
-                        $expectedExceptionMessage
-                    )
+                        $expectedExceptionMessage,
+                    ),
                 );
             }
             if ($expectedExceptionCode !== null && $exception->getCode() !== $expectedExceptionCode) {
@@ -57,8 +57,8 @@ class ExceptionAssertions
                     sprintf(
                         'Exception code %d is different from expected code %d.',
                         $exception->getCode(),
-                        $expectedExceptionCode
-                    )
+                        $expectedExceptionCode,
+                    ),
                 );
             }
 

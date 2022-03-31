@@ -39,13 +39,13 @@ class HttpClientMockBuilderTest extends TestCase
         $postResponse = $httpClientMock->request(
             'POST',
             'https://api.com/v2/users',
-            [RequestOptions::HEADERS => self::HEADERS, RequestOptions::JSON => ['name' => 'Prokop Buben']]
+            [RequestOptions::HEADERS => self::HEADERS, RequestOptions::JSON => ['name' => 'Prokop Buben']],
         );
 
         $getResponse = $httpClientMock->request(
             'GET',
             'https://api.com/v2/users/25',
-            [RequestOptions::HEADERS => self::HEADERS]
+            [RequestOptions::HEADERS => self::HEADERS],
         );
 
         Assert::assertSame('{"id":25}', (string)$postResponse->getBody());
@@ -65,13 +65,13 @@ class HttpClientMockBuilderTest extends TestCase
         $this->expectException(ClientException::class);
         $this->expectExceptionMessage(
             'Client error: `GET https://api.com/v2/users/25` resulted in a `404 Not Found` response:
-{"error":"User not found"}'
+{"error":"User not found"}',
         );
 
         $httpClientMock->request(
             'GET',
             'https://api.com/v2/users/25',
-            [RequestOptions::HEADERS => self::HEADERS]
+            [RequestOptions::HEADERS => self::HEADERS],
         );
     }
 
@@ -88,13 +88,13 @@ class HttpClientMockBuilderTest extends TestCase
         $this->expectException(ServerException::class);
         $this->expectExceptionMessage(
             'Server error: `GET https://api.com/v2/users/25` resulted in a `500 Internal Server Error` response:
-{"error":"Internal server error"}'
+{"error":"Internal server error"}',
         );
 
         $httpClientMock->request(
             'GET',
             'https://api.com/v2/users/25',
-            [RequestOptions::HEADERS => self::HEADERS]
+            [RequestOptions::HEADERS => self::HEADERS],
         );
     }
 
@@ -111,7 +111,7 @@ class HttpClientMockBuilderTest extends TestCase
         $request = new Request(
             'GET',
             new Uri('https://api.com/v2/users/25'),
-            self::HEADERS
+            self::HEADERS,
         );
         $response = $httpClientMock->send($request);
 
@@ -132,7 +132,7 @@ class HttpClientMockBuilderTest extends TestCase
             'POST',
             new Uri('https://api.com/v2/users'),
             self::HEADERS,
-            '{"name":"Prokop Buben"}'
+            '{"name":"Prokop Buben"}',
         );
         $response = $httpClientMock->send($request);
 
@@ -157,7 +157,7 @@ class HttpClientMockBuilderTest extends TestCase
                 '/users',
                 ['name' => 'Prokop Buben'],
                 $statusCode,
-                ['error' => 'You shall not pass!']
+                ['error' => 'You shall not pass!'],
             )
             ->build();
 
@@ -165,7 +165,7 @@ class HttpClientMockBuilderTest extends TestCase
             'POST',
             new Uri('https://api.com/v2/users'),
             self::HEADERS,
-            '{"name":"Prokop Buben"}'
+            '{"name":"Prokop Buben"}',
         );
 
         ExceptionAssertions::assertExceptionCallback(
@@ -178,7 +178,7 @@ class HttpClientMockBuilderTest extends TestCase
             },
             static function () use ($httpClientMock, $request): void {
                 $httpClientMock->send($request);
-            }
+            },
         );
     }
 

@@ -16,7 +16,7 @@ class SnapshotAssertionsTest extends TestCase
 
         SnapshotAssertions::assertSnapshot(
             __DIR__ . '/__fixtures__/snapshot.html',
-            $testedOutput
+            $testedOutput,
         );
     }
 
@@ -32,7 +32,7 @@ class SnapshotAssertionsTest extends TestCase
                 'value1' => 'nonumes',
                 'value2' => 'ceteros',
                 'value3' => '1234 ',
-            ]
+            ],
         );
     }
 }

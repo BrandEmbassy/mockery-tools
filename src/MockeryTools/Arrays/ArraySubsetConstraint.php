@@ -17,7 +17,7 @@ class ArraySubsetConstraint extends Constraint
     /**
      * @var iterable|mixed[]
      */
-    private $subset;
+    private iterable $subset;
 
 
     /**
@@ -54,7 +54,7 @@ class ArraySubsetConstraint extends Constraint
                 $patched,
                 $other,
                 var_export($patched, true),
-                var_export($other, true)
+                var_export($other, true),
             );
 
             $this->fail($other, $description, $f);

@@ -27,7 +27,7 @@ class ContainerFactory
                 }
                 $compiler->addExtension('extensions', new ExtensionsExtension());
             },
-            $key
+            $key,
         );
 
         $container = new $class();

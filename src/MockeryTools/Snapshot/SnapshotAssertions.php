@@ -5,7 +5,6 @@ namespace BrandEmbassy\MockeryTools\Snapshot;
 use BrandEmbassy\MockeryTools\FileLoader;
 use BrandEmbassy\MockeryTools\Html\HtmlAssertions;
 use Psr\Http\Message\ResponseInterface;
-use Spatie\Snapshots\MatchesSnapshots;
 use function array_keys;
 use function array_map;
 use function array_values;
@@ -35,15 +34,13 @@ class SnapshotAssertions
     ): void {
         $snapshot = FileLoader::loadAsString($snapshotFile);
         $keys = array_map(
-            static function (string $key): string {
-                return sprintf('{{%s}}', $key);
-            },
-            array_keys($valuesToReplace)
+            static fn (string $key): string => sprintf('{{%s}}', $key),
+            array_keys($valuesToReplace),
         );
         $snapshotWithReplacedValues = str_replace(
             $keys,
             array_values($valuesToReplace),
-            $snapshot
+            $snapshot,
         );
 
         HtmlAssertions::assertSameHtmlStrings($snapshotWithReplacedValues, $testedOutput);
