@@ -22,7 +22,7 @@ class HttpRequestOptionsMatcher extends MatcherAbstract
     /**
      * @var mixed[]|null
      */
-    private ?array $expectedRequestData = null;
+    private ?array $expectedRequestData;
 
 
     /**

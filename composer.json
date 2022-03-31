@@ -30,8 +30,8 @@
     "brandembassy/coding-standard": "^8.6"
   },
   "scripts": {
-    "phpcs": "./vendor/bin/phpcs --standard=BrandEmbassyCodingStandard src",
-    "phpcbf": "./vendor/bin/phpcbf --standard=BrandEmbassyCodingStandard src",
+    "phpcs": "./vendor/bin/phpcs --standard=BrandEmbassyCodingStandard src --runtime-set php_version 70400",
+    "phpcbf": "./vendor/bin/phpcbf --standard=BrandEmbassyCodingStandard src --runtime-set php_version 70400",
     "phpstan": "./vendor/bin/phpstan analyze -c phpstan.neon src --memory-limit=-1",
     "phpunit": "vendor/bin/phpunit src --no-coverage",
     "phpunit-cc": "vendor/bin/phpunit src"

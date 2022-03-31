@@ -6,9 +6,6 @@ use BrandEmbassy\MockeryTools\Http\ResponseAssertions;
 use Psr\Http\Message\ResponseInterface;
 use Spatie\Snapshots\MatchesSnapshots as BaseMatchesSnapshots;
 
-/**
- * @final
- */
 trait MatchesSnapshots
 {
     use BaseMatchesSnapshots;
