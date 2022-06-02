@@ -197,7 +197,14 @@ abstract class PseudoIntegrationTestCase extends TestCase
     ): Expectation {
         $url = $this->getPlatformApiHost() . $platformEndpoint;
 
-        return $this->expectAuthorizedRequestFail($method, $url, $bearerToken, $errorCode, $responseBody, $requestOptions);
+        return $this->expectAuthorizedRequestFail(
+            $method,
+            $url,
+            $bearerToken,
+            $errorCode,
+            $responseBody,
+            $requestOptions,
+        );
     }
 
 
@@ -238,7 +245,14 @@ abstract class PseudoIntegrationTestCase extends TestCase
     ): Expectation {
         $url = $this->getPlatformApiHostDfo3() . $platformEndpoint;
 
-        return $this->expectAuthorizedRequestFail($method, $url, $bearerToken, $errorCode, $responseBody, $requestOptions);
+        return $this->expectAuthorizedRequestFail(
+            $method,
+            $url,
+            $bearerToken,
+            $errorCode,
+            $responseBody,
+            $requestOptions,
+        );
     }
 
 
