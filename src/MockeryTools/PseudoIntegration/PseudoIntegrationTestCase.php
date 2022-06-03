@@ -9,6 +9,7 @@ use GuzzleHttp\Psr7\Response as PsrResponse;
 use GuzzleHttp\RequestOptions;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+use Mockery\Expectation;
 use Mockery\MockInterface;
 use Nette\DI\Container;
 use Nette\Utils\Json;
@@ -114,10 +115,10 @@ abstract class PseudoIntegrationTestCase extends TestCase
         string $url,
         ?array $responseBody = null,
         ?array $requestOptions = null
-    ): void {
+    ): Expectation {
         $encodedResponseBody = $responseBody === null ? null : Json::encode($responseBody);
 
-        $this->expectRequestWithStringResponse($method, $url, $encodedResponseBody, $requestOptions);
+        return $this->expectRequestWithStringResponse($method, $url, $encodedResponseBody, $requestOptions);
     }
 
 
@@ -129,10 +130,10 @@ abstract class PseudoIntegrationTestCase extends TestCase
         string $url,
         ?string $responseBody = '',
         ?array $requestOptions = []
-    ): void {
+    ): Expectation {
         $psrResponse = new PsrResponse(200, [], $responseBody);
 
-        $this->httpClientMock->shouldReceive('request')
+        return $this->httpClientMock->shouldReceive('request')
             ->with($method, $url, $requestOptions ?? Mockery::any())
             ->once()
             ->andReturn($psrResponse);
@@ -149,8 +150,8 @@ abstract class PseudoIntegrationTestCase extends TestCase
         string $bearerToken,
         ?array $responseBody = null,
         array $requestOptions = []
-    ): void {
-        $this->expectRequest(
+    ): Expectation {
+        return $this->expectRequest(
             $method,
             $url,
             $responseBody,
@@ -169,10 +170,10 @@ abstract class PseudoIntegrationTestCase extends TestCase
         string $bearerToken,
         ?array $responseBody = null,
         array $requestOptions = []
-    ): void {
+    ): Expectation {
         $url = $this->getPlatformApiHost() . $platformEndpoint;
 
-        $this->expectAuthorizedRequest(
+        return $this->expectAuthorizedRequest(
             $method,
             $url,
             $bearerToken,
@@ -193,10 +194,17 @@ abstract class PseudoIntegrationTestCase extends TestCase
         int $errorCode,
         ?array $responseBody = null,
         array $requestOptions = []
-    ): void {
+    ): Expectation {
         $url = $this->getPlatformApiHost() . $platformEndpoint;
 
-        $this->expectAuthorizedRequestFail($method, $url, $bearerToken, $errorCode, $responseBody, $requestOptions);
+        return $this->expectAuthorizedRequestFail(
+            $method,
+            $url,
+            $bearerToken,
+            $errorCode,
+            $responseBody,
+            $requestOptions,
+        );
     }
 
 
@@ -210,10 +218,10 @@ abstract class PseudoIntegrationTestCase extends TestCase
         string $bearerToken,
         ?array $responseBody = null,
         array $requestOptions = []
-    ): void {
+    ): Expectation {
         $url = $this->getPlatformApiHostDfo3() . $platformEndpoint;
 
-        $this->expectAuthorizedRequest(
+        return $this->expectAuthorizedRequest(
             $method,
             $url,
             $bearerToken,
@@ -234,10 +242,17 @@ abstract class PseudoIntegrationTestCase extends TestCase
         int $errorCode,
         ?array $responseBody = null,
         array $requestOptions = []
-    ): void {
+    ): Expectation {
         $url = $this->getPlatformApiHostDfo3() . $platformEndpoint;
 
-        $this->expectAuthorizedRequestFail($method, $url, $bearerToken, $errorCode, $responseBody, $requestOptions);
+        return $this->expectAuthorizedRequestFail(
+            $method,
+            $url,
+            $bearerToken,
+            $errorCode,
+            $responseBody,
+            $requestOptions,
+        );
     }
 
 
@@ -251,10 +266,10 @@ abstract class PseudoIntegrationTestCase extends TestCase
         string $goldenKey,
         ?array $responseBody = null,
         array $requestOptions = []
-    ): void {
+    ): Expectation {
         $url = $this->getPlatformApiHost() . $platformEndpoint;
 
-        $this->expectRequest(
+        return $this->expectRequest(
             $method,
             $url,
             $responseBody,
@@ -274,10 +289,10 @@ abstract class PseudoIntegrationTestCase extends TestCase
         int $errorCode = 400,
         ?array $responseBody = null,
         array $requestOptions = []
-    ): void {
+    ): Expectation {
         $url = $this->getPlatformApiHost() . $platformEndpoint;
 
-        $this->expectRequestFail(
+        return $this->expectRequestFail(
             $method,
             $url,
             $errorCode,
@@ -297,8 +312,8 @@ abstract class PseudoIntegrationTestCase extends TestCase
         int $errorCode = 400,
         ?string $responseBody = '',
         array $requestOptions = []
-    ): void {
-        $this->expectRequestWithStringResponseFail(
+    ): Expectation {
+        return $this->expectRequestWithStringResponseFail(
             $method,
             $url,
             $errorCode,
@@ -319,8 +334,8 @@ abstract class PseudoIntegrationTestCase extends TestCase
         int $errorCode = 400,
         ?array $responseBody = null,
         array $requestOptions = []
-    ): void {
-        $this->expectRequestFail(
+    ): Expectation {
+        return $this->expectRequestFail(
             $method,
             $url,
             $errorCode,
@@ -340,10 +355,10 @@ abstract class PseudoIntegrationTestCase extends TestCase
         int $errorCode = 400,
         ?array $responseBody = null,
         ?array $requestOptions = []
-    ): void {
+    ): Expectation {
         $encodedResponseBody = $responseBody === null ? null : Json::encode($responseBody);
 
-        $this->expectRequestWithStringResponseFail(
+        return $this->expectRequestWithStringResponseFail(
             $method,
             $url,
             $errorCode,
@@ -362,12 +377,12 @@ abstract class PseudoIntegrationTestCase extends TestCase
         int $errorCode = 400,
         ?string $responseBody = '',
         ?array $requestOptions = []
-    ): void {
+    ): Expectation {
         $psrResponse = new PsrResponse($errorCode, [], $responseBody);
 
         $guzzleException = RequestException::create(new PsrRequest($method, $url), $psrResponse);
 
-        $this->httpClientMock->shouldReceive('request')
+        return $this->httpClientMock->shouldReceive('request')
             ->with($method, $url, $requestOptions ?? Mockery::any())
             ->once()
             ->andThrow($guzzleException);
