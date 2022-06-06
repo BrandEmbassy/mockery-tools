@@ -10,6 +10,8 @@ use GuzzleHttp\RequestOptions;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Mockery\Expectation;
+use Mockery\ExpectationInterface;
+use Mockery\HigherOrderMessage;
 use Mockery\MockInterface;
 use Nette\DI\Container;
 use Nette\Utils\Json;
@@ -109,13 +111,15 @@ abstract class PseudoIntegrationTestCase extends TestCase
     /**
      * @param mixed[] $responseBody
      * @param mixed[]|null $requestOptions
+     *
+     * @return ExpectationInterface|Expectation|HigherOrderMessage
      */
     protected function expectRequest(
         string $method,
         string $url,
         ?array $responseBody = null,
         ?array $requestOptions = null
-    ): Expectation {
+    ) {
         $encodedResponseBody = $responseBody === null ? null : Json::encode($responseBody);
 
         return $this->expectRequestWithStringResponse($method, $url, $encodedResponseBody, $requestOptions);
@@ -124,13 +128,15 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
     /**
      * @param mixed[]|null $requestOptions
+     *
+     * @return ExpectationInterface|Expectation|HigherOrderMessage
      */
     protected function expectRequestWithStringResponse(
         string $method,
         string $url,
         ?string $responseBody = '',
         ?array $requestOptions = []
-    ): Expectation {
+    ) {
         $psrResponse = new PsrResponse(200, [], $responseBody);
 
         return $this->httpClientMock->shouldReceive('request')
@@ -143,6 +149,8 @@ abstract class PseudoIntegrationTestCase extends TestCase
     /**
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
+     *
+     * @return ExpectationInterface|Expectation|HigherOrderMessage
      */
     protected function expectAuthorizedRequest(
         string $method,
@@ -150,7 +158,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
         string $bearerToken,
         ?array $responseBody = null,
         array $requestOptions = []
-    ): Expectation {
+    ) {
         return $this->expectRequest(
             $method,
             $url,
@@ -163,6 +171,8 @@ abstract class PseudoIntegrationTestCase extends TestCase
     /**
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
+     *
+     * @return ExpectationInterface|Expectation|HigherOrderMessage
      */
     public function expectPlatformAuthorizedRequest(
         string $method,
@@ -170,7 +180,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
         string $bearerToken,
         ?array $responseBody = null,
         array $requestOptions = []
-    ): Expectation {
+    ) {
         $url = $this->getPlatformApiHost() . $platformEndpoint;
 
         return $this->expectAuthorizedRequest(
@@ -186,6 +196,8 @@ abstract class PseudoIntegrationTestCase extends TestCase
     /**
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
+     *
+     * @return ExpectationInterface|Expectation|HigherOrderMessage
      */
     public function expectPlatformAuthorizedRequestFail(
         string $method,
@@ -194,7 +206,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
         int $errorCode,
         ?array $responseBody = null,
         array $requestOptions = []
-    ): Expectation {
+    ) {
         $url = $this->getPlatformApiHost() . $platformEndpoint;
 
         return $this->expectAuthorizedRequestFail(
@@ -211,6 +223,8 @@ abstract class PseudoIntegrationTestCase extends TestCase
     /**
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
+     *
+     * @return ExpectationInterface|Expectation|HigherOrderMessage
      */
     public function expectDfo3PlatformAuthorizedRequest(
         string $method,
@@ -218,7 +232,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
         string $bearerToken,
         ?array $responseBody = null,
         array $requestOptions = []
-    ): Expectation {
+    ) {
         $url = $this->getPlatformApiHostDfo3() . $platformEndpoint;
 
         return $this->expectAuthorizedRequest(
@@ -234,6 +248,8 @@ abstract class PseudoIntegrationTestCase extends TestCase
     /**
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
+     *
+     * @return ExpectationInterface|Expectation|HigherOrderMessage
      */
     public function expectDfo3PlatformAuthorizedRequestFail(
         string $method,
@@ -242,7 +258,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
         int $errorCode,
         ?array $responseBody = null,
         array $requestOptions = []
-    ): Expectation {
+    ) {
         $url = $this->getPlatformApiHostDfo3() . $platformEndpoint;
 
         return $this->expectAuthorizedRequestFail(
@@ -259,6 +275,8 @@ abstract class PseudoIntegrationTestCase extends TestCase
     /**
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
+     *
+     * @return ExpectationInterface|Expectation|HigherOrderMessage
      */
     public function expectGoldenPlatformRequest(
         string $method,
@@ -266,7 +284,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
         string $goldenKey,
         ?array $responseBody = null,
         array $requestOptions = []
-    ): Expectation {
+    ) {
         $url = $this->getPlatformApiHost() . $platformEndpoint;
 
         return $this->expectRequest(
@@ -281,6 +299,8 @@ abstract class PseudoIntegrationTestCase extends TestCase
     /**
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
+     *
+     * @return ExpectationInterface|Expectation|HigherOrderMessage
      */
     public function expectGoldenPlatformRequestFail(
         string $method,
@@ -289,7 +309,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
         int $errorCode = 400,
         ?array $responseBody = null,
         array $requestOptions = []
-    ): Expectation {
+    ) {
         $url = $this->getPlatformApiHost() . $platformEndpoint;
 
         return $this->expectRequestFail(
@@ -304,6 +324,8 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
     /**
      * @param mixed[] $requestOptions
+     *
+     * @return ExpectationInterface|Expectation|HigherOrderMessage
      */
     protected function expectAuthorizedRequestWithStringResponseFail(
         string $method,
@@ -312,7 +334,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
         int $errorCode = 400,
         ?string $responseBody = '',
         array $requestOptions = []
-    ): Expectation {
+    ) {
         return $this->expectRequestWithStringResponseFail(
             $method,
             $url,
@@ -326,6 +348,8 @@ abstract class PseudoIntegrationTestCase extends TestCase
     /**
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
+     *
+     * @return ExpectationInterface|Expectation|HigherOrderMessage
      */
     protected function expectAuthorizedRequestFail(
         string $method,
@@ -334,7 +358,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
         int $errorCode = 400,
         ?array $responseBody = null,
         array $requestOptions = []
-    ): Expectation {
+    ) {
         return $this->expectRequestFail(
             $method,
             $url,
@@ -348,6 +372,8 @@ abstract class PseudoIntegrationTestCase extends TestCase
     /**
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
+     *
+     * @return ExpectationInterface|Expectation|HigherOrderMessage
      */
     protected function expectRequestFail(
         string $method,
@@ -355,7 +381,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
         int $errorCode = 400,
         ?array $responseBody = null,
         ?array $requestOptions = []
-    ): Expectation {
+    ) {
         $encodedResponseBody = $responseBody === null ? null : Json::encode($responseBody);
 
         return $this->expectRequestWithStringResponseFail(
@@ -370,6 +396,8 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
     /**
      * @param mixed[] $requestOptions
+     *
+     * @return ExpectationInterface|Expectation|HigherOrderMessage
      */
     protected function expectRequestWithStringResponseFail(
         string $method,
@@ -377,7 +405,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
         int $errorCode = 400,
         ?string $responseBody = '',
         ?array $requestOptions = []
-    ): Expectation {
+    ) {
         $psrResponse = new PsrResponse($errorCode, [], $responseBody);
 
         $guzzleException = RequestException::create(new PsrRequest($method, $url), $psrResponse);
