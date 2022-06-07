@@ -10,8 +10,6 @@ use GuzzleHttp\RequestOptions;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Mockery\Expectation;
-use Mockery\ExpectationInterface;
-use Mockery\HigherOrderMessage;
 use Mockery\MockInterface;
 use Nette\DI\Container;
 use Nette\Utils\Json;
@@ -109,10 +107,12 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
 
     /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+     *
      * @param mixed[] $responseBody
      * @param mixed[]|null $requestOptions
      *
-     * @return ExpectationInterface|Expectation|HigherOrderMessage
+     * @return Expectation
      */
     protected function expectRequest(
         string $method,
@@ -127,9 +127,11 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
 
     /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+     *
      * @param mixed[]|null $requestOptions
      *
-     * @return ExpectationInterface|Expectation|HigherOrderMessage
+     * @return Expectation
      */
     protected function expectRequestWithStringResponse(
         string $method,
@@ -147,10 +149,12 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
 
     /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+     *
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
      *
-     * @return ExpectationInterface|Expectation|HigherOrderMessage
+     * @return Expectation
      */
     protected function expectAuthorizedRequest(
         string $method,
@@ -169,10 +173,12 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
 
     /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+     *
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
      *
-     * @return ExpectationInterface|Expectation|HigherOrderMessage
+     * @return Expectation
      */
     public function expectPlatformAuthorizedRequest(
         string $method,
@@ -194,10 +200,12 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
 
     /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+     *
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
      *
-     * @return ExpectationInterface|Expectation|HigherOrderMessage
+     * @return Expectation
      */
     public function expectPlatformAuthorizedRequestFail(
         string $method,
@@ -221,10 +229,12 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
 
     /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+     *
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
      *
-     * @return ExpectationInterface|Expectation|HigherOrderMessage
+     * @return Expectation
      */
     public function expectDfo3PlatformAuthorizedRequest(
         string $method,
@@ -246,10 +256,12 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
 
     /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+     *
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
      *
-     * @return ExpectationInterface|Expectation|HigherOrderMessage
+     * @return Expectation
      */
     public function expectDfo3PlatformAuthorizedRequestFail(
         string $method,
@@ -273,10 +285,12 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
 
     /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+     *
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
      *
-     * @return ExpectationInterface|Expectation|HigherOrderMessage
+     * @return Expectation
      */
     public function expectGoldenPlatformRequest(
         string $method,
@@ -297,10 +311,12 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
 
     /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+     *
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
      *
-     * @return ExpectationInterface|Expectation|HigherOrderMessage
+     * @return Expectation
      */
     public function expectGoldenPlatformRequestFail(
         string $method,
@@ -323,9 +339,11 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
 
     /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+     *
      * @param mixed[] $requestOptions
      *
-     * @return ExpectationInterface|Expectation|HigherOrderMessage
+     * @return Expectation
      */
     protected function expectAuthorizedRequestWithStringResponseFail(
         string $method,
@@ -346,10 +364,12 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
 
     /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+     *
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
      *
-     * @return ExpectationInterface|Expectation|HigherOrderMessage
+     * @return Expectation
      */
     protected function expectAuthorizedRequestFail(
         string $method,
@@ -370,10 +390,12 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
 
     /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+     *
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
      *
-     * @return ExpectationInterface|Expectation|HigherOrderMessage
+     * @return Expectation
      */
     protected function expectRequestFail(
         string $method,
@@ -395,9 +417,11 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
 
     /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+     *
      * @param mixed[] $requestOptions
      *
-     * @return ExpectationInterface|Expectation|HigherOrderMessage
+     * @return Expectation
      */
     protected function expectRequestWithStringResponseFail(
         string $method,
