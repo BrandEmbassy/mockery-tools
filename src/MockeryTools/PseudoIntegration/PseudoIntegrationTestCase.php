@@ -441,6 +441,28 @@ abstract class PseudoIntegrationTestCase extends TestCase
     }
 
 
+    protected function expectFileContentRequest(string $fileUrl, string $fileContent, string $contentType): void
+    {
+        $psrResponse = new PsrResponse(200, ['Content-Type' => $contentType], $fileContent);
+
+        $this->httpClientMock->expects('request')
+            ->with('GET', $fileUrl, Mockery::any())
+            ->andReturn($psrResponse);
+    }
+
+
+    protected function expectFileContentRequestFail(string $fileUrl, int $errorCode = 400, ?string $responseBody = ''): void
+    {
+        $psrResponse = new PsrResponse($errorCode, [], $responseBody);
+
+        $guzzleException = RequestException::create(new PsrRequest('GET', $fileUrl), $psrResponse);
+
+        $this->httpClientMock->expects('request')
+            ->with('GET', $fileUrl, Mockery::any())
+            ->andThrow($guzzleException);
+    }
+
+
     /**
      * @return mixed[]
      */
