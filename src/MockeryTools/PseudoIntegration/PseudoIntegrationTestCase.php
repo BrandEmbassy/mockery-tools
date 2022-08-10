@@ -442,6 +442,8 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
 
     /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+     *
      * @param mixed[] $requestOptions
      *
      * @return Expectation
@@ -457,6 +459,8 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
 
     /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+     *
      * @param mixed[] $requestOptions
      *
      * @return Expectation
