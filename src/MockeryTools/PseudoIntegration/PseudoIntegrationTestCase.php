@@ -443,12 +443,14 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
     /**
      * @param mixed[] $requestOptions
+     *
+     * @return Expectation
      */
     protected function expectFileContentRequest(string $fileUrl, string $fileContent, string $contentType = '', ?array $requestOptions = []): void
     {
         $psrResponse = new PsrResponse(200, ['Content-Type' => $contentType], $fileContent);
 
-        $this->httpClientMock->expects('request')
+        return $this->httpClientMock->expects('request')
             ->with('GET', $fileUrl, $requestOptions ?? Mockery::any())
             ->andReturn($psrResponse);
     }
@@ -456,6 +458,8 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
     /**
      * @param mixed[] $requestOptions
+     *
+     * @return Expectation
      */
     protected function expectFileContentRequestFail(string $fileUrl, int $errorCode = 400, ?string $responseBody = '', ?array $requestOptions = []): void
     {
@@ -463,7 +467,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
         $guzzleException = RequestException::create(new PsrRequest('GET', $fileUrl), $psrResponse);
 
-        $this->httpClientMock->expects('request')
+        return $this->httpClientMock->expects('request')
             ->with('GET', $fileUrl, $requestOptions ?? Mockery::any())
             ->andThrow($guzzleException);
     }
