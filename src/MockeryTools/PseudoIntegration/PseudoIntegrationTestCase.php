@@ -442,28 +442,36 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
 
     /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+     *
      * @param mixed[] $requestOptions
+     *
+     * @return Expectation
      */
-    protected function expectFileContentRequest(string $fileUrl, string $fileContent, string $contentType = '', ?array $requestOptions = []): void
+    protected function expectFileContentRequest(string $fileUrl, string $fileContent, string $contentType = '', ?array $requestOptions = [])
     {
         $psrResponse = new PsrResponse(200, ['Content-Type' => $contentType], $fileContent);
 
-        $this->httpClientMock->expects('request')
+        return $this->httpClientMock->expects('request')
             ->with('GET', $fileUrl, $requestOptions ?? Mockery::any())
             ->andReturn($psrResponse);
     }
 
 
     /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+     *
      * @param mixed[] $requestOptions
+     *
+     * @return Expectation
      */
-    protected function expectFileContentRequestFail(string $fileUrl, int $errorCode = 400, ?string $responseBody = '', ?array $requestOptions = []): void
+    protected function expectFileContentRequestFail(string $fileUrl, int $errorCode = 400, ?string $responseBody = '', ?array $requestOptions = [])
     {
         $psrResponse = new PsrResponse($errorCode, [], $responseBody);
 
         $guzzleException = RequestException::create(new PsrRequest('GET', $fileUrl), $psrResponse);
 
-        $this->httpClientMock->expects('request')
+        return $this->httpClientMock->expects('request')
             ->with('GET', $fileUrl, $requestOptions ?? Mockery::any())
             ->andThrow($guzzleException);
     }
