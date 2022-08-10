@@ -446,7 +446,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
      *
      * @return Expectation
      */
-    protected function expectFileContentRequest(string $fileUrl, string $fileContent, string $contentType = '', ?array $requestOptions = []): void
+    protected function expectFileContentRequest(string $fileUrl, string $fileContent, string $contentType = '', ?array $requestOptions = [])
     {
         $psrResponse = new PsrResponse(200, ['Content-Type' => $contentType], $fileContent);
 
@@ -461,7 +461,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
      *
      * @return Expectation
      */
-    protected function expectFileContentRequestFail(string $fileUrl, int $errorCode = 400, ?string $responseBody = '', ?array $requestOptions = []): void
+    protected function expectFileContentRequestFail(string $fileUrl, int $errorCode = 400, ?string $responseBody = '', ?array $requestOptions = [])
     {
         $psrResponse = new PsrResponse($errorCode, [], $responseBody);
 
