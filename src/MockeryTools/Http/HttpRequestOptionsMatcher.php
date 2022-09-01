@@ -15,9 +15,9 @@ use function is_array;
 class HttpRequestOptionsMatcher extends MatcherAbstract
 {
     /**
-     * @var array<string, string>
+     * @var array<string, mixed>
      */
-    private array $expectedHeaders;
+    private array $expectedRequestOptions;
 
     /**
      * @var mixed[]|null
@@ -33,8 +33,21 @@ class HttpRequestOptionsMatcher extends MatcherAbstract
     {
         parent::__construct();
 
-        $this->expectedHeaders = $expectedHeaders;
         $this->expectedRequestData = $expectedRequestData;
+        $this->expectedRequestOptions = [RequestOptions::HEADERS => $expectedHeaders];
+    }
+
+
+    /**
+     * @param mixed[]|null $expectedRequestData
+     * @param array<string, string> $expectedRequestOptions
+     */
+    public static function create(array $expectedRequestOptions, ?array $expectedRequestData = null): self
+    {
+        $that = new self([], $expectedRequestData);
+        $that->expectedRequestOptions = $expectedRequestOptions;
+
+        return $that;
     }
 
 
@@ -48,7 +61,7 @@ class HttpRequestOptionsMatcher extends MatcherAbstract
     {
         assert(is_array($actual));
 
-        foreach ($this->expectedHeaders as $headerName => $headerValue) {
+        foreach ($this->expectedRequestOptions[RequestOptions::HEADERS] as $headerName => $headerValue) {
             if (!isset($actual[RequestOptions::HEADERS][$headerName])
                 || $actual[RequestOptions::HEADERS][$headerName] !== $headerValue
             ) {

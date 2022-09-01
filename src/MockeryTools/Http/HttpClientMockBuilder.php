@@ -6,10 +6,12 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\RequestOptions;
 use Mockery;
 use Mockery\MockInterface;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
+use function array_merge;
 
 /**
  * @final
@@ -59,8 +61,9 @@ class HttpClientMockBuilder
 
 
     /**
-     * @param array<string, mixed> $responseDataToReturn
+     * @param array<string, mixed>      $responseDataToReturn
      * @param array<string, mixed>|null $expectedRequestData
+     * @param array<string, mixed>      $expectedRequestOptions
      *
      * @throws JsonException
      */
@@ -69,15 +72,18 @@ class HttpClientMockBuilder
         string $expectedEndpoint,
         array $responseDataToReturn = [],
         ?array $expectedRequestData = null,
-        int $statusCodeToReturn = 200
+        int $statusCodeToReturn = 200,
+        array $expectedRequestOptions = []
     ): self {
         $responseBody = Json::encode($responseDataToReturn);
-
         $this->httpClientMock->shouldReceive('request')
             ->with(
                 $expectedHttpMethod,
                 $this->createRequestUrl($expectedEndpoint),
-                new HttpRequestOptionsMatcher($this->expectedHeaders, $expectedRequestData),
+                HttpRequestOptionsMatcher::create(
+                    $this->getExpectedRequestOptions($expectedRequestOptions),
+                    $expectedRequestData,
+                ),
             )
             ->once()
             ->andReturn(new Response($statusCodeToReturn, [], $responseBody));
@@ -87,8 +93,9 @@ class HttpClientMockBuilder
 
 
     /**
-     * @param mixed[] $responseDataToReturn
-     * @param mixed[]|null $expectedRequestData
+     * @param mixed[]              $responseDataToReturn
+     * @param mixed[]|null         $expectedRequestData
+     * @param array<string, mixed> $expectedRequestOptions
      *
      * @throws JsonException
      */
@@ -97,7 +104,8 @@ class HttpClientMockBuilder
         string $expectedEndpoint,
         array $responseDataToReturn = [],
         ?array $expectedRequestData = null,
-        int $errorCodeToReturn = 400
+        int $errorCodeToReturn = 400,
+        array $expectedRequestOptions = []
     ): self {
         $request = new Request(
             $expectedHttpMethod,
@@ -112,7 +120,10 @@ class HttpClientMockBuilder
             ->with(
                 $expectedHttpMethod,
                 $this->createRequestUrl($expectedEndpoint),
-                new HttpRequestOptionsMatcher($this->expectedHeaders, $expectedRequestData),
+                HttpRequestOptionsMatcher::create(
+                    $this->getExpectedRequestOptions($expectedRequestOptions),
+                    $expectedRequestData,
+                ),
             )
             ->once()
             ->andThrow($exceptionToThrow);
@@ -196,6 +207,20 @@ class HttpClientMockBuilder
             $this->createRequestUrl($expectedEndpoint),
             $this->expectedHeaders,
             $expectedRequestBody,
+        );
+    }
+
+
+    /**
+     * @param array<string, mixed> $expectedRequestOptions
+     *
+     * @return array<string, mixed>
+     */
+    private function getExpectedRequestOptions(array $expectedRequestOptions): array
+    {
+        return array_merge(
+            [RequestOptions::HEADERS => $this->expectedHeaders],
+            $expectedRequestOptions,
         );
     }
 }
