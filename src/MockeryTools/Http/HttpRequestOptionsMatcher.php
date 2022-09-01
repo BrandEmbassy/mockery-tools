@@ -44,10 +44,10 @@ class HttpRequestOptionsMatcher extends MatcherAbstract
      */
     public static function create(array $expectedRequestOptions, ?array $expectedRequestData = null): self
     {
-        $that = new self([], $expectedRequestData);
-        $that->expectedRequestOptions = $expectedRequestOptions;
+        $self = new self([], $expectedRequestData);
+        $self->expectedRequestOptions = $expectedRequestOptions;
 
-        return $that;
+        return $self;
     }
 
 
@@ -61,7 +61,7 @@ class HttpRequestOptionsMatcher extends MatcherAbstract
     {
         assert(is_array($actual));
 
-        foreach ($this->expectedRequestOptions[RequestOptions::HEADERS] as $headerName => $headerValue) {
+        foreach ($this->expectedRequestOptions[RequestOptions::HEADERS] ?? [] as $headerName => $headerValue) {
             if (!isset($actual[RequestOptions::HEADERS][$headerName])
                 || $actual[RequestOptions::HEADERS][$headerName] !== $headerValue
             ) {

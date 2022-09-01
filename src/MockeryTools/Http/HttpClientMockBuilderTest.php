@@ -56,6 +56,73 @@ class HttpClientMockBuilderTest extends TestCase
     /**
      * @throws Throwable
      */
+    public function testExpectedRequestWithTimeout(): void
+    {
+        $httpClientMock = HttpClientMockBuilder::create(self::BASE_PATH)
+            ->expectRequest(
+                'GET',
+                '/users/25',
+                [
+                    'id' => 25,
+                    'name' => 'Prokop Buben',
+                ],
+                null,
+                200,
+                [
+                    'headers' => self::HEADERS,
+                    'timeout' => 2,
+                ],
+            )
+            ->build();
+
+        $getResponse = $httpClientMock->request(
+            'GET',
+            'https://api.com/v2/users/25',
+            [
+                RequestOptions::HEADERS => self::HEADERS,
+                RequestOptions::TIMEOUT => 2,
+            ],
+        );
+
+        Assert::assertSame('{"id":25,"name":"Prokop Buben"}', (string)$getResponse->getBody());
+    }
+
+
+    /**
+     * @throws Throwable
+     */
+    public function testExpectRequestWithTimeoutAndDefaultHeaders(): void
+    {
+        $httpClientMock = HttpClientMockBuilder::create(
+            self::BASE_PATH,
+            self::HEADERS,
+        )
+            ->expectRequest(
+                'GET',
+                '/users/25',
+                ['id' => 25],
+                null,
+                200,
+                ['timeout' => 2],
+            )
+            ->build();
+
+        $getResponse = $httpClientMock->request(
+            'GET',
+            'https://api.com/v2/users/25',
+            [
+                RequestOptions::HEADERS => self::HEADERS,
+                RequestOptions::TIMEOUT => 2,
+            ],
+        );
+
+        Assert::assertSame('{"id":25}', (string)$getResponse->getBody());
+    }
+
+
+    /**
+     * @throws Throwable
+     */
     public function testClientExceptionIsThrown(): void
     {
         $httpClientMock = HttpClientMockBuilder::create(self::BASE_PATH, self::HEADERS)
