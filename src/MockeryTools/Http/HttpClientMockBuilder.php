@@ -43,15 +43,6 @@ class HttpClientMockBuilder
 
 
     /**
-     * @param array<string, string> $expectedHeaders
-     */
-    public static function create(string $basePath = '', array $expectedHeaders = []): self
-    {
-        return new self($basePath, $expectedHeaders);
-    }
-
-
-    /**
      * @return ClientInterface&MockInterface
      */
     public function build(): ClientInterface
@@ -61,9 +52,9 @@ class HttpClientMockBuilder
 
 
     /**
-     * @param array<string, mixed>      $responseDataToReturn
+     * @param array<string, mixed> $responseDataToReturn
      * @param array<string, mixed>|null $expectedRequestData
-     * @param array<string, mixed>      $expectedRequestOptions
+     * @param array<string, mixed> $expectedRequestOptions
      *
      * @throws JsonException
      */
@@ -92,9 +83,38 @@ class HttpClientMockBuilder
     }
 
 
+    private function createRequestUrl(string $endpoint): string
+    {
+        return $this->basePath . $endpoint;
+    }
+
+
     /**
-     * @param mixed[]              $responseDataToReturn
-     * @param mixed[]|null         $expectedRequestData
+     * @param array<string, string> $expectedHeaders
+     */
+    public static function create(string $basePath = '', array $expectedHeaders = []): self
+    {
+        return new self($basePath, $expectedHeaders);
+    }
+
+
+    /**
+     * @param array<string, mixed> $expectedRequestOptions
+     *
+     * @return array<string, mixed>
+     */
+    private function getExpectedRequestOptions(array $expectedRequestOptions): array
+    {
+        return array_merge(
+            [RequestOptions::HEADERS => $this->expectedHeaders],
+            $expectedRequestOptions,
+        );
+    }
+
+
+    /**
+     * @param mixed[] $responseDataToReturn
+     * @param mixed[]|null $expectedRequestData
      * @param array<string, mixed> $expectedRequestOptions
      *
      * @throws JsonException
@@ -158,6 +178,20 @@ class HttpClientMockBuilder
     }
 
 
+    private function createRequestMatcher(
+        string $expectedHttpMethod,
+        string $expectedEndpoint,
+        string $expectedRequestBody
+    ): HttpRequestMatcher {
+        return new HttpRequestMatcher(
+            $expectedHttpMethod,
+            $this->createRequestUrl($expectedEndpoint),
+            $this->expectedHeaders,
+            $expectedRequestBody,
+        );
+    }
+
+
     /**
      * @param array<string, mixed> $responseDataToReturn
      * @param array<string, mixed> $expectedRequestData
@@ -188,39 +222,5 @@ class HttpClientMockBuilder
             ->andThrows($exceptionToThrow);
 
         return $this;
-    }
-
-
-    private function createRequestUrl(string $endpoint): string
-    {
-        return $this->basePath . $endpoint;
-    }
-
-
-    private function createRequestMatcher(
-        string $expectedHttpMethod,
-        string $expectedEndpoint,
-        string $expectedRequestBody
-    ): HttpRequestMatcher {
-        return new HttpRequestMatcher(
-            $expectedHttpMethod,
-            $this->createRequestUrl($expectedEndpoint),
-            $this->expectedHeaders,
-            $expectedRequestBody,
-        );
-    }
-
-
-    /**
-     * @param array<string, mixed> $expectedRequestOptions
-     *
-     * @return array<string, mixed>
-     */
-    private function getExpectedRequestOptions(array $expectedRequestOptions): array
-    {
-        return array_merge(
-            [RequestOptions::HEADERS => $this->expectedHeaders],
-            $expectedRequestOptions,
-        );
     }
 }

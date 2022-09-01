@@ -7,6 +7,8 @@ insert_final_newline = true
 trim_trailing_whitespace = true
 indent_style = space
 indent_size = 4
+ij_php_align_key_value_pairs = false
+ij_php_align_phpdoc_param_names = false
 
 [*.json]
 indent_size = 2
