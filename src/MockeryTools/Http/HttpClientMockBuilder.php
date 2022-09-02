@@ -26,9 +26,9 @@ class HttpClientMockBuilder
     private string $basePath;
 
     /**
-     * @var array<string, mixed>
+     * @var array<string, string>
      */
-    private array $expectedRequestOptions;
+    private array $expectedHeaders;
 
 
     /**
@@ -38,7 +38,16 @@ class HttpClientMockBuilder
     {
         $this->httpClientMock = Mockery::mock(ClientInterface::class);
         $this->basePath = $basePath;
-        $this->expectedRequestOptions[RequestOptions::HEADERS] = $expectedHeaders;
+        $this->expectedHeaders = $expectedHeaders;
+    }
+
+
+    /**
+     * @param array<string, string> $expectedHeaders
+     */
+    public static function create(string $basePath = '', array $expectedHeaders = []): self
+    {
+        return new self($basePath, $expectedHeaders);
     }
 
 
@@ -82,21 +91,6 @@ class HttpClientMockBuilder
     }
 
 
-    private function createRequestUrl(string $endpoint): string
-    {
-        return $this->basePath . $endpoint;
-    }
-
-
-    /**
-     * @param array<string, string> $expectedHeaders
-     */
-    public static function create(string $basePath = '', array $expectedHeaders = []): self
-    {
-        return new self($basePath, $expectedHeaders);
-    }
-
-
     /**
      * @param mixed[] $responseDataToReturn
      * @param mixed[]|null $expectedRequestData
@@ -115,7 +109,7 @@ class HttpClientMockBuilder
         $request = new Request(
             $expectedHttpMethod,
             $this->createRequestUrl($expectedEndpoint),
-            $this->expectedRequestOptions[RequestOptions::HEADERS],
+            $this->expectedHeaders,
             Json::encode($expectedRequestData),
         );
         $response = new Response($errorCodeToReturn, [], Json::encode($responseDataToReturn));
@@ -178,7 +172,7 @@ class HttpClientMockBuilder
         $request = new Request(
             $expectedHttpMethod,
             $this->createRequestUrl($expectedEndpoint),
-            $this->expectedRequestOptions[RequestOptions::HEADERS],
+            $this->expectedHeaders,
             $expectedRequestBody,
         );
         $response = new Response($errorCodeToReturn, [], Json::encode($responseDataToReturn));
@@ -193,6 +187,12 @@ class HttpClientMockBuilder
     }
 
 
+    private function createRequestUrl(string $endpoint): string
+    {
+        return $this->basePath . $endpoint;
+    }
+
+
     private function createRequestMatcher(
         string $expectedHttpMethod,
         string $expectedEndpoint,
@@ -201,7 +201,7 @@ class HttpClientMockBuilder
         return new HttpRequestMatcher(
             $expectedHttpMethod,
             $this->createRequestUrl($expectedEndpoint),
-            $this->expectedRequestOptions[RequestOptions::HEADERS],
+            $this->expectedHeaders,
             $expectedRequestBody,
         );
     }
@@ -215,7 +215,7 @@ class HttpClientMockBuilder
     private function mergeExpectedHeadersWithRequestOptions(array $expectedRequestOptions): array
     {
         return array_merge_recursive(
-            $this->expectedRequestOptions,
+            [RequestOptions::HEADERS => $this->expectedHeaders],
             $expectedRequestOptions,
         );
     }
