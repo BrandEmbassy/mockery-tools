@@ -96,6 +96,10 @@ class HttpRequestOptionsMatcher extends MatcherAbstract
                 return false;
             }
 
+            if (is_array($optionValue) && !is_array($actual[$optionName])) {
+                return false;
+            }
+
             if (is_array($optionValue) && !$this->containsAllExpectedOptions($actual[$optionName], $optionValue)) {
                 return false;
             }
