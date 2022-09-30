@@ -22,4 +22,4 @@ After:
 
 Now just run the test and check the console output. 
 
-**Note:** It is a good idea not to push the MockeryVerbose to production. Instead, it should be used only during local development. Otherwise, it just adds overhead and doesn't really bring anything to the table once on the production.
+**Note:** It is recommended to use MockeryVerbose for the local development only, as it brings another unnecessary overhead, useless for Jenkins runs. So, do not push it to remote branches.
