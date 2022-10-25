@@ -34,7 +34,7 @@ class SnapshotAssertions
     ): void {
         $snapshot = FileLoader::loadAsString($snapshotFile);
         $keys = array_map(
-            static fn (string $key): string => sprintf('{{%s}}', $key),
+            static fn(string $key): string => sprintf('{{%s}}', $key),
             array_keys($valuesToReplace),
         );
         $snapshotWithReplacedValues = str_replace(
