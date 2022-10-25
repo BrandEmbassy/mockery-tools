@@ -10,6 +10,7 @@ use GuzzleHttp\Psr7\Response as PsrResponse;
 use GuzzleHttp\RequestOptions;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+use Mockery\Expectation;
 use Mockery\MockInterface;
 use Nette\DI\Container;
 use Nette\Utils\Json;
@@ -107,33 +108,41 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
 
     /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+     *
      * @param mixed[] $responseBody
      * @param mixed[]|null $requestOptions
+     *
+     * @return Expectation
      */
     protected function expectRequest(
         string $method,
         string $url,
         ?array $responseBody = null,
         ?array $requestOptions = null
-    ): void {
+    ) {
         $encodedResponseBody = $responseBody === null ? null : Json::encode($responseBody);
 
-        $this->expectRequestWithStringResponse($method, $url, $encodedResponseBody, $requestOptions);
+        return $this->expectRequestWithStringResponse($method, $url, $encodedResponseBody, $requestOptions);
     }
 
 
     /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+     *
      * @param mixed[]|null $requestOptions
+     *
+     * @return Expectation
      */
     protected function expectRequestWithStringResponse(
         string $method,
         string $url,
         ?string $responseBody = '',
         ?array $requestOptions = []
-    ): void {
+    ) {
         $psrResponse = new PsrResponse(200, [], $responseBody);
 
-        $this->httpClientMock->shouldReceive('request')
+        return $this->httpClientMock->shouldReceive('request')
             ->with($method, $url, $this->convertRequestOptionsToArgumentMatcher($requestOptions))
             ->once()
             ->andReturn($psrResponse);
@@ -141,8 +150,12 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
 
     /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+     *
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
+     *
+     * @return Expectation
      */
     protected function expectAuthorizedRequest(
         string $method,
@@ -150,8 +163,8 @@ abstract class PseudoIntegrationTestCase extends TestCase
         string $bearerToken,
         ?array $responseBody = null,
         array $requestOptions = []
-    ): void {
-        $this->expectRequest(
+    ) {
+        return $this->expectRequest(
             $method,
             $url,
             $responseBody,
@@ -161,8 +174,12 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
 
     /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+     *
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
+     *
+     * @return Expectation
      */
     public function expectPlatformAuthorizedRequest(
         string $method,
@@ -170,10 +187,10 @@ abstract class PseudoIntegrationTestCase extends TestCase
         string $bearerToken,
         ?array $responseBody = null,
         array $requestOptions = []
-    ): void {
+    ) {
         $url = $this->getPlatformApiHost() . $platformEndpoint;
 
-        $this->expectAuthorizedRequest(
+        return $this->expectAuthorizedRequest(
             $method,
             $url,
             $bearerToken,
@@ -184,8 +201,12 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
 
     /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+     *
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
+     *
+     * @return Expectation
      */
     public function expectPlatformAuthorizedRequestFail(
         string $method,
@@ -194,16 +215,27 @@ abstract class PseudoIntegrationTestCase extends TestCase
         int $errorCode,
         ?array $responseBody = null,
         array $requestOptions = []
-    ): void {
+    ) {
         $url = $this->getPlatformApiHost() . $platformEndpoint;
 
-        $this->expectAuthorizedRequestFail($method, $url, $bearerToken, $errorCode, $responseBody, $requestOptions);
+        return $this->expectAuthorizedRequestFail(
+            $method,
+            $url,
+            $bearerToken,
+            $errorCode,
+            $responseBody,
+            $requestOptions,
+        );
     }
 
 
     /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+     *
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
+     *
+     * @return Expectation
      */
     public function expectDfo3PlatformAuthorizedRequest(
         string $method,
@@ -211,10 +243,10 @@ abstract class PseudoIntegrationTestCase extends TestCase
         string $bearerToken,
         ?array $responseBody = null,
         array $requestOptions = []
-    ): void {
+    ) {
         $url = $this->getPlatformApiHostDfo3() . $platformEndpoint;
 
-        $this->expectAuthorizedRequest(
+        return $this->expectAuthorizedRequest(
             $method,
             $url,
             $bearerToken,
@@ -225,8 +257,12 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
 
     /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+     *
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
+     *
+     * @return Expectation
      */
     public function expectDfo3PlatformAuthorizedRequestFail(
         string $method,
@@ -235,16 +271,27 @@ abstract class PseudoIntegrationTestCase extends TestCase
         int $errorCode,
         ?array $responseBody = null,
         array $requestOptions = []
-    ): void {
+    ) {
         $url = $this->getPlatformApiHostDfo3() . $platformEndpoint;
 
-        $this->expectAuthorizedRequestFail($method, $url, $bearerToken, $errorCode, $responseBody, $requestOptions);
+        return $this->expectAuthorizedRequestFail(
+            $method,
+            $url,
+            $bearerToken,
+            $errorCode,
+            $responseBody,
+            $requestOptions,
+        );
     }
 
 
     /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+     *
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
+     *
+     * @return Expectation
      */
     public function expectGoldenPlatformRequest(
         string $method,
@@ -252,10 +299,10 @@ abstract class PseudoIntegrationTestCase extends TestCase
         string $goldenKey,
         ?array $responseBody = null,
         array $requestOptions = []
-    ): void {
+    ) {
         $url = $this->getPlatformApiHost() . $platformEndpoint;
 
-        $this->expectRequest(
+        return $this->expectRequest(
             $method,
             $url,
             $responseBody,
@@ -265,8 +312,12 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
 
     /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+     *
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
+     *
+     * @return Expectation
      */
     public function expectGoldenPlatformRequestFail(
         string $method,
@@ -275,10 +326,10 @@ abstract class PseudoIntegrationTestCase extends TestCase
         int $errorCode = 400,
         ?array $responseBody = null,
         array $requestOptions = []
-    ): void {
+    ) {
         $url = $this->getPlatformApiHost() . $platformEndpoint;
 
-        $this->expectRequestFail(
+        return $this->expectRequestFail(
             $method,
             $url,
             $errorCode,
@@ -289,7 +340,11 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
 
     /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+     *
      * @param mixed[] $requestOptions
+     *
+     * @return Expectation
      */
     protected function expectAuthorizedRequestWithStringResponseFail(
         string $method,
@@ -298,8 +353,8 @@ abstract class PseudoIntegrationTestCase extends TestCase
         int $errorCode = 400,
         ?string $responseBody = '',
         array $requestOptions = []
-    ): void {
-        $this->expectRequestWithStringResponseFail(
+    ) {
+        return $this->expectRequestWithStringResponseFail(
             $method,
             $url,
             $errorCode,
@@ -310,8 +365,12 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
 
     /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+     *
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
+     *
+     * @return Expectation
      */
     protected function expectAuthorizedRequestFail(
         string $method,
@@ -320,8 +379,8 @@ abstract class PseudoIntegrationTestCase extends TestCase
         int $errorCode = 400,
         ?array $responseBody = null,
         array $requestOptions = []
-    ): void {
-        $this->expectRequestFail(
+    ) {
+        return $this->expectRequestFail(
             $method,
             $url,
             $errorCode,
@@ -332,8 +391,12 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
 
     /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+     *
      * @param mixed[] $responseBody
      * @param mixed[] $requestOptions
+     *
+     * @return Expectation
      */
     protected function expectRequestFail(
         string $method,
@@ -341,10 +404,10 @@ abstract class PseudoIntegrationTestCase extends TestCase
         int $errorCode = 400,
         ?array $responseBody = null,
         ?array $requestOptions = []
-    ): void {
+    ) {
         $encodedResponseBody = $responseBody === null ? null : Json::encode($responseBody);
 
-        $this->expectRequestWithStringResponseFail(
+        return $this->expectRequestWithStringResponseFail(
             $method,
             $url,
             $errorCode,
@@ -355,7 +418,11 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
 
     /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+     *
      * @param mixed[] $requestOptions
+     *
+     * @return Expectation
      */
     protected function expectRequestWithStringResponseFail(
         string $method,
@@ -363,14 +430,50 @@ abstract class PseudoIntegrationTestCase extends TestCase
         int $errorCode = 400,
         ?string $responseBody = '',
         ?array $requestOptions = []
-    ): void {
+    ) {
         $psrResponse = new PsrResponse($errorCode, [], $responseBody);
 
         $guzzleException = RequestException::create(new PsrRequest($method, $url), $psrResponse);
 
-        $this->httpClientMock->shouldReceive('request')
+        return $this->httpClientMock->shouldReceive('request')
             ->with($method, $url, $this->convertRequestOptionsToArgumentMatcher($requestOptions))
             ->once()
+            ->andThrow($guzzleException);
+    }
+
+
+    /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+     *
+     * @param mixed[] $requestOptions
+     *
+     * @return Expectation
+     */
+    protected function expectFileContentRequest(string $fileUrl, string $fileContent, string $contentType = '', ?array $requestOptions = null)
+    {
+        $psrResponse = new PsrResponse(200, ['Content-Type' => $contentType], $fileContent);
+
+        return $this->httpClientMock->expects('request')
+            ->with('GET', $fileUrl, $requestOptions ?? Mockery::any())
+            ->andReturn($psrResponse);
+    }
+
+
+    /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+     *
+     * @param mixed[] $requestOptions
+     *
+     * @return Expectation
+     */
+    protected function expectFileContentRequestFail(string $fileUrl, int $errorCode = 400, ?string $responseBody = '', ?array $requestOptions = null)
+    {
+        $psrResponse = new PsrResponse($errorCode, [], $responseBody);
+
+        $guzzleException = RequestException::create(new PsrRequest('GET', $fileUrl), $psrResponse);
+
+        return $this->httpClientMock->expects('request')
+            ->with('GET', $fileUrl, $requestOptions ?? Mockery::any())
             ->andThrow($guzzleException);
     }
 

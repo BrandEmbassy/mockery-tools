@@ -6,7 +6,6 @@ use GuzzleHttp\RequestOptions;
 use Mockery\Matcher\MatcherAbstract;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
-use function assert;
 use function is_array;
 
 /**
@@ -15,9 +14,9 @@ use function is_array;
 class HttpRequestOptionsMatcher extends MatcherAbstract
 {
     /**
-     * @var array<string, string>
+     * @var array<string, mixed>
      */
-    private array $expectedHeaders;
+    private array $expectedRequestOptions;
 
     /**
      * @var mixed[]|null
@@ -33,8 +32,21 @@ class HttpRequestOptionsMatcher extends MatcherAbstract
     {
         parent::__construct();
 
-        $this->expectedHeaders = $expectedHeaders;
         $this->expectedRequestData = $expectedRequestData;
+        $this->expectedRequestOptions = [RequestOptions::HEADERS => $expectedHeaders];
+    }
+
+
+    /**
+     * @param mixed[]|null $expectedRequestData
+     * @param array<string, string> $expectedRequestOptions
+     */
+    public static function create(array $expectedRequestOptions, ?array $expectedRequestData = null): self
+    {
+        $self = new self([], $expectedRequestData);
+        $self->expectedRequestOptions = $expectedRequestOptions;
+
+        return $self;
     }
 
 
@@ -46,14 +58,12 @@ class HttpRequestOptionsMatcher extends MatcherAbstract
      */
     public function match(&$actual): bool
     {
-        assert(is_array($actual));
+        if (!is_array($actual)) {
+            return false;
+        }
 
-        foreach ($this->expectedHeaders as $headerName => $headerValue) {
-            if (!isset($actual[RequestOptions::HEADERS][$headerName])
-                || $actual[RequestOptions::HEADERS][$headerName] !== $headerValue
-            ) {
-                return false;
-            }
+        if (!$this->containsAllExpectedOptions($actual, $this->expectedRequestOptions)) {
+            return false;
         }
 
         if ($this->expectedRequestData === null) {
@@ -68,6 +78,34 @@ class HttpRequestOptionsMatcher extends MatcherAbstract
         }
 
         return $expectedRequestDataAsJson === $givenRequestDataAsJson;
+    }
+
+
+    /**
+     * @param mixed[] $actual
+     * @param mixed[] $expectedOptions
+     */
+    private function containsAllExpectedOptions(array $actual, array $expectedOptions): bool
+    {
+        foreach ($expectedOptions as $optionName => $optionValue) {
+            if (!isset($actual[$optionName])) {
+                return false;
+            }
+
+            if (!is_array($optionValue) && $actual[$optionName] !== $optionValue) {
+                return false;
+            }
+
+            if (is_array($optionValue) && !is_array($actual[$optionName])) {
+                return false;
+            }
+
+            if (is_array($optionValue) && !$this->containsAllExpectedOptions($actual[$optionName], $optionValue)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 
