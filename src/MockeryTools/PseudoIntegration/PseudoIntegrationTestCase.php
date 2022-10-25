@@ -488,6 +488,8 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
 
     /**
+     * @param mixed[]|null $requestOptions
+     *
      * @return mixed
      */
     protected function convertRequestOptionsToArgumentMatcher(?array $requestOptions)
