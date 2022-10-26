@@ -38,7 +38,9 @@ class StrictArrayMatcher extends MatcherAbstract
             return false;
         }
 
-        return $this->sortArray($actual) === $this->sortedArray;
+        $actualSortedArray = $this->sortArray($actual);
+
+        return $actualSortedArray === $this->sortedArray;
     }
 
 
