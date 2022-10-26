@@ -2,6 +2,7 @@
 
 namespace BrandEmbassy\MockeryTools\PseudoIntegration;
 
+use BrandEmbassy\MockeryTools\Arrays\StrictArrayMatcher;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request as PsrRequest;
@@ -142,7 +143,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
         $psrResponse = new PsrResponse(200, [], $responseBody);
 
         return $this->httpClientMock->shouldReceive('request')
-            ->with($method, $url, $requestOptions ?? Mockery::any())
+            ->with($method, $url, $this->convertRequestOptionsToArgumentMatcher($requestOptions))
             ->once()
             ->andReturn($psrResponse);
     }
@@ -435,7 +436,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
         $guzzleException = RequestException::create(new PsrRequest($method, $url), $psrResponse);
 
         return $this->httpClientMock->shouldReceive('request')
-            ->with($method, $url, $requestOptions ?? Mockery::any())
+            ->with($method, $url, $this->convertRequestOptionsToArgumentMatcher($requestOptions))
             ->once()
             ->andThrow($guzzleException);
     }
@@ -483,6 +484,21 @@ abstract class PseudoIntegrationTestCase extends TestCase
     protected function getServiceMocks(): array
     {
         return [];
+    }
+
+
+    /**
+     * @param mixed[]|null $requestOptions
+     *
+     * @return mixed
+     */
+    protected function convertRequestOptionsToArgumentMatcher(?array $requestOptions)
+    {
+        if ($requestOptions === null) {
+            return Mockery::any();
+        }
+
+        return new StrictArrayMatcher($requestOptions);
     }
 
 
