@@ -34,7 +34,7 @@ class FileLoader
 
 
     /**
-     * @param array<string, int|float|bool|string> $valuesToReplace
+     * @param array<string, int|float|bool|string|null> $valuesToReplace
      *
      * @return mixed[]
      */
@@ -58,7 +58,7 @@ class FileLoader
 
 
     /**
-     * @param array<string, int|float|bool|string> $valuesToReplace
+     * @param array<string, int|float|bool|string|null> $valuesToReplace
      */
     public static function loadJsonStringFromJsonFileAndReplace(string $jsonFilePath, array $valuesToReplace): string
     {
