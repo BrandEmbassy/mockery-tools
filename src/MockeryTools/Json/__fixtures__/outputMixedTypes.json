@@ -10,5 +10,14 @@
   "null_as_null": null,
   "null_as_string": null,
   "null_as_int": null,
-  "null_as_float": null
+  "null_as_float": null,
+  "array_as_array": {
+    "field1": "Lipsum",
+    "field2": {
+      "subField1": 5,
+      "subField2": "",
+      "subField3": null,
+      "subField4": false
+    }
+  }
 }

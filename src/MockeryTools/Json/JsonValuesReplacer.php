@@ -3,6 +3,8 @@
 namespace BrandEmbassy\MockeryTools\Json;
 
 use Nette\StaticClass;
+use Nette\Utils\Json;
+use function is_array;
 use function is_bool;
 use function is_float;
 use function is_int;
@@ -25,6 +27,13 @@ class JsonValuesReplacer
         $keys = [];
         $values = [];
         foreach ($valuesToReplace as $key => $value) {
+            if (is_array($value)) {
+                $keys[] = sprintf('"%s"', self::decorateReplacementKey($key));
+                $values[] = Json::encode($value);
+
+                continue;
+            }
+
             if (is_int($value) || is_float($value)) {
                 $keys[] = self::decorateReplacementKey($key, 'string');
                 $values[] = (string)$value;

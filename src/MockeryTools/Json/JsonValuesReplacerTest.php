@@ -21,6 +21,15 @@ class JsonValuesReplacerTest extends TestCase
                 'stringId' => '8.1',
                 'boolVal' => false,
                 'nullValue' => null,
+                'arrayField' => [
+                    'field1' => 'Lipsum',
+                    'field2' => [
+                        'subField1' => 5,
+                        'subField2' => '',
+                        'subField3' => null,
+                        'subField4' => false,
+                    ],
+                ],
             ],
             $inputJson,
         );
