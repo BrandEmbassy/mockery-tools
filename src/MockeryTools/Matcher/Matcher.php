@@ -4,6 +4,7 @@ namespace BrandEmbassy\MockeryTools\Matcher;
 
 use BrandEmbassy\MockeryTools\DateTime\DateTimeAsAtomMatcher;
 use BrandEmbassy\MockeryTools\DateTime\DateTimeAsTimestampMatcher;
+use BrandEmbassy\MockeryTools\DateTime\DateTimeZoneNameMatcher;
 use BrandEmbassy\MockeryTools\Enum\EnumValueMatcher;
 use BrandEmbassy\MockeryTools\Http\HttpRequestMatcher;
 use BrandEmbassy\MockeryTools\String\StringStartsWithMatcher;
@@ -36,6 +37,12 @@ class Matcher
     public static function dateTimeAsTimestamp(int $expectedDateTimeTimestamp): DateTimeAsTimestampMatcher
     {
         return new DateTimeAsTimestampMatcher($expectedDateTimeTimestamp);
+    }
+
+
+    public static function dateTimeZoneName(string $expectedDateTimeZoneName): DateTimeZoneNameMatcher
+    {
+        return new DateTimeZoneNameMatcher($expectedDateTimeZoneName);
     }
 
 
