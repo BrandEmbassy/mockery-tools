@@ -35,7 +35,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
     protected $httpClientMock;
 
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->container = $this->createContainer();
         $this->replacedServices = $this->loadMockServices();
