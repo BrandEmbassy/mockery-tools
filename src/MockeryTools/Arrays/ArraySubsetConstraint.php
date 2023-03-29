@@ -4,6 +4,7 @@ namespace BrandEmbassy\MockeryTools\Arrays;
 
 use ArrayObject;
 use PHPUnit\Framework\Constraint\Constraint;
+use PHPUnit\Framework\ExpectationFailedException;
 use SebastianBergmann\Comparator\ComparisonFailure;
 use function array_replace_recursive;
 use function is_array;
@@ -34,9 +35,9 @@ class ArraySubsetConstraint extends Constraint
      *
      * @param mixed $other
      *
-     * @return boolean|void
+     * @throws ExpectationFailedException
      */
-    public function evaluate($other, string $description = '', bool $returnResult = false)
+    public function evaluate($other, string $description = '', bool $returnResult = false): ?bool
     {
         $other = $this->toArray($other);
         $this->subset = $this->toArray($this->subset);
@@ -44,10 +45,6 @@ class ArraySubsetConstraint extends Constraint
         $patched = array_replace_recursive($other, $this->subset);
 
         $result = $other === $patched;
-
-        if ($returnResult) {
-            return $result;
-        }
 
         if (!$result) {
             $f = new ComparisonFailure(
@@ -59,6 +56,8 @@ class ArraySubsetConstraint extends Constraint
 
             $this->fail($other, $description, $f);
         }
+
+        return $result;
     }
 
 
