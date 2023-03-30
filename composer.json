@@ -3,6 +3,7 @@
   "license": "proprietary",
   "prefer-stable": true,
   "config": {
+    "lock": false,
     "sort-packages": true,
     "allow-plugins": {
       "dealerdirect/phpcodesniffer-composer-installer": true
