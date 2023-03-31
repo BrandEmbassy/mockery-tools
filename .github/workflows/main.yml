@@ -6,10 +6,11 @@ jobs:
   phpstan:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         php-version:
           - 7.4
-          - 8.0
+          - 8.1
 
     steps:
       - name: Checkout
@@ -39,12 +40,14 @@ jobs:
         run: composer phpstan
 
 
-  phpcs:
+  ecs:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         php-version:
           - 7.4
+          - 8.1
 
     steps:
       - name: Checkout
@@ -54,7 +57,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          extensions: mbstring
+          extensions: mbstring, sockets
 
       - name: Get composer cache directory
         id: composercache
@@ -71,19 +74,20 @@ jobs:
         run: composer install --prefer-dist
 
       - name: Run code-sniffer
-        run: composer phpcs
+        run: composer check-cs
 
 
   phpunit:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         composer-arg:
           - "install"
           - "update --prefer-lowest"
         php-version:
           - 7.4
-          - 8.0
+          - 8.1
 
     steps:
       - name: Checkout
@@ -110,4 +114,4 @@ jobs:
         run: composer ${{ matrix.composer-arg }} --prefer-dist
 
       - name: Run tests
-        run: composer phpunit
+        run: composer test

@@ -109,6 +109,7 @@ class ConsoleOutputWriter
         }
 
         try {
+            /** @throws Throwable */
             $valueAsString = (string)$value;
         } catch (Throwable $exception) {
             $valueAsString = sprintf('%s (#%s)', get_class($value), self::getHashFromObject($value));
