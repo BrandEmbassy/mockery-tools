@@ -11,5 +11,6 @@
   "null_as_string": "%nullValue|string%",
   "null_as_int": "%nullValue|int%",
   "null_as_float": "%nullValue|float%",
-  "array_as_array": "%arrayField%"
+  "array_as_array": "%arrayField%",
+  "part_of_string": "start_%%stringId%%_end"
 }

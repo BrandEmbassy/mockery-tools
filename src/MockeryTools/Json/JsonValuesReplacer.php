@@ -34,6 +34,9 @@ class JsonValuesReplacer
                 continue;
             }
 
+            $keys[] = '%%' . $key . '%%';
+            $values[] = (string)$value;
+
             if (is_int($value) || is_float($value)) {
                 $keys[] = self::decorateReplacementKey($key, 'string');
                 $values[] = (string)$value;
