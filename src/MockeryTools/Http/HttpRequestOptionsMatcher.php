@@ -7,6 +7,7 @@ use Mockery\Matcher\MatcherAbstract;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 use function is_array;
+use function ksort;
 
 /**
  * @final
@@ -70,9 +71,10 @@ class HttpRequestOptionsMatcher extends MatcherAbstract
             return true;
         }
 
+        $givenDataUsed = $actual[RequestOptions::JSON] ?? Json::decode($actual[RequestOptions::BODY] ?? '{}', Json::FORCE_ARRAY);
         try {
-            $expectedRequestDataAsJson = Json::encode($this->expectedRequestData);
-            $givenRequestDataAsJson = Json::encode($actual[RequestOptions::JSON] ?? '{}');
+            $expectedRequestDataAsJson = Json::encode($this->recursiveKsort($this->expectedRequestData));
+            $givenRequestDataAsJson = Json::encode($this->recursiveKsort($givenDataUsed));
         } catch (JsonException $exception) {
             return false;
         }
@@ -82,25 +84,27 @@ class HttpRequestOptionsMatcher extends MatcherAbstract
 
 
     /**
-     * @param mixed[] $actual
+     * @param mixed[] $actualOptions
      * @param mixed[] $expectedOptions
      */
-    private function containsAllExpectedOptions(array $actual, array $expectedOptions): bool
+    private function containsAllExpectedOptions(array $actualOptions, array $expectedOptions): bool
     {
-        foreach ($expectedOptions as $optionName => $optionValue) {
-            if (!isset($actual[$optionName])) {
+        foreach ($expectedOptions as $expectedOptionName => $expectedOptionValue) {
+            $actualOptionValue = $actualOptions[$expectedOptionName];
+
+            if (!isset($actualOptionValue)) {
                 return false;
             }
 
-            if (!is_array($optionValue) && $actual[$optionName] !== $optionValue) {
+            if (!is_array($expectedOptionValue) && $actualOptionValue !== $expectedOptionValue) {
                 return false;
             }
 
-            if (is_array($optionValue) && !is_array($actual[$optionName])) {
+            if (is_array($expectedOptionValue) && !is_array($actualOptionValue)) {
                 return false;
             }
 
-            if (is_array($optionValue) && !$this->containsAllExpectedOptions($actual[$optionName], $optionValue)) {
+            if (is_array($expectedOptionValue) && !$this->containsAllExpectedOptions($actualOptionValue, $expectedOptionValue)) {
                 return false;
             }
         }
@@ -112,5 +116,23 @@ class HttpRequestOptionsMatcher extends MatcherAbstract
     public function __toString(): string
     {
         return '<HttpRequestOptions>';
+    }
+
+
+    /**
+     * @param mixed[] $array
+     *
+     * @return mixed[]
+     */
+    private function recursiveKsort(array $array): array
+    {
+        foreach ($array as &$value) {
+            if (is_array($value)) {
+                $this->recursiveKsort($value);
+            }
+        }
+        ksort($array);
+
+        return $array;
     }
 }
