@@ -31,6 +31,9 @@ class RequestOptionsMatcher implements MatcherInterface
 
 
     /**
+     * Provided $body will be JSON encoded and added as RequestOption::BODY.
+     * Content-Type: application/json header is added
+     *
      * @param mixed[] $body
      */
     public static function createWithBody(array $body): self
@@ -47,6 +50,9 @@ class RequestOptionsMatcher implements MatcherInterface
 
 
     /**
+     * Provided $body will be JSON encoded and added as RequestOption::BODY.
+     * Content-Type: application/json header is added besided headers provided
+     *
      * @param mixed[] $body
      * @param array<string, string> $headers
      */
@@ -61,25 +67,32 @@ class RequestOptionsMatcher implements MatcherInterface
     }
 
 
-    public static function createWithStringBody(string $body): self
+    /**
+     * Provided $stringBody will be set as RequestOption::BODY.
+     */
+    public static function createWithStringBody(string $stringBody): self
     {
-        return new self([RequestOptions::BODY => $body]);
+        return new self([RequestOptions::BODY => $stringBody]);
     }
 
 
     /**
+     * Provided $stringBody will be set as RequestOption::BODY.
+     *
      * @param array<string, string> $headers
      */
-    public static function createWithStringBodyAndHeaders(string $body, array $headers): self
+    public static function createWithStringBodyAndHeaders(string $stringBody, array $headers): self
     {
         return new self([
-            RequestOptions::BODY => $body,
+            RequestOptions::BODY => $stringBody,
             RequestOptions::HEADERS => $headers,
         ]);
     }
 
 
     /**
+     * Provided $jsonBody will be set as RequestOption::JSON.
+     *
      * @param mixed[] $jsonBody
      */
     public static function createWithJsonBody(array $jsonBody): self
@@ -89,6 +102,8 @@ class RequestOptionsMatcher implements MatcherInterface
 
 
     /**
+     * Provided $jsonBody will be set as RequestOption::JSON.
+     *
      * @param mixed[] $jsonBody
      * @param array<string, string> $headers
      */
