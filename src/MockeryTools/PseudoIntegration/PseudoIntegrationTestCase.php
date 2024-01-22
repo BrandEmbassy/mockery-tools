@@ -485,7 +485,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
      */
     protected function expectFileContentRequestFail(
         string $fileUrl,
-        int $errorCode = 400,
+        int $errorCode,
         ?string $responseBody = '',
         ?array $requestOptions = null
     ) {
