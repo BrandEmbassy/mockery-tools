@@ -2,21 +2,24 @@
 
 namespace BrandEmbassy\MockeryTools\PseudoIntegration;
 
-use BrandEmbassy\MockeryTools\Arrays\StrictArrayMatcher;
+use BrandEmbassy\MockeryTools\RequestOptionsMatcher\RequestOptionsMatcher;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request as PsrRequest;
 use GuzzleHttp\Psr7\Response as PsrResponse;
-use GuzzleHttp\RequestOptions;
+use LogicException;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Mockery\Expectation;
+use Mockery\Matcher\MatcherInterface;
 use Mockery\MockInterface;
 use Nette\DI\Container;
 use Nette\Utils\Json;
 use PHPUnit\Framework\TestCase;
+use function get_class;
 use function implode;
 use function md5;
+use function sprintf;
 
 abstract class PseudoIntegrationTestCase extends TestCase
 {
@@ -108,42 +111,63 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
 
     /**
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
-     *
-     * @param mixed[] $responseBody
-     * @param mixed[]|null $requestOptions
-     *
-     * @return Expectation
+     * @param array<string, string> $headersToAdd
      */
-    protected function expectRequest(
-        string $method,
-        string $url,
-        ?array $responseBody = null,
-        ?array $requestOptions = null
-    ) {
-        $encodedResponseBody = $responseBody === null ? null : Json::encode($responseBody);
+    private function addHeadersToMatcher(MatcherInterface $requestOptionsMatcher, array $headersToAdd): MatcherInterface
+    {
+        if ($requestOptionsMatcher instanceof RequestOptionsMatcher) {
+            $matcher = $requestOptionsMatcher;
+            foreach ($headersToAdd as $headerName => $headerValue) {
+                $matcher = $requestOptionsMatcher->withHeader($headerName, $headerValue);
+            }
 
-        return $this->expectRequestWithStringResponse($method, $url, $encodedResponseBody, $requestOptions);
+            return $matcher;
+        }
+
+        throw new LogicException(
+            sprintf(
+                'Cannot add header to matcher of type %s. Use method which does not manipulate with headers or use %s instead',
+                get_class($requestOptionsMatcher),
+                RequestOptionsMatcher::class,
+            ),
+        );
     }
 
 
     /**
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      *
-     * @param mixed[]|null $requestOptions
+     * @param mixed[] $responseBody
+     *
+     * @return Expectation
+     */
+    protected function expectRequest(
+        string $method,
+        string $url,
+        MatcherInterface $requestOptionsMatcher,
+        ?array $responseBody = null
+    ) {
+        $encodedResponseBody = $responseBody === null ? null : Json::encode($responseBody);
+
+        return $this->expectRequestWithStringResponse($method, $url, $requestOptionsMatcher, $encodedResponseBody);
+    }
+
+
+    /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      *
      * @return Expectation
      */
     protected function expectRequestWithStringResponse(
         string $method,
         string $url,
-        ?string $responseBody = '',
-        ?array $requestOptions = []
+        MatcherInterface $requestOptionsMatcher,
+        ?string $responseBody = ''
     ) {
         $psrResponse = new PsrResponse(200, [], $responseBody);
 
         return $this->httpClientMock->shouldReceive('request')
-            ->with($method, $url, $this->convertRequestOptionsToArgumentMatcher($requestOptions))
+            ->with($method, $url, $requestOptionsMatcher)
             ->once()
             ->andReturn($psrResponse);
     }
@@ -153,7 +177,6 @@ abstract class PseudoIntegrationTestCase extends TestCase
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      *
      * @param mixed[] $responseBody
-     * @param mixed[] $requestOptions
      *
      * @return Expectation
      */
@@ -161,14 +184,16 @@ abstract class PseudoIntegrationTestCase extends TestCase
         string $method,
         string $url,
         string $bearerToken,
-        ?array $responseBody = null,
-        array $requestOptions = []
+        MatcherInterface $requestOptionsMatcher,
+        ?array $responseBody = null
     ) {
+        $matcher = $this->addHeadersToMatcher($requestOptionsMatcher, ['Authorization' => 'Bearer ' . $bearerToken]);
+
         return $this->expectRequest(
             $method,
             $url,
+            $matcher,
             $responseBody,
-            $requestOptions + [RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $bearerToken]],
         );
     }
 
@@ -177,7 +202,6 @@ abstract class PseudoIntegrationTestCase extends TestCase
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      *
      * @param mixed[] $responseBody
-     * @param mixed[] $requestOptions
      *
      * @return Expectation
      */
@@ -185,8 +209,8 @@ abstract class PseudoIntegrationTestCase extends TestCase
         string $method,
         string $platformEndpoint,
         string $bearerToken,
-        ?array $responseBody = null,
-        array $requestOptions = []
+        MatcherInterface $requestOptionsMatcher,
+        ?array $responseBody = null
     ) {
         $url = $this->getPlatformApiHost() . $platformEndpoint;
 
@@ -194,8 +218,8 @@ abstract class PseudoIntegrationTestCase extends TestCase
             $method,
             $url,
             $bearerToken,
+            $requestOptionsMatcher,
             $responseBody,
-            $requestOptions,
         );
     }
 
@@ -204,7 +228,6 @@ abstract class PseudoIntegrationTestCase extends TestCase
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      *
      * @param mixed[] $responseBody
-     * @param mixed[] $requestOptions
      *
      * @return Expectation
      */
@@ -213,8 +236,8 @@ abstract class PseudoIntegrationTestCase extends TestCase
         string $platformEndpoint,
         string $bearerToken,
         int $errorCode,
-        ?array $responseBody = null,
-        array $requestOptions = []
+        MatcherInterface $requestOptionsMatcher,
+        ?array $responseBody = null
     ) {
         $url = $this->getPlatformApiHost() . $platformEndpoint;
 
@@ -223,8 +246,8 @@ abstract class PseudoIntegrationTestCase extends TestCase
             $url,
             $bearerToken,
             $errorCode,
+            $requestOptionsMatcher,
             $responseBody,
-            $requestOptions,
         );
     }
 
@@ -233,7 +256,6 @@ abstract class PseudoIntegrationTestCase extends TestCase
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      *
      * @param mixed[] $responseBody
-     * @param mixed[] $requestOptions
      *
      * @return Expectation
      */
@@ -241,8 +263,8 @@ abstract class PseudoIntegrationTestCase extends TestCase
         string $method,
         string $platformEndpoint,
         string $bearerToken,
-        ?array $responseBody = null,
-        array $requestOptions = []
+        MatcherInterface $requestOptionsMatcher,
+        ?array $responseBody = null
     ) {
         $url = $this->getPlatformApiHostDfo3() . $platformEndpoint;
 
@@ -250,8 +272,8 @@ abstract class PseudoIntegrationTestCase extends TestCase
             $method,
             $url,
             $bearerToken,
+            $requestOptionsMatcher,
             $responseBody,
-            $requestOptions,
         );
     }
 
@@ -260,7 +282,6 @@ abstract class PseudoIntegrationTestCase extends TestCase
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      *
      * @param mixed[] $responseBody
-     * @param mixed[] $requestOptions
      *
      * @return Expectation
      */
@@ -269,8 +290,8 @@ abstract class PseudoIntegrationTestCase extends TestCase
         string $platformEndpoint,
         string $bearerToken,
         int $errorCode,
-        ?array $responseBody = null,
-        array $requestOptions = []
+        MatcherInterface $requestOptionsMatcher,
+        ?array $responseBody = null
     ) {
         $url = $this->getPlatformApiHostDfo3() . $platformEndpoint;
 
@@ -279,8 +300,8 @@ abstract class PseudoIntegrationTestCase extends TestCase
             $url,
             $bearerToken,
             $errorCode,
+            $requestOptionsMatcher,
             $responseBody,
-            $requestOptions,
         );
     }
 
@@ -289,7 +310,6 @@ abstract class PseudoIntegrationTestCase extends TestCase
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      *
      * @param mixed[] $responseBody
-     * @param mixed[] $requestOptions
      *
      * @return Expectation
      */
@@ -297,16 +317,16 @@ abstract class PseudoIntegrationTestCase extends TestCase
         string $method,
         string $platformEndpoint,
         string $goldenKey,
-        ?array $responseBody = null,
-        array $requestOptions = []
+        MatcherInterface $requestOptionsMatcher,
+        ?array $responseBody = null
     ) {
         $url = $this->getPlatformApiHost() . $platformEndpoint;
 
         return $this->expectRequest(
             $method,
             $url,
+            $this->addHeadersToMatcher($requestOptionsMatcher, ['X-Api-Token' => $goldenKey]),
             $responseBody,
-            $requestOptions + [RequestOptions::HEADERS => ['X-Api-Token' => $goldenKey]],
         );
     }
 
@@ -315,7 +335,6 @@ abstract class PseudoIntegrationTestCase extends TestCase
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      *
      * @param mixed[] $responseBody
-     * @param mixed[] $requestOptions
      *
      * @return Expectation
      */
@@ -323,9 +342,9 @@ abstract class PseudoIntegrationTestCase extends TestCase
         string $method,
         string $platformEndpoint,
         string $goldenKey,
-        int $errorCode = 400,
-        ?array $responseBody = null,
-        array $requestOptions = []
+        int $errorCode,
+        MatcherInterface $requestOptionsMatcher,
+        ?array $responseBody = null
     ) {
         $url = $this->getPlatformApiHost() . $platformEndpoint;
 
@@ -333,16 +352,14 @@ abstract class PseudoIntegrationTestCase extends TestCase
             $method,
             $url,
             $errorCode,
+            $this->addHeadersToMatcher($requestOptionsMatcher, ['X-Api-Token' => $goldenKey]),
             $responseBody,
-            $requestOptions + [RequestOptions::HEADERS => ['X-Api-Token' => $goldenKey]],
         );
     }
 
 
     /**
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
-     *
-     * @param mixed[] $requestOptions
      *
      * @return Expectation
      */
@@ -350,16 +367,16 @@ abstract class PseudoIntegrationTestCase extends TestCase
         string $method,
         string $url,
         string $bearerToken,
-        int $errorCode = 400,
-        ?string $responseBody = '',
-        array $requestOptions = []
+        int $errorCode,
+        MatcherInterface $requestOptionsMatcher,
+        ?string $responseBody = ''
     ) {
         return $this->expectRequestWithStringResponseFail(
             $method,
             $url,
             $errorCode,
+            $this->addHeadersToMatcher($requestOptionsMatcher, ['Authorization' => 'Bearer ' . $bearerToken]),
             $responseBody,
-            $requestOptions + [RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $bearerToken]],
         );
     }
 
@@ -368,7 +385,6 @@ abstract class PseudoIntegrationTestCase extends TestCase
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      *
      * @param mixed[] $responseBody
-     * @param mixed[] $requestOptions
      *
      * @return Expectation
      */
@@ -376,16 +392,16 @@ abstract class PseudoIntegrationTestCase extends TestCase
         string $method,
         string $url,
         string $bearerToken,
-        int $errorCode = 400,
-        ?array $responseBody = null,
-        array $requestOptions = []
+        int $errorCode,
+        MatcherInterface $requestOptionsMatcher,
+        ?array $responseBody = null
     ) {
         return $this->expectRequestFail(
             $method,
             $url,
             $errorCode,
+            $this->addHeadersToMatcher($requestOptionsMatcher, ['Authorization' => 'Bearer ' . $bearerToken]),
             $responseBody,
-            $requestOptions + [RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $bearerToken]],
         );
     }
 
@@ -394,16 +410,15 @@ abstract class PseudoIntegrationTestCase extends TestCase
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      *
      * @param mixed[] $responseBody
-     * @param mixed[] $requestOptions
      *
      * @return Expectation
      */
     protected function expectRequestFail(
         string $method,
         string $url,
-        int $errorCode = 400,
-        ?array $responseBody = null,
-        ?array $requestOptions = []
+        int $errorCode,
+        MatcherInterface $requestOptionsMatcher,
+        ?array $responseBody = null
     ) {
         $encodedResponseBody = $responseBody === null ? null : Json::encode($responseBody);
 
@@ -411,8 +426,8 @@ abstract class PseudoIntegrationTestCase extends TestCase
             $method,
             $url,
             $errorCode,
+            $requestOptionsMatcher,
             $encodedResponseBody,
-            $requestOptions,
         );
     }
 
@@ -420,23 +435,21 @@ abstract class PseudoIntegrationTestCase extends TestCase
     /**
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      *
-     * @param mixed[] $requestOptions
-     *
      * @return Expectation
      */
     protected function expectRequestWithStringResponseFail(
         string $method,
         string $url,
-        int $errorCode = 400,
-        ?string $responseBody = '',
-        ?array $requestOptions = []
+        int $errorCode,
+        MatcherInterface $requestOptionsMatcher,
+        ?string $responseBody = ''
     ) {
         $psrResponse = new PsrResponse($errorCode, [], $responseBody);
 
         $guzzleException = RequestException::create(new PsrRequest($method, $url), $psrResponse);
 
         return $this->httpClientMock->shouldReceive('request')
-            ->with($method, $url, $this->convertRequestOptionsToArgumentMatcher($requestOptions))
+            ->with($method, $url, $requestOptionsMatcher)
             ->once()
             ->andThrow($guzzleException);
     }
@@ -449,8 +462,12 @@ abstract class PseudoIntegrationTestCase extends TestCase
      *
      * @return Expectation
      */
-    protected function expectFileContentRequest(string $fileUrl, string $fileContent, string $contentType = '', ?array $requestOptions = null)
-    {
+    protected function expectFileContentRequest(
+        string $fileUrl,
+        string $fileContent,
+        string $contentType = '',
+        ?array $requestOptions = null
+    ) {
         $psrResponse = new PsrResponse(200, ['Content-Type' => $contentType], $fileContent);
 
         return $this->httpClientMock->expects('request')
@@ -466,8 +483,12 @@ abstract class PseudoIntegrationTestCase extends TestCase
      *
      * @return Expectation
      */
-    protected function expectFileContentRequestFail(string $fileUrl, int $errorCode = 400, ?string $responseBody = '', ?array $requestOptions = null)
-    {
+    protected function expectFileContentRequestFail(
+        string $fileUrl,
+        int $errorCode,
+        ?string $responseBody = '',
+        ?array $requestOptions = null
+    ) {
         $psrResponse = new PsrResponse($errorCode, [], $responseBody);
 
         $guzzleException = RequestException::create(new PsrRequest('GET', $fileUrl), $psrResponse);
@@ -484,21 +505,6 @@ abstract class PseudoIntegrationTestCase extends TestCase
     protected function getServiceMocks(): array
     {
         return [];
-    }
-
-
-    /**
-     * @param mixed[]|null $requestOptions
-     *
-     * @return mixed
-     */
-    protected function convertRequestOptionsToArgumentMatcher(?array $requestOptions)
-    {
-        if ($requestOptions === null) {
-            return Mockery::any();
-        }
-
-        return new StrictArrayMatcher($requestOptions);
     }
 
 
