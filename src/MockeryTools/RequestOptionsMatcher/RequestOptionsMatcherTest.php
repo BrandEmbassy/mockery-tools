@@ -8,9 +8,9 @@ use PHPUnit\Framework\TestCase;
 
 class RequestOptionsMatcherTest extends TestCase
 {
-    public function testCreateForRequestWithBodyToEncode(): void
+    public function testCreateWithBody(): void
     {
-        $matcher = RequestOptionsMatcher::createForRequestWithBodyToEncode(
+        $matcher = RequestOptionsMatcher::createWithBody(
             [
                 'dataToEncode' => 123,
                 'moreData' => '456',
@@ -28,9 +28,9 @@ class RequestOptionsMatcherTest extends TestCase
     }
 
 
-    public function testCreateForRequestWithBodyToEncodeAndHeaders(): void
+    public function testCreateWithBodyAndHeaders(): void
     {
-        $matcher = RequestOptionsMatcher::createForRequestWithBodyToEncodeAndHeaders(
+        $matcher = RequestOptionsMatcher::createWithBodyAndHeaders(
             [
                 'dataToEncode' => 123,
                 'moreData' => '456',
@@ -47,9 +47,9 @@ class RequestOptionsMatcherTest extends TestCase
     }
 
 
-    public function testCreateForRequestWithBody(): void
+    public function testCreateWithStringBody(): void
     {
-        $matcher = RequestOptionsMatcher::createForRequestWithBody('{"dataToEncode":123,"moreData":"456"}');
+        $matcher = RequestOptionsMatcher::createWithStringBody('{"dataToEncode":123,"moreData":"456"}');
 
         $matchingData = [
             RequestOptions::BODY => '{"dataToEncode":123,"moreData":"456"}',
@@ -58,9 +58,9 @@ class RequestOptionsMatcherTest extends TestCase
     }
 
 
-    public function testCreateForRequestWithBodyAndHeaders(): void
+    public function testCreateWithStringBodyAndHeaders(): void
     {
-        $matcher = RequestOptionsMatcher::createForRequestWithBodyAndHeaders(
+        $matcher = RequestOptionsMatcher::createWithStringBodyAndHeaders(
             '{"dataToEncode":123,"moreData":"456"}',
             ['Accept' => 'application/json'],
         );
@@ -73,9 +73,9 @@ class RequestOptionsMatcherTest extends TestCase
     }
 
 
-    public function testCreateForRequestWithJsonBody(): void
+    public function testCreateWithJsonBody(): void
     {
-        $matcher = RequestOptionsMatcher::createForRequestWithJsonBody(
+        $matcher = RequestOptionsMatcher::createWithJsonBody(
             [
                 'dataToEncode' => 1.23,
                 'moreData' => '456',
@@ -92,9 +92,9 @@ class RequestOptionsMatcherTest extends TestCase
     }
 
 
-    public function testCreateForRequestWithJsonBodyAndHeaders(): void
+    public function testCreateWithJsonBodyAndHeaders(): void
     {
-        $matcher = RequestOptionsMatcher::createForRequestWithJsonBodyAndHeaders(
+        $matcher = RequestOptionsMatcher::createWithJsonBodyAndHeaders(
             [
                 'dataToEncode' => 1.23,
                 'moreData' => '456',
@@ -113,9 +113,9 @@ class RequestOptionsMatcherTest extends TestCase
     }
 
 
-    public function testCreateForRequestWithEmptyBody(): void
+    public function testCreateWithEmptyBody(): void
     {
-        $matcher = RequestOptionsMatcher::createForRequestWithEmptyBody();
+        $matcher = RequestOptionsMatcher::createWithEmptyBody();
 
         $matchingData = [];
 
@@ -123,9 +123,9 @@ class RequestOptionsMatcherTest extends TestCase
     }
 
 
-    public function testCreateForRequestWithEmptyBodyAndHeaders(): void
+    public function testCreateWithEmptyBodyAndHeaders(): void
     {
-        $matcher = RequestOptionsMatcher::createForRequestWithEmptyBodyAndHeaders(['Accept' => 'application/json']);
+        $matcher = RequestOptionsMatcher::createWithEmptyBodyAndHeaders(['Accept' => 'application/json']);
 
         $matchingData = [
             RequestOptions::HEADERS => ['Accept' => 'application/json'],
@@ -135,9 +135,9 @@ class RequestOptionsMatcherTest extends TestCase
     }
 
 
-    public function testCreateForRequestOptions(): void
+    public function testCreate(): void
     {
-        $matcher = RequestOptionsMatcher::createForRequestOptions(
+        $matcher = RequestOptionsMatcher::create(
             [
                 RequestOptions::CERT => 'cert',
                 RequestOptions::BODY => '2',
@@ -153,9 +153,9 @@ class RequestOptionsMatcherTest extends TestCase
     }
 
 
-    public function testCreateForRequestOptionsWithConversionFromJsonToBodyOption(): void
+    public function testCreateWithConversionFromJsonToBodyOption(): void
     {
-        $matcher = RequestOptionsMatcher::createForRequestOptionsWithConversionFromJsonToBodyOption([
+        $matcher = RequestOptionsMatcher::createWithConversionFromJsonToBodyOption([
             RequestOptions::JSON => [
                 'dataToEncode' => 1.23,
                 'moreData' => '456',
@@ -173,7 +173,7 @@ class RequestOptionsMatcherTest extends TestCase
 
     public function testExpectedDataIsReordered(): void
     {
-        $matcher = RequestOptionsMatcher::createForRequestOptions([
+        $matcher = RequestOptionsMatcher::create([
             RequestOptions::HEADERS => [],
             RequestOptions::JSON => [
                 'z' => 'z',
@@ -196,7 +196,7 @@ class RequestOptionsMatcherTest extends TestCase
 
     public function testActualDataIsReordered(): void
     {
-        $matcher = RequestOptionsMatcher::createForRequestOptions([
+        $matcher = RequestOptionsMatcher::create([
             RequestOptions::BODY => '{"dataToEncode":1.23,"moreData":"456"}',
             RequestOptions::JSON => [
                 'a' => 'a',
@@ -219,7 +219,7 @@ class RequestOptionsMatcherTest extends TestCase
 
     public function testWithHeader(): void
     {
-        $matcher = RequestOptionsMatcher::createForRequestWithEmptyBody()->withHeader('Accept', 'application/json');
+        $matcher = RequestOptionsMatcher::createWithEmptyBody()->withHeader('Accept', 'application/json');
 
         $matchingData = [
             RequestOptions::HEADERS => ['Accept' => 'application/json'],
@@ -230,7 +230,7 @@ class RequestOptionsMatcherTest extends TestCase
 
     public function testWithRequestOption(): void
     {
-        $matcher = RequestOptionsMatcher::createForRequestWithEmptyBody()->withRequestOption(RequestOptions::CERT, 'cert');
+        $matcher = RequestOptionsMatcher::createWithEmptyBody()->withRequestOption(RequestOptions::CERT, 'cert');
 
         $matchingData = [
             RequestOptions::CERT => 'cert',

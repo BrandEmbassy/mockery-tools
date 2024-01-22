@@ -31,11 +31,11 @@ class RequestOptionsMatcher implements MatcherInterface
 
 
     /**
-     * @param mixed[] $bodyToEncode
+     * @param mixed[] $body
      */
-    public static function createForRequestWithBodyToEncode(array $bodyToEncode): self
+    public static function createWithBody(array $body): self
     {
-        $jsonEncodedBody = self::sortAndEncodeBody($bodyToEncode);
+        $jsonEncodedBody = self::sortAndEncodeBody($body);
 
         return new self([
             RequestOptions::BODY => $jsonEncodedBody,
@@ -47,12 +47,12 @@ class RequestOptionsMatcher implements MatcherInterface
 
 
     /**
-     * @param mixed[] $bodyToEncode
+     * @param mixed[] $body
      * @param array<string, string> $headers
      */
-    public static function createForRequestWithBodyToEncodeAndHeaders(array $bodyToEncode, array $headers): self
+    public static function createWithBodyAndHeaders(array $body, array $headers): self
     {
-        $jsonEncodedBody = self::sortAndEncodeBody($bodyToEncode);
+        $jsonEncodedBody = self::sortAndEncodeBody($body);
 
         return new self([
             RequestOptions::BODY => $jsonEncodedBody,
@@ -61,7 +61,7 @@ class RequestOptionsMatcher implements MatcherInterface
     }
 
 
-    public static function createForRequestWithBody(string $body): self
+    public static function createWithStringBody(string $body): self
     {
         return new self([RequestOptions::BODY => $body]);
     }
@@ -70,7 +70,7 @@ class RequestOptionsMatcher implements MatcherInterface
     /**
      * @param array<string, string> $headers
      */
-    public static function createForRequestWithBodyAndHeaders(string $body, array $headers): self
+    public static function createWithStringBodyAndHeaders(string $body, array $headers): self
     {
         return new self([
             RequestOptions::BODY => $body,
@@ -80,28 +80,28 @@ class RequestOptionsMatcher implements MatcherInterface
 
 
     /**
-     * @param mixed[] $body
+     * @param mixed[] $jsonBody
      */
-    public static function createForRequestWithJsonBody(array $body): self
+    public static function createWithJsonBody(array $jsonBody): self
     {
-        return new self([RequestOptions::JSON => $body]);
+        return new self([RequestOptions::JSON => $jsonBody]);
     }
 
 
     /**
-     * @param mixed[] $body
+     * @param mixed[] $jsonBody
      * @param array<string, string> $headers
      */
-    public static function createForRequestWithJsonBodyAndHeaders(array $body, array $headers): self
+    public static function createWithJsonBodyAndHeaders(array $jsonBody, array $headers): self
     {
         return new self([
-            RequestOptions::JSON => $body,
+            RequestOptions::JSON => $jsonBody,
             RequestOptions::HEADERS => $headers,
         ]);
     }
 
 
-    public static function createForRequestWithEmptyBody(): self
+    public static function createWithEmptyBody(): self
     {
         return new self([]);
     }
@@ -110,7 +110,7 @@ class RequestOptionsMatcher implements MatcherInterface
     /**
      * @param array<string, string> $headers
      */
-    public static function createForRequestWithEmptyBodyAndHeaders(array $headers): self
+    public static function createWithEmptyBodyAndHeaders(array $headers): self
     {
         return new self([RequestOptions::HEADERS => $headers]);
     }
@@ -119,7 +119,7 @@ class RequestOptionsMatcher implements MatcherInterface
     /**
      * @param mixed[] $requestOptions
      */
-    public static function createForRequestOptions(array $requestOptions): self
+    public static function create(array $requestOptions): self
     {
         return new self($requestOptions);
     }
@@ -127,8 +127,11 @@ class RequestOptionsMatcher implements MatcherInterface
 
     /**
      * @param mixed[] $requestOptions
+     *
+     * @internal Do not use in your tests, intended for usage in Channels PseudoIntegration test class only.
+     * This method keeps deprecated methods working until they are removed
      */
-    public static function createForRequestOptionsWithConversionFromJsonToBodyOption(array $requestOptions): self
+    public static function createWithConversionFromJsonToBodyOption(array $requestOptions): self
     {
         if (isset($requestOptions[RequestOptions::JSON])) {
             $requestOptions[RequestOptions::BODY] = self::sortAndEncodeBody($requestOptions[RequestOptions::JSON]);
