@@ -141,6 +141,8 @@ class RequestOptionsMatcher implements MatcherInterface
 
 
     /**
+     * @deprecated
+     *
      * @param mixed[] $requestOptions
      *
      * @internal Do not use in your tests, intended for usage in Channels PseudoIntegration test class only.
