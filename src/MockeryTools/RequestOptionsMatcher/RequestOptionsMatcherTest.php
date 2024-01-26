@@ -35,12 +35,12 @@ class RequestOptionsMatcherTest extends TestCase
                 'dataToEncode' => 123,
                 'moreData' => '456',
             ],
-            ['Accept' => 'application/json'],
+            ['Retry-After' => 120],
         );
 
         $matchingData = [
             RequestOptions::BODY => '{"dataToEncode":123,"moreData":"456"}',
-            RequestOptions::HEADERS => ['Content-Type' => 'application/json', 'Accept' => 'application/json'],
+            RequestOptions::HEADERS => ['Content-Type' => 'application/json', 'Retry-After' => 120],
         ];
 
         Assert::assertTrue($matcher->match($matchingData));
@@ -62,12 +62,12 @@ class RequestOptionsMatcherTest extends TestCase
     {
         $matcher = RequestOptionsMatcher::createWithStringBodyAndHeaders(
             '{"dataToEncode":123,"moreData":"456"}',
-            ['Accept' => 'application/json'],
+            ['X-is-cool-request' => true],
         );
 
         $matchingData = [
             RequestOptions::BODY => '{"dataToEncode":123,"moreData":"456"}',
-            RequestOptions::HEADERS => ['Accept' => 'application/json'],
+            RequestOptions::HEADERS => ['X-is-cool-request' => true],
         ];
         Assert::assertTrue($matcher->match($matchingData));
     }

@@ -54,7 +54,7 @@ class RequestOptionsMatcher implements MatcherInterface
      * Content-Type: application/json header is added besided headers provided
      *
      * @param mixed[] $body
-     * @param array<string, string> $headers
+     * @param array<string, mixed> $headers
      */
     public static function createWithBodyAndHeaders(array $body, array $headers): self
     {
@@ -79,7 +79,7 @@ class RequestOptionsMatcher implements MatcherInterface
     /**
      * Provided $stringBody will be set as RequestOption::BODY.
      *
-     * @param array<string, string> $headers
+     * @param array<string, mixed> $headers
      */
     public static function createWithStringBodyAndHeaders(string $stringBody, array $headers): self
     {
@@ -105,7 +105,7 @@ class RequestOptionsMatcher implements MatcherInterface
      * Provided $jsonBody will be set as RequestOption::JSON.
      *
      * @param mixed[] $jsonBody
-     * @param array<string, string> $headers
+     * @param array<string, mixed> $headers
      */
     public static function createWithJsonBodyAndHeaders(array $jsonBody, array $headers): self
     {
@@ -123,7 +123,7 @@ class RequestOptionsMatcher implements MatcherInterface
 
 
     /**
-     * @param array<string, string> $headers
+     * @param array<string, mixed> $headers
      */
     public static function createWithEmptyBodyAndHeaders(array $headers): self
     {
@@ -170,7 +170,10 @@ class RequestOptionsMatcher implements MatcherInterface
     }
 
 
-    public function withHeader(string $headerName, string $headerValue): self
+    /**
+     * @param mixed $headerValue
+     */
+    public function withHeader(string $headerName, $headerValue): self
     {
         $this->sortedExpectedRequestOptions[RequestOptions::HEADERS][$headerName] = $headerValue;
 
