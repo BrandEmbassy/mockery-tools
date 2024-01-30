@@ -33,7 +33,7 @@ class EnumValueMatcherTest extends TestCase
     /**
      * @return array<string, array<string, mixed>>
      */
-    public function uuidDataProvider(): array
+    public static function uuidDataProvider(): array
     {
         return [
             'Matching string value' => [

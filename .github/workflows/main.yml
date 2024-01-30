@@ -114,4 +114,4 @@ jobs:
         run: composer ${{ matrix.composer-arg }} --prefer-dist
 
       - name: Run tests
-        run: composer test
+        run: composer phpunit
