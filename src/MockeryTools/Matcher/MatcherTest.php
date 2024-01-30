@@ -30,7 +30,7 @@ class MatcherTest extends TestCase
     /**
      * @return array<string, array<string, mixed>>
      */
-    public function dateTimeZoneNameMatcherProvider(): array
+    public static function dateTimeZoneNameMatcherProvider(): array
     {
         return [
             'Valid TZ does match' => [

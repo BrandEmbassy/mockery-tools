@@ -253,7 +253,7 @@ class HttpClientMockBuilderTest extends TestCase
     /**
      * @return array<string, array<string, mixed>>
      */
-    public function requestExceptionProvider(): array
+    public static function requestExceptionProvider(): array
     {
         return [
             'Client failure 400' => [

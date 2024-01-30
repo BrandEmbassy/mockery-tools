@@ -28,7 +28,7 @@ class HttpRequestOptionsMatcherTest extends TestCase
     /**
      * @return mixed[]
      */
-    public function matchRequestOptionsDataProvider(): array
+    public static function matchRequestOptionsDataProvider(): array
     {
         return [
             [
