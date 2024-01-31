@@ -37,7 +37,7 @@ class UuidMockeryMatcherFactoryTest extends TestCase
     /**
      * @return mixed[][]
      */
-    public function uuidMatchesProvider(): array
+    public static function uuidMatchesProvider(): array
     {
         $inputUuid1 = Uuid::fromString(self::EXPECTED_UUID_STRING);
         $inputUuid2 = Uuid::fromString('7f8b8912-a10d-4c77-9b92-6323ffa405d2');

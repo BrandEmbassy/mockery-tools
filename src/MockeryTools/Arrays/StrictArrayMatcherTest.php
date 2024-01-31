@@ -28,7 +28,7 @@ class StrictArrayMatcherTest extends TestCase
     /**
      * @return mixed[][]
      */
-    public function arrayMatchesProvider(): array
+    public static function arrayMatchesProvider(): array
     {
         return [
             'empty arrays match' => [

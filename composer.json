@@ -25,7 +25,7 @@
     "nette/utils": "^2.4 || ^3.0",
     "phpunit/phpunit": ">=8.5.23 || ^9.0",
     "ramsey/uuid": "^3.0 || ^4.0",
-    "spatie/phpunit-snapshot-assertions": "^4.2"
+    "spatie/phpunit-snapshot-assertions": "^5.1"
   },
   "require-dev": {
     "brandembassy/coding-standard": "10.0.0-beta",

@@ -26,7 +26,7 @@ class UuidMatcherTest extends TestCase
     /**
      * @return string[][]|bool[][]
      */
-    public function uuidDataProvider(): array
+    public static function uuidDataProvider(): array
     {
         return [
             'matching' => [
