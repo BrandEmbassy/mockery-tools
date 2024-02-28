@@ -249,4 +249,13 @@ class RequestOptionsMatcher implements MatcherInterface
     {
         return '<RequestOptionsMatcher>';
     }
+
+
+    /**
+     * @return mixed[]
+     */
+    public function getSortedExpectedRequestOptions(): array
+    {
+        return $this->sortedExpectedRequestOptions;
+    }
 }
