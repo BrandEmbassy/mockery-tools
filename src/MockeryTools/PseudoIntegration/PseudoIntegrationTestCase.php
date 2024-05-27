@@ -2,12 +2,10 @@
 
 namespace BrandEmbassy\MockeryTools\PseudoIntegration;
 
-use BrandEmbassy\MockeryTools\RequestOptionsMatcher\RequestOptionsMatcher;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request as PsrRequest;
 use GuzzleHttp\Psr7\Response as PsrResponse;
-use LogicException;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Mockery\Expectation;
@@ -16,10 +14,8 @@ use Mockery\MockInterface;
 use Nette\DI\Container;
 use Nette\Utils\Json;
 use PHPUnit\Framework\TestCase;
-use function get_class;
 use function implode;
 use function md5;
-use function sprintf;
 
 abstract class PseudoIntegrationTestCase extends TestCase
 {
@@ -111,30 +107,6 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
 
     /**
-     * @param array<string, string> $headersToAdd
-     */
-    private function addHeadersToMatcher(MatcherInterface $requestOptionsMatcher, array $headersToAdd): MatcherInterface
-    {
-        if ($requestOptionsMatcher instanceof RequestOptionsMatcher) {
-            $matcher = $requestOptionsMatcher;
-            foreach ($headersToAdd as $headerName => $headerValue) {
-                $matcher = $requestOptionsMatcher->withHeader($headerName, $headerValue);
-            }
-
-            return $matcher;
-        }
-
-        throw new LogicException(
-            sprintf(
-                'Cannot add header to matcher of type %s. Use method which does not manipulate with headers or use %s instead',
-                get_class($requestOptionsMatcher),
-                RequestOptionsMatcher::class,
-            ),
-        );
-    }
-
-
-    /**
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      *
      * @param mixed[] $responseBody
@@ -180,143 +152,9 @@ abstract class PseudoIntegrationTestCase extends TestCase
      *
      * @return Expectation
      */
-    protected function expectAuthorizedRequest(
-        string $method,
-        string $url,
-        string $bearerToken,
-        MatcherInterface $requestOptionsMatcher,
-        ?array $responseBody = null
-    ) {
-        $matcher = $this->addHeadersToMatcher($requestOptionsMatcher, ['Authorization' => 'Bearer ' . $bearerToken]);
-
-        return $this->expectRequest(
-            $method,
-            $url,
-            $matcher,
-            $responseBody,
-        );
-    }
-
-
-    /**
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
-     *
-     * @param mixed[] $responseBody
-     *
-     * @return Expectation
-     */
-    public function expectPlatformAuthorizedRequest(
+    public function expectPlatformRequest(
         string $method,
         string $platformEndpoint,
-        string $bearerToken,
-        MatcherInterface $requestOptionsMatcher,
-        ?array $responseBody = null
-    ) {
-        $url = $this->getPlatformApiHost() . $platformEndpoint;
-
-        return $this->expectAuthorizedRequest(
-            $method,
-            $url,
-            $bearerToken,
-            $requestOptionsMatcher,
-            $responseBody,
-        );
-    }
-
-
-    /**
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
-     *
-     * @param mixed[] $responseBody
-     *
-     * @return Expectation
-     */
-    public function expectPlatformAuthorizedRequestFail(
-        string $method,
-        string $platformEndpoint,
-        string $bearerToken,
-        int $errorCode,
-        MatcherInterface $requestOptionsMatcher,
-        ?array $responseBody = null
-    ) {
-        $url = $this->getPlatformApiHost() . $platformEndpoint;
-
-        return $this->expectAuthorizedRequestFail(
-            $method,
-            $url,
-            $bearerToken,
-            $errorCode,
-            $requestOptionsMatcher,
-            $responseBody,
-        );
-    }
-
-
-    /**
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
-     *
-     * @param mixed[] $responseBody
-     *
-     * @return Expectation
-     */
-    public function expectDfo3PlatformAuthorizedRequest(
-        string $method,
-        string $platformEndpoint,
-        string $bearerToken,
-        MatcherInterface $requestOptionsMatcher,
-        ?array $responseBody = null
-    ) {
-        $url = $this->getPlatformApiHostDfo3() . $platformEndpoint;
-
-        return $this->expectAuthorizedRequest(
-            $method,
-            $url,
-            $bearerToken,
-            $requestOptionsMatcher,
-            $responseBody,
-        );
-    }
-
-
-    /**
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
-     *
-     * @param mixed[] $responseBody
-     *
-     * @return Expectation
-     */
-    public function expectDfo3PlatformAuthorizedRequestFail(
-        string $method,
-        string $platformEndpoint,
-        string $bearerToken,
-        int $errorCode,
-        MatcherInterface $requestOptionsMatcher,
-        ?array $responseBody = null
-    ) {
-        $url = $this->getPlatformApiHostDfo3() . $platformEndpoint;
-
-        return $this->expectAuthorizedRequestFail(
-            $method,
-            $url,
-            $bearerToken,
-            $errorCode,
-            $requestOptionsMatcher,
-            $responseBody,
-        );
-    }
-
-
-    /**
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
-     *
-     * @param mixed[] $responseBody
-     *
-     * @return Expectation
-     */
-    public function expectGoldenPlatformRequest(
-        string $method,
-        string $platformEndpoint,
-        string $goldenKey,
         MatcherInterface $requestOptionsMatcher,
         ?array $responseBody = null
     ) {
@@ -325,7 +163,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
         return $this->expectRequest(
             $method,
             $url,
-            $this->addHeadersToMatcher($requestOptionsMatcher, ['X-Api-Token' => $goldenKey]),
+            $requestOptionsMatcher,
             $responseBody,
         );
     }
@@ -338,10 +176,9 @@ abstract class PseudoIntegrationTestCase extends TestCase
      *
      * @return Expectation
      */
-    public function expectGoldenPlatformRequestFail(
+    public function expectPlatformRequestFail(
         string $method,
         string $platformEndpoint,
-        string $goldenKey,
         int $errorCode,
         MatcherInterface $requestOptionsMatcher,
         ?array $responseBody = null
@@ -352,30 +189,7 @@ abstract class PseudoIntegrationTestCase extends TestCase
             $method,
             $url,
             $errorCode,
-            $this->addHeadersToMatcher($requestOptionsMatcher, ['X-Api-Token' => $goldenKey]),
-            $responseBody,
-        );
-    }
-
-
-    /**
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
-     *
-     * @return Expectation
-     */
-    protected function expectAuthorizedRequestWithStringResponseFail(
-        string $method,
-        string $url,
-        string $bearerToken,
-        int $errorCode,
-        MatcherInterface $requestOptionsMatcher,
-        ?string $responseBody = ''
-    ) {
-        return $this->expectRequestWithStringResponseFail(
-            $method,
-            $url,
-            $errorCode,
-            $this->addHeadersToMatcher($requestOptionsMatcher, ['Authorization' => 'Bearer ' . $bearerToken]),
+            $requestOptionsMatcher,
             $responseBody,
         );
     }
@@ -388,19 +202,44 @@ abstract class PseudoIntegrationTestCase extends TestCase
      *
      * @return Expectation
      */
-    protected function expectAuthorizedRequestFail(
+    public function expectDfo3PlatformRequest(
         string $method,
-        string $url,
-        string $bearerToken,
+        string $platformEndpoint,
+        MatcherInterface $requestOptionsMatcher,
+        ?array $responseBody = null
+    ) {
+        $url = $this->getPlatformApiHostDfo3() . $platformEndpoint;
+
+        return $this->expectRequest(
+            $method,
+            $url,
+            $requestOptionsMatcher,
+            $responseBody,
+        );
+    }
+
+
+    /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+     *
+     * @param mixed[] $responseBody
+     *
+     * @return Expectation
+     */
+    public function expectDfo3PlatformRequestFail(
+        string $method,
+        string $platformEndpoint,
         int $errorCode,
         MatcherInterface $requestOptionsMatcher,
         ?array $responseBody = null
     ) {
+        $url = $this->getPlatformApiHostDfo3() . $platformEndpoint;
+
         return $this->expectRequestFail(
             $method,
             $url,
             $errorCode,
-            $this->addHeadersToMatcher($requestOptionsMatcher, ['Authorization' => 'Bearer ' . $bearerToken]),
+            $requestOptionsMatcher,
             $responseBody,
         );
     }

@@ -3,14 +3,23 @@
 namespace BrandEmbassy\MockeryTools\Enum;
 
 use MabeEnum\Enum;
-use Mockery\Matcher\MatcherAbstract;
+use Mockery\Matcher\MatcherInterface;
 use function assert;
 
 /**
  * @final
  */
-class EnumValueMatcher extends MatcherAbstract
+class EnumValueMatcher implements MatcherInterface
 {
+    protected mixed $expected;
+
+
+    public function __construct(mixed $expected = null)
+    {
+        $this->expected = $expected;
+    }
+
+
     /**
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
@@ -21,12 +30,12 @@ class EnumValueMatcher extends MatcherAbstract
     {
         assert($actual instanceof Enum);
 
-        return $actual->getValue() === $this->_expected;
+        return $actual->getValue() === $this->expected;
     }
 
 
     public function __toString(): string
     {
-        return '<EnumValue:' . $this->_expected . '>';
+        return '<EnumValue:' . $this->expected . '>';
     }
 }
