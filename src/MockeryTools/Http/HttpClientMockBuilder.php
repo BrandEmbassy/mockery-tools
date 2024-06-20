@@ -133,6 +133,7 @@ class HttpClientMockBuilder
     /**
      * @param array<string, mixed> $responseDataToReturn
      * @param array<string, mixed> $expectedRequestData
+     * @param array<string, mixed> $options
      *
      * @throws JsonException
      */
@@ -141,15 +142,22 @@ class HttpClientMockBuilder
         string $expectedEndpoint,
         array $responseDataToReturn = [],
         ?array $expectedRequestData = null,
-        int $statusCodeToReturn = 200
+        int $statusCodeToReturn = 200,
+        ?array $options = null,
     ): self {
         $responseBody = Json::encode($responseDataToReturn);
         $expectedRequestBody = $expectedRequestData !== null ? Json::encode($expectedRequestData) : '';
         $requestMatcher = $this->createRequestMatcher($expectedHttpMethod, $expectedEndpoint, $expectedRequestBody);
 
-        $this->httpClientMock->expects('send')
-            ->with($requestMatcher)
-            ->andReturn(new Response($statusCodeToReturn, [], $responseBody));
+        if ($options !== null) {
+            $this->httpClientMock->expects('send')
+                ->with($requestMatcher, $options)
+                ->andReturn(new Response($statusCodeToReturn, [], $responseBody));
+        } else {
+            $this->httpClientMock->expects('send')
+                ->with($requestMatcher)
+                ->andReturn(new Response($statusCodeToReturn, [], $responseBody));
+        }
 
         return $this;
     }

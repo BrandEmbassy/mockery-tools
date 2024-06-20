@@ -189,6 +189,31 @@ class HttpClientMockBuilderTest extends TestCase
     /**
      * @throws Throwable
      */
+    public function testSendGetWithOptions(): void
+    {
+        $httpClientMock = HttpClientMockBuilder::create(self::BASE_PATH, self::HEADERS)
+            ->expectSend(
+                'GET',
+                '/users/25',
+                ['name' => 'Prokop Buben'],
+                options: [],
+            )
+            ->build();
+
+        $request = new Request(
+            'GET',
+            new Uri('https://api.com/v2/users/25'),
+            self::HEADERS,
+        );
+        $response = $httpClientMock->send($request, []);
+
+        Assert::assertSame('{"name":"Prokop Buben"}', (string)$response->getBody());
+    }
+
+
+    /**
+     * @throws Throwable
+     */
     public function testSendPostWithSuccess(): void
     {
         $httpClientMock = HttpClientMockBuilder::create(self::BASE_PATH, self::HEADERS)
