@@ -24,7 +24,7 @@ class HttpClientMockBuilderTest extends TestCase
 
     private const BASE_PATH = 'https://api.com/v2';
     private const HEADERS = ['Authorization' => 'Bearer thisIsSomeToken'];
-    private const OPTIONS = ['testOption', 'testValue'];
+    private const OPTIONS = ['testOption' => 'testValue'];
 
 
     /**
