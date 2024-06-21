@@ -24,6 +24,7 @@ class HttpClientMockBuilderTest extends TestCase
 
     private const BASE_PATH = 'https://api.com/v2';
     private const HEADERS = ['Authorization' => 'Bearer thisIsSomeToken'];
+    private const OPTIONS = ['testOption' => 'testValue'];
 
 
     /**
@@ -181,6 +182,31 @@ class HttpClientMockBuilderTest extends TestCase
             self::HEADERS,
         );
         $response = $httpClientMock->send($request);
+
+        Assert::assertSame('{"name":"Prokop Buben"}', (string)$response->getBody());
+    }
+
+
+    /**
+     * @throws Throwable
+     */
+    public function testSendGetWithOptions(): void
+    {
+        $httpClientMock = HttpClientMockBuilder::create(self::BASE_PATH, self::HEADERS)
+            ->expectSend(
+                'GET',
+                '/users/25',
+                ['name' => 'Prokop Buben'],
+                options: self::OPTIONS,
+            )
+            ->build();
+
+        $request = new Request(
+            'GET',
+            new Uri('https://api.com/v2/users/25'),
+            self::HEADERS,
+        );
+        $response = $httpClientMock->send($request, self::OPTIONS);
 
         Assert::assertSame('{"name":"Prokop Buben"}', (string)$response->getBody());
     }
