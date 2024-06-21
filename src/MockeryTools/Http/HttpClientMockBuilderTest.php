@@ -24,6 +24,7 @@ class HttpClientMockBuilderTest extends TestCase
 
     private const BASE_PATH = 'https://api.com/v2';
     private const HEADERS = ['Authorization' => 'Bearer thisIsSomeToken'];
+    private const OPTIONS = ['testOption', 'testValue'];
 
 
     /**
@@ -196,7 +197,7 @@ class HttpClientMockBuilderTest extends TestCase
                 'GET',
                 '/users/25',
                 ['name' => 'Prokop Buben'],
-                options: [],
+                options: self::OPTIONS,
             )
             ->build();
 
@@ -205,7 +206,7 @@ class HttpClientMockBuilderTest extends TestCase
             new Uri('https://api.com/v2/users/25'),
             self::HEADERS,
         );
-        $response = $httpClientMock->send($request, []);
+        $response = $httpClientMock->send($request, self::OPTIONS);
 
         Assert::assertSame('{"name":"Prokop Buben"}', (string)$response->getBody());
     }
