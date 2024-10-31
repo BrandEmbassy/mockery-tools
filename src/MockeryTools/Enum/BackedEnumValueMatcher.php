@@ -14,7 +14,7 @@ class BackedEnumValueMatcher implements MatcherInterface
     protected int|string $expected;
 
 
-    public function __construct(mixed $expected = null)
+    public function __construct(string|int $expected)
     {
         $this->expected = $expected;
     }
