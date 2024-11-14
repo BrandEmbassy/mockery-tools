@@ -11,6 +11,7 @@ use Mockery;
 use Mockery\MockInterface;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
+use stdClass;
 use function array_merge_recursive;
 
 /**
@@ -62,7 +63,7 @@ class HttpClientMockBuilder
 
     /**
      * @param array<string, mixed> $responseDataToReturn
-     * @param array<string, mixed>|null $expectedRequestData
+     * @param array<string, mixed>|null|stdClass $expectedRequestData
      * @param array<string, mixed> $expectedRequestOptions
      *
      * @throws JsonException
@@ -71,7 +72,7 @@ class HttpClientMockBuilder
         string $expectedHttpMethod,
         string $expectedEndpoint,
         array $responseDataToReturn = [],
-        ?array $expectedRequestData = null,
+        array|stdClass|null $expectedRequestData = null,
         int $statusCodeToReturn = 200,
         array $expectedRequestOptions = []
     ): self {
@@ -93,7 +94,7 @@ class HttpClientMockBuilder
 
     /**
      * @param mixed[] $responseDataToReturn
-     * @param mixed[]|null $expectedRequestData
+     * @param mixed[]|null|stdClass $expectedRequestData
      * @param array<string, mixed> $expectedRequestOptions
      *
      * @throws JsonException
@@ -102,7 +103,7 @@ class HttpClientMockBuilder
         string $expectedHttpMethod,
         string $expectedEndpoint,
         array $responseDataToReturn = [],
-        ?array $expectedRequestData = null,
+        array|stdClass|null $expectedRequestData = null,
         int $errorCodeToReturn = 400,
         array $expectedRequestOptions = []
     ): self {
@@ -132,7 +133,7 @@ class HttpClientMockBuilder
 
     /**
      * @param array<string, mixed> $responseDataToReturn
-     * @param array<string, mixed> $expectedRequestData
+     * @param array<string, mixed>|null|stdClass $expectedRequestData
      * @param array<string, mixed> $options
      *
      * @throws JsonException
@@ -141,7 +142,7 @@ class HttpClientMockBuilder
         string $expectedHttpMethod,
         string $expectedEndpoint,
         array $responseDataToReturn = [],
-        ?array $expectedRequestData = null,
+        array|stdClass|null $expectedRequestData = null,
         int $statusCodeToReturn = 200,
         ?array $options = null,
     ): self {
@@ -165,14 +166,14 @@ class HttpClientMockBuilder
 
     /**
      * @param array<string, mixed> $responseDataToReturn
-     * @param array<string, mixed> $expectedRequestData
+     * @param array<string, mixed>|null|stdClass $expectedRequestData
      *
      * @throws JsonException
      */
     public function expectFailedSend(
         string $expectedHttpMethod,
         string $expectedEndpoint,
-        ?array $expectedRequestData = null,
+        array|stdClass|null $expectedRequestData = null,
         int $errorCodeToReturn = 400,
         array $responseDataToReturn = []
     ): self {

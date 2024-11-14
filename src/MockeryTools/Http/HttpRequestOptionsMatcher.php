@@ -3,16 +3,16 @@
 namespace BrandEmbassy\MockeryTools\Http;
 
 use GuzzleHttp\RequestOptions;
-use Mockery\Matcher\MatcherAbstract;
+use Mockery\Matcher\MatcherInterface;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
+use stdClass;
 use function is_array;
-use function ksort;
 
 /**
  * @final
  */
-class HttpRequestOptionsMatcher extends MatcherAbstract
+class HttpRequestOptionsMatcher implements MatcherInterface
 {
     /**
      * @var array<string, mixed>
@@ -20,30 +20,32 @@ class HttpRequestOptionsMatcher extends MatcherAbstract
     private array $expectedRequestOptions;
 
     /**
-     * @var mixed[]|null
+     * @var mixed[]|null|stdClass
      */
-    private ?array $expectedRequestData;
+    private array|stdClass|null $expectedRequestData;
 
 
     /**
      * @param array<string, string> $expectedHeaders
-     * @param mixed[]|null $expectedRequestData
+     * @param mixed[]|null|stdClass $expectedRequestData
      */
-    public function __construct(array $expectedHeaders, ?array $expectedRequestData = null)
-    {
-        parent::__construct();
-
+    public function __construct(
+        array $expectedHeaders,
+        array|stdClass|null $expectedRequestData = null,
+    ) {
         $this->expectedRequestData = $expectedRequestData;
         $this->expectedRequestOptions = [RequestOptions::HEADERS => $expectedHeaders];
     }
 
 
     /**
-     * @param mixed[]|null $expectedRequestData
+     * @param mixed[]|null|stdClass $expectedRequestData
      * @param array<string, string> $expectedRequestOptions
      */
-    public static function create(array $expectedRequestOptions, ?array $expectedRequestData = null): self
-    {
+    public static function create(
+        array $expectedRequestOptions,
+        array|stdClass|null $expectedRequestData = null,
+    ): self {
         $self = new self([], $expectedRequestData);
         $self->expectedRequestOptions = $expectedRequestOptions;
 
@@ -54,8 +56,6 @@ class HttpRequestOptionsMatcher extends MatcherAbstract
     /**
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
-     *
-     * @param mixed $actual
      */
     public function match(&$actual): bool
     {
@@ -71,10 +71,15 @@ class HttpRequestOptionsMatcher extends MatcherAbstract
             return true;
         }
 
-        $givenDataUsed = $actual[RequestOptions::JSON] ?? Json::decode($actual[RequestOptions::BODY] ?? '{}', Json::FORCE_ARRAY);
+        // !! JSON == array !!
+        $givenData = $actual[RequestOptions::JSON] ?? Json::decode($actual[RequestOptions::BODY] ?? '{}');
         try {
-            $expectedRequestDataAsJson = Json::encode($this->recursiveKsort($this->expectedRequestData));
-            $givenRequestDataAsJson = Json::encode($this->recursiveKsort($givenDataUsed));
+            $expectedRequestDataAsJson = \PHPUnit\Util\Json::canonicalize(
+                Json::encode($this->expectedRequestData),
+            )[1];
+            $givenRequestDataAsJson = \PHPUnit\Util\Json::canonicalize(
+                Json::encode($givenData),
+            )[1];
         } catch (JsonException $exception) {
             return false;
         }
@@ -116,23 +121,5 @@ class HttpRequestOptionsMatcher extends MatcherAbstract
     public function __toString(): string
     {
         return '<HttpRequestOptions>';
-    }
-
-
-    /**
-     * @param mixed[] $array
-     *
-     * @return mixed[]
-     */
-    private function recursiveKsort(array $array): array
-    {
-        foreach ($array as &$value) {
-            if (is_array($value)) {
-                $this->recursiveKsort($value);
-            }
-        }
-        ksort($array);
-
-        return $array;
     }
 }
