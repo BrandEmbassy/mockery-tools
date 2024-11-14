@@ -63,7 +63,7 @@ class HttpClientMockBuilder
 
     /**
      * @param array<string, mixed> $responseDataToReturn
-     * @param array<string, mixed>|null|stdClass $expectedRequestData
+     * @param array<string, mixed>|stdClass|null $expectedRequestData
      * @param array<string, mixed> $expectedRequestOptions
      *
      * @throws JsonException
@@ -94,7 +94,7 @@ class HttpClientMockBuilder
 
     /**
      * @param mixed[] $responseDataToReturn
-     * @param mixed[]|null|stdClass $expectedRequestData
+     * @param mixed[]|stdClass|null $expectedRequestData
      * @param array<string, mixed> $expectedRequestOptions
      *
      * @throws JsonException
@@ -133,7 +133,7 @@ class HttpClientMockBuilder
 
     /**
      * @param array<string, mixed> $responseDataToReturn
-     * @param array<string, mixed>|null|stdClass $expectedRequestData
+     * @param array<string, mixed>|stdClass|null $expectedRequestData
      * @param array<string, mixed> $options
      *
      * @throws JsonException
@@ -166,7 +166,7 @@ class HttpClientMockBuilder
 
     /**
      * @param array<string, mixed> $responseDataToReturn
-     * @param array<string, mixed>|null|stdClass $expectedRequestData
+     * @param array<string, mixed>|stdClass|null $expectedRequestData
      *
      * @throws JsonException
      */

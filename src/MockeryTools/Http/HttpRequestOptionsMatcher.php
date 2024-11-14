@@ -20,14 +20,14 @@ class HttpRequestOptionsMatcher implements MatcherInterface
     private array $expectedRequestOptions;
 
     /**
-     * @var mixed[]|null|stdClass
+     * @var mixed[]|stdClass|null
      */
     private array|stdClass|null $expectedRequestData;
 
 
     /**
      * @param array<string, string> $expectedHeaders
-     * @param mixed[]|null|stdClass $expectedRequestData
+     * @param mixed[]|stdClass|null $expectedRequestData
      */
     public function __construct(
         array $expectedHeaders,
@@ -39,7 +39,7 @@ class HttpRequestOptionsMatcher implements MatcherInterface
 
 
     /**
-     * @param mixed[]|null|stdClass $expectedRequestData
+     * @param mixed[]|stdClass|null $expectedRequestData
      * @param array<string, string> $expectedRequestOptions
      */
     public static function create(
@@ -56,6 +56,8 @@ class HttpRequestOptionsMatcher implements MatcherInterface
     /**
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
+     *
+     * @param mixed $actual
      */
     public function match(&$actual): bool
     {
@@ -71,7 +73,7 @@ class HttpRequestOptionsMatcher implements MatcherInterface
             return true;
         }
 
-        // !! JSON == array !!
+        // Beware !! (JSON == array) here
         $givenData = $actual[RequestOptions::JSON] ?? Json::decode($actual[RequestOptions::BODY] ?? '{}');
         try {
             $expectedRequestDataAsJson = \PHPUnit\Util\Json::canonicalize(
