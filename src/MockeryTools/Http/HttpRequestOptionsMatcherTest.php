@@ -33,9 +33,9 @@ class HttpRequestOptionsMatcherTest extends TestCase
     {
         return [
             [
-                'expectedResult' => true,
-                'expectedRequestOptions' => [],
                 'actual' => [],
+                'expectedRequestOptions' => [],
+                'expectedResult' => true,
             ],
             [
                 'actual' => [
