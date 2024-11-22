@@ -2,9 +2,11 @@
 
 namespace BrandEmbassy\MockeryTools\Matcher;
 
+use BackedEnum;
 use BrandEmbassy\MockeryTools\DateTime\DateTimeAsAtomMatcher;
 use BrandEmbassy\MockeryTools\DateTime\DateTimeAsTimestampMatcher;
 use BrandEmbassy\MockeryTools\DateTime\DateTimeZoneNameMatcher;
+use BrandEmbassy\MockeryTools\Enum\BackedEnumCaseMatcher;
 use BrandEmbassy\MockeryTools\Enum\BackedEnumValueMatcher;
 use BrandEmbassy\MockeryTools\Enum\EnumValueMatcher;
 use BrandEmbassy\MockeryTools\Http\HttpRequestMatcher;
@@ -50,6 +52,12 @@ class Matcher
     public static function uri(string $expectedUri): UriMatcher
     {
         return new UriMatcher($expectedUri);
+    }
+
+
+    public static function backedEnumCase(BackedEnum $expectedValue): BackedEnumCaseMatcher
+    {
+        return new BackedEnumCaseMatcher($expectedValue);
     }
 
 
