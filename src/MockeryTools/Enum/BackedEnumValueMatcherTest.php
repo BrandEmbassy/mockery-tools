@@ -2,24 +2,23 @@
 
 namespace BrandEmbassy\MockeryTools\Enum;
 
-use BrandEmbassy\MockeryTools\Enum\__fixtures__\TestOnlyEnum;
-use MabeEnum\Enum;
+use BackedEnum;
+use BrandEmbassy\MockeryTools\Enum\__fixtures__\TestOnlyBackedIntEnum;
+use BrandEmbassy\MockeryTools\Enum\__fixtures__\TestOnlyBackedStringEnum;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @final
  */
-class EnumValueMatcherTest extends TestCase
+class BackedEnumValueMatcherTest extends TestCase
 {
     /**
      * @dataProvider uuidDataProvider
-     *
-     * @param mixed $expectedEnumValue
      */
-    public function testMatching(bool $expectedResult, $expectedEnumValue, Enum $enumToMatch): void
+    public function testMatching(bool $expectedResult, string|int $expectedEnumValue, BackedEnum $enumToMatch): void
     {
-        $matcher = new EnumValueMatcher($expectedEnumValue);
+        $matcher = new BackedEnumValueMatcher($expectedEnumValue);
 
         $result = $matcher->match($enumToMatch);
 
@@ -35,23 +34,23 @@ class EnumValueMatcherTest extends TestCase
         return [
             'Matching string value' => [
                 'expectedResult' => true,
-                'expectedEnumValue' => TestOnlyEnum::STRING_VALUE,
-                'enumToMatch' => TestOnlyEnum::get(TestOnlyEnum::STRING_VALUE),
+                'expectedEnumValue' => TestOnlyBackedStringEnum::STRING_VALUE->value,
+                'enumToMatch' => TestOnlyBackedStringEnum::STRING_VALUE,
             ],
             'Matching integer value' => [
                 'expectedResult' => true,
-                'expectedEnumValue' => TestOnlyEnum::INTEGER_VALUE,
-                'enumToMatch' => TestOnlyEnum::get(TestOnlyEnum::INTEGER_VALUE),
+                'expectedEnumValue' => TestOnlyBackedIntEnum::INTEGER_VALUE->value,
+                'enumToMatch' => TestOnlyBackedIntEnum::INTEGER_VALUE,
             ],
             'Not matching string values' => [
                 'expectedResult' => false,
                 'expectedEnumValue' => 'another-string-value-1',
-                'enumToMatch' => TestOnlyEnum::get(TestOnlyEnum::STRING_VALUE),
+                'enumToMatch' => TestOnlyBackedStringEnum::STRING_VALUE,
             ],
             'Not matching data types' => [
                 'expectedResult' => false,
-                'expectedEnumValue' => TestOnlyEnum::INTEGER_VALUE,
-                'enumToMatch' => TestOnlyEnum::get(TestOnlyEnum::INTEGER_AS_STRING_VALUE),
+                'expectedEnumValue' => TestOnlyBackedIntEnum::INTEGER_VALUE->value,
+                'enumToMatch' => TestOnlyBackedStringEnum::INTEGER_AS_STRING_VALUE,
             ],
         ];
     }
