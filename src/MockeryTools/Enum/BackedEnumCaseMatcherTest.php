@@ -3,7 +3,6 @@
 namespace BrandEmbassy\MockeryTools\Enum;
 
 use BackedEnum;
-use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
@@ -12,9 +11,6 @@ use PHPUnit\Framework\TestCase;
  */
 class BackedEnumCaseMatcherTest extends TestCase
 {
-    use MockeryPHPUnitIntegration;
-
-
     /**
      * @dataProvider matchingDataProvider
      */
