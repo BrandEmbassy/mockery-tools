@@ -2,8 +2,8 @@
 
 namespace BrandEmbassy\MockeryTools\Enum;
 
+use BrandEmbassy\MockeryTools\Enum\__fixtures__\TestOnlyEnum;
 use MabeEnum\Enum;
-use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
@@ -12,9 +12,6 @@ use PHPUnit\Framework\TestCase;
  */
 class EnumValueMatcherTest extends TestCase
 {
-    use MockeryPHPUnitIntegration;
-
-
     /**
      * @dataProvider uuidDataProvider
      *

@@ -3,6 +3,9 @@
 namespace BrandEmbassy\MockeryTools\Enum;
 
 use BackedEnum;
+use BrandEmbassy\MockeryTools\Enum\__fixtures__\TestOnlyBackedIntEnum;
+use BrandEmbassy\MockeryTools\Enum\__fixtures__\TestOnlyBackedStringAnotherEnum;
+use BrandEmbassy\MockeryTools\Enum\__fixtures__\TestOnlyBackedStringEnum;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
