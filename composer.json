@@ -22,7 +22,7 @@
     "marc-mabe/php-enum": "^3.0 || ^4.0",
     "mockery/mockery": "^1.6.7",
     "nette/di": "^2.4 || ^3.0",
-    "nette/utils": "^2.4 || ^3.0",
+    "nette/utils": "^2.4 || ^3.0 || ^4.0",
     "phpunit/phpunit": "^9.6 || ^10.5",
     "ramsey/uuid": "^3.0 || ^4.0",
     "spatie/phpunit-snapshot-assertions": "^4.2 || ^5.1"
