@@ -127,9 +127,9 @@ jobs:
         id: check-status
         run: |
           if [[ "${{ contains(needs.*.result, 'failure') }}" == "true" ]]; then
-            echo "::set-output name=health::false"
+            echo "health=false" >> $GITHUB_OUTPUT
           else
-            echo "::set-output name=health::true"
+            echo "health=true" >> $GITHUB_OUTPUT
           fi
 
   report-health-status:
