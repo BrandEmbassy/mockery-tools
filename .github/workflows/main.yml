@@ -131,7 +131,7 @@ jobs:
           fi
 
   report-health-status:
-    uses: BrandEmbassy/github-actions/.github/workflows/report-health-status.yml@feature/library-health-status-workflow
+    uses: BrandEmbassy/github-actions/.github/workflows/library-health-status.yml@feature/library-health-status-workflow
     needs: [library-health-status]
     with:
       CI_STATUS: ${{ needs.library-health-status.outputs.health }}
