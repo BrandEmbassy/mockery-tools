@@ -1,6 +1,11 @@
 name: CI
 
-on: [pull_request, workflow_dispatch]
+on:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'  # Every day at 00:00 UTC
+
 
 jobs:
   phpstan:
