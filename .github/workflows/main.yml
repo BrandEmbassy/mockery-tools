@@ -135,6 +135,7 @@ jobs:
   report-health-status:
     uses: BrandEmbassy/github-actions/.github/workflows/library-health-status.yml@feature/library-health-status-workflow
     needs: [library-health-status]
+    if: always()
     with:
       CI_STATUS: ${{ needs.library-health-status.outputs.health }}
       TEAMS_WEBHOOK_URL: ${{ vars.TEAMS_WEBHOOK_URL }}
