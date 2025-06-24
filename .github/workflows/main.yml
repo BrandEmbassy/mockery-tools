@@ -130,10 +130,15 @@ jobs:
             echo "::set-output name=health::true"
           fi
 
+  report-health-status:
+    runs-on: ubuntu-latest
+    needs: [library-health-status]
+    if: always()
+    steps:
       - name: Report library health status
-        uses: BrandEmbassy/github-actions/.github/workflows/library-health-status.yml@feature/library-health-status-workflow
+        uses: BrandEmbassy/github-actions/.github/workflows/report-health-status.yml@feature/report-health-status-workflow
         with:
-          CI_STATUS: ${{ steps.check-status.outputs.health }}
+          CI_STATUS: ${{ needs.library-health-status.outputs.health }}
           TEAMS_WEBHOOK_URL: ${{ vars.TEAMS_WEBHOOK_URL }}
 
 
