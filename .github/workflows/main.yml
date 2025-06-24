@@ -120,6 +120,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [phpstan, ecs, phpunit]
     if: always()
+    outputs:
+      health: ${{ steps.check-status.outputs.health }}
     steps:
       - name: Check workflow status
         id: check-status
