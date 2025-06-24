@@ -1,6 +1,11 @@
 name: CI
 
-on: [pull_request, workflow_dispatch]
+on:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'  # Every day at 00:00 UTC
+
 
 jobs:
   phpstan:
@@ -115,3 +120,13 @@ jobs:
 
       - name: Run tests
         run: composer phpunit
+
+  report-health-status:
+    uses: BrandEmbassy/github-actions/.github/workflows/library-health-status.yml@feature/library-health-status-workflow
+    needs: [phpstan, ecs, phpunit]
+    if: always()
+    with:
+      CI_JOBS: "phpstan,ecs,phpunit"
+      TEAMS_WEBHOOK_URL: ${{ vars.TEAMS_WEBHOOK_URL }}
+
+
