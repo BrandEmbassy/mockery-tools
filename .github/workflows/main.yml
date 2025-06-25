@@ -122,11 +122,16 @@ jobs:
         run: composer phpunit
 
   report-health-status:
-    uses: BrandEmbassy/github-actions/.github/workflows/library-health-status.yml@feature/library-health-status-workflow
     needs: [phpstan, ecs, phpunit]
     if: always()
+    uses: BrandEmbassy/github-actions/.github/workflows/library-health-status.yml@feature/library-health-status-workflow
     with:
-      CI_JOBS: "phpstan,ecs,phpunit"
-      TEAMS_WEBHOOK_URL: ${{ vars.TEAMS_WEBHOOK_URL }}
+      CI_RESULTS: >
+        [
+          {"name":"phpstan", "status":"${{ needs.phpstan.result }}"},
+          {"name":"ecs", "status":"${{ needs.ecs.result }}"},
+          {"name":"phpunit", "status":"${{ needs.phpunit.result }}"}
+        ]
+      TEAMS_WEBHOOK_URL: ${{ vars.LIBRARY_HEALTH_MS_TEAMS_WEBHOOK }}
 
 
