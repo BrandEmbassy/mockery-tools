@@ -2,15 +2,21 @@
 
 namespace BrandEmbassy\MockeryTools\String;
 
-use Mockery\Matcher\MatcherAbstract;
+use Mockery\Matcher\MatcherInterface;
 use Ramsey\Uuid\UuidInterface;
 use function assert;
 
-final class UuidMatcher extends MatcherAbstract
+/**
+ * @final
+ */
+class UuidMatcher implements MatcherInterface
 {
+    private string $expected;
+
+
     public function __construct(string $expected)
     {
-        parent::__construct($expected);
+        $this->expected = $expected;
     }
 
 
@@ -24,12 +30,12 @@ final class UuidMatcher extends MatcherAbstract
     {
         assert($actual instanceof UuidInterface);
 
-        return $actual->toString() === $this->_expected;
+        return $actual->toString() === $this->expected;
     }
 
 
     public function __toString(): string
     {
-        return '<Uuid:' . $this->_expected . '>';
+        return '<Uuid:' . $this->expected . '>';
     }
 }

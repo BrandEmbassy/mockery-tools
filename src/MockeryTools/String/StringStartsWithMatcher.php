@@ -7,8 +7,10 @@ use Nette\Utils\Strings;
 
 /**
  * @property string $_expected
+ *
+ * @final
  */
-final class StringStartsWithMatcher extends MatcherAbstract
+class StringStartsWithMatcher extends MatcherAbstract
 {
     public function __construct(string $expected)
     {

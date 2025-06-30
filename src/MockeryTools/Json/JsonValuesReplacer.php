@@ -3,13 +3,18 @@
 namespace BrandEmbassy\MockeryTools\Json;
 
 use Nette\StaticClass;
+use Nette\Utils\Json;
+use function is_array;
 use function is_bool;
 use function is_float;
 use function is_int;
 use function sprintf;
 use function str_replace;
 
-final class JsonValuesReplacer
+/**
+ * @final
+ */
+class JsonValuesReplacer
 {
     use StaticClass;
 
@@ -22,6 +27,16 @@ final class JsonValuesReplacer
         $keys = [];
         $values = [];
         foreach ($valuesToReplace as $key => $value) {
+            if (is_array($value)) {
+                $keys[] = sprintf('"%s"', self::decorateReplacementKey($key));
+                $values[] = Json::encode($value);
+
+                continue;
+            }
+
+            $keys[] = '%%' . $key . '%%';
+            $values[] = (string)$value;
+
             if (is_int($value) || is_float($value)) {
                 $keys[] = self::decorateReplacementKey($key, 'string');
                 $values[] = (string)$value;
@@ -39,11 +54,21 @@ final class JsonValuesReplacer
             }
 
             $keys[] = sprintf('"%s"', self::decorateReplacementKey($key, 'int'));
-            $values[] = (string)(int)$value;
+            $values[] = $value === null ? 'null' : (string)(int)$value;
             $keys[] = sprintf('"%s"', self::decorateReplacementKey($key, 'float'));
-            $values[] = (string)(float)$value;
+            $values[] = $value === null ? 'null' : (string)(float)$value;
             $keys[] = sprintf('"%s"', self::decorateReplacementKey($key, 'bool'));
             $values[] = (bool)$value ? 'true' : 'false';
+
+            if ($value === null) {
+                $keys[] = sprintf('"%s"', self::decorateReplacementKey($key, 'string'));
+                $values[] = 'null';
+                $keys[] = sprintf('"%s"', self::decorateReplacementKey($key));
+                $values[] = 'null';
+
+                continue;
+            }
+
             $keys[] = self::decorateReplacementKey($key);
             $values[] = (string)$value;
         }

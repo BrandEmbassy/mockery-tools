@@ -1,8 +1,10 @@
 includes:
     - vendor/brandembassy/coding-standard/default-phpstan.neon
+    - phpstan-baseline.neon
 
 parameters:
-    ignoreErrors:
-        -
-            message: '#Calling once without Mockery\\Adapter\\Phpunit\\MockeryPHPUnitIntegration trait.#'
-            path: src/MockeryTools/Http/HttpClientMockBuilder.php
+    level: 8
+    paths:
+        - src
+
+    tmpDir: var/temp/phpstan

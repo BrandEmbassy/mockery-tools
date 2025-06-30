@@ -6,5 +6,19 @@
   "float_as_string": "6.78",
   "string_as_int": 8,
   "string_as_float": 8.1,
-  "string_as_bool": true
+  "string_as_bool": true,
+  "null_as_null": null,
+  "null_as_string": null,
+  "null_as_int": null,
+  "null_as_float": null,
+  "array_as_array": {
+    "field1": "Lipsum",
+    "field2": {
+      "subField1": 5,
+      "subField2": "",
+      "subField3": null,
+      "subField4": false
+    }
+  },
+  "part_of_string": "start_8.1_end"
 }

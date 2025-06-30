@@ -1,0 +1,19 @@
+services:
+  php:
+    container_name: mockery-tools-php
+    hostname: mockery-tools-php
+    build:
+      dockerfile: .docker/php/Dockerfile
+      context: .
+    environment:
+      PHP_XDEBUG_HOST: ${PHP_XDEBUG_HOST}
+      PHP_XDEBUG_PORT: ${PHP_XDEBUG_PORT}
+    volumes:
+      - ${VOLUME_APP}:/var/www/html
+    networks:
+      developers:
+
+networks:
+  developers:
+    external: true
+    name: developers

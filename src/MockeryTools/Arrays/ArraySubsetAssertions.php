@@ -4,7 +4,10 @@ namespace BrandEmbassy\MockeryTools\Arrays;
 
 use PHPUnit\Framework\Assert;
 
-final class ArraySubsetAssertions
+/**
+ * @final
+ */
+class ArraySubsetAssertions
 {
     /**
      * @param mixed[] $expectedArraySubset

@@ -2,14 +2,22 @@
 
 namespace BrandEmbassy\MockeryTools\Matcher;
 
+use BackedEnum;
 use BrandEmbassy\MockeryTools\DateTime\DateTimeAsAtomMatcher;
 use BrandEmbassy\MockeryTools\DateTime\DateTimeAsTimestampMatcher;
+use BrandEmbassy\MockeryTools\DateTime\DateTimeZoneNameMatcher;
+use BrandEmbassy\MockeryTools\Enum\BackedEnumCaseMatcher;
+use BrandEmbassy\MockeryTools\Enum\BackedEnumValueMatcher;
+use BrandEmbassy\MockeryTools\Enum\EnumValueMatcher;
 use BrandEmbassy\MockeryTools\Http\HttpRequestMatcher;
 use BrandEmbassy\MockeryTools\String\StringStartsWithMatcher;
 use BrandEmbassy\MockeryTools\String\UuidMatcher;
 use BrandEmbassy\MockeryTools\Uri\UriMatcher;
 
-final class Matcher
+/**
+ * @final
+ */
+class Matcher
 {
     public static function stringStartsWith(string $expectedStartsWith): StringStartsWithMatcher
     {
@@ -35,9 +43,36 @@ final class Matcher
     }
 
 
+    public static function dateTimeZoneName(string $expectedDateTimeZoneName): DateTimeZoneNameMatcher
+    {
+        return new DateTimeZoneNameMatcher($expectedDateTimeZoneName);
+    }
+
+
     public static function uri(string $expectedUri): UriMatcher
     {
         return new UriMatcher($expectedUri);
+    }
+
+
+    public static function backedEnumCase(BackedEnum $expectedValue): BackedEnumCaseMatcher
+    {
+        return new BackedEnumCaseMatcher($expectedValue);
+    }
+
+
+    public static function backedEnumValue(string|int $expectedValue): BackedEnumValueMatcher
+    {
+        return new BackedEnumValueMatcher($expectedValue);
+    }
+
+
+    /**
+     * @param mixed $expectedValue
+     */
+    public static function enumValue($expectedValue): EnumValueMatcher
+    {
+        return new EnumValueMatcher($expectedValue);
     }
 
 

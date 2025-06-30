@@ -5,12 +5,19 @@ namespace BrandEmbassy\MockeryTools\Http;
 use BrandEmbassy\MockeryTools\Arrays\ArraySubsetAssertions;
 use BrandEmbassy\MockeryTools\FileLoader;
 use BrandEmbassy\MockeryTools\Json\JsonValuesReplacer;
+use BrandEmbassy\MockeryTools\Snapshot\MatchesSnapshots;
 use BrandEmbassy\MockeryTools\Snapshot\SnapshotAssertions;
 use Nette\Utils\Json;
 use PHPUnit\Framework\Assert;
 use Psr\Http\Message\ResponseInterface;
+use function sprintf;
+use function trigger_error;
+use const E_USER_DEPRECATED;
 
-final class ResponseAssertions
+/**
+ * @final
+ */
+class ResponseAssertions
 {
     private const HEADER_LOCATION = 'Location';
     private const STATUS_CODE_200 = 200;
@@ -100,12 +107,23 @@ final class ResponseAssertions
     }
 
 
+    /**
+     * @deprecated
+     *
+     * @param array<string, string> $valuesToReplace
+     */
     public static function assertHtmlResponseSnapshot(
         string $snapshotFile,
         ResponseInterface $response,
-        int $expectedStatusCode = self::STATUS_CODE_200
+        int $expectedStatusCode = self::STATUS_CODE_200,
+        array $valuesToReplace = []
     ): void {
-        SnapshotAssertions::assertResponseSnapshot($snapshotFile, $response);
+        @trigger_error(
+            sprintf('Please use %s::assertResponseMatchesHtmlSnapshot instead.', MatchesSnapshots::class),
+            E_USER_DEPRECATED,
+        );
+
+        SnapshotAssertions::assertResponseSnapshot($snapshotFile, $response, $valuesToReplace);
         self::assertResponseStatusCode($expectedStatusCode, $response);
     }
 

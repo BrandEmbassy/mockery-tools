@@ -6,7 +6,10 @@ use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 
-final class UuidMatcherTest extends TestCase
+/**
+ * @final
+ */
+class UuidMatcherTest extends TestCase
 {
     /**
      * @dataProvider uuidDataProvider
@@ -23,7 +26,7 @@ final class UuidMatcherTest extends TestCase
     /**
      * @return string[][]|bool[][]
      */
-    public function uuidDataProvider(): array
+    public static function uuidDataProvider(): array
     {
         return [
             'matching' => [

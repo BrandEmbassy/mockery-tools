@@ -5,7 +5,10 @@ namespace BrandEmbassy\MockeryTools\String;
 use PHPUnit\Framework\Assert;
 use Ramsey\Uuid\UuidInterface;
 
-final class UuidAssertions
+/**
+ * @final
+ */
+class UuidAssertions
 {
     public static function assertStringUuidEqualsUuid(string $expectedUuidString, UuidInterface $uuid): void
     {

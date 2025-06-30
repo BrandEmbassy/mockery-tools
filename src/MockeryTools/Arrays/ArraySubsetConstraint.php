@@ -4,17 +4,21 @@ namespace BrandEmbassy\MockeryTools\Arrays;
 
 use ArrayObject;
 use PHPUnit\Framework\Constraint\Constraint;
+use PHPUnit\Framework\ExpectationFailedException;
 use SebastianBergmann\Comparator\ComparisonFailure;
 use function array_replace_recursive;
 use function is_array;
 use function var_export;
 
-final class ArraySubsetConstraint extends Constraint
+/**
+ * @final
+ */
+class ArraySubsetConstraint extends Constraint
 {
     /**
      * @var iterable|mixed[]
      */
-    private $subset;
+    private iterable $subset;
 
 
     /**
@@ -31,9 +35,9 @@ final class ArraySubsetConstraint extends Constraint
      *
      * @param mixed $other
      *
-     * @return boolean|void
+     * @throws ExpectationFailedException
      */
-    public function evaluate($other, string $description = '', bool $returnResult = false)
+    public function evaluate($other, string $description = '', bool $returnResult = false): ?bool
     {
         $other = $this->toArray($other);
         $this->subset = $this->toArray($this->subset);
@@ -42,20 +46,18 @@ final class ArraySubsetConstraint extends Constraint
 
         $result = $other === $patched;
 
-        if ($returnResult) {
-            return $result;
-        }
-
         if (!$result) {
             $f = new ComparisonFailure(
                 $patched,
                 $other,
                 var_export($patched, true),
-                var_export($other, true)
+                var_export($other, true),
             );
 
             $this->fail($other, $description, $f);
         }
+
+        return $result;
     }
 
 
