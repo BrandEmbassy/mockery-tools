@@ -133,5 +133,6 @@ jobs:
           {"name":"phpunit", "status":"${{ needs.phpunit.result }}"}
         ]
       TEAMS_WEBHOOK_URL: ${{ vars.LIBRARY_HEALTH_MS_TEAMS_WEBHOOK }}
+      GITHUB_ACCESS_TOKEN: ${{ secrets.BE_TECH_ACCOUNT }}
 
 
