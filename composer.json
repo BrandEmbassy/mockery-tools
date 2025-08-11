@@ -38,7 +38,6 @@
     "check-cs": "vendor/bin/ecs check --ansi",
     "fix-cs": "vendor/bin/ecs check --fix --ansi",
     "phpstan": "php -dxdebug.mode=off vendor/bin/phpstan analyse --memory-limit=-1",
-    "phpstan-generate-baseline": "php -dxdebug.mode=off vendor/bin/phpstan analyse --memory-limit=-1 --generate-baseline",
     "phpunit": "./vendor/bin/phpunit --no-coverage",
     "check-rector": "vendor/bin/rector process --dry-run --ansi",
     "fix-rector": "vendor/bin/rector process --ansi"
