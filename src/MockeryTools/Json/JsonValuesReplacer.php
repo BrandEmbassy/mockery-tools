@@ -27,53 +27,93 @@ class JsonValuesReplacer
         $keys = [];
         $values = [];
         foreach ($valuesToReplace as $key => $value) {
-            if (is_array($value)) {
-                $keys[] = sprintf('"%s"', self::decorateReplacementKey($key));
-                $values[] = Json::encode($value);
-
-                continue;
+            foreach (self::getReplacementPairs($key, $value) as $replacementPair) {
+                $keys[] = $replacementPair->key;
+                $values[] = $replacementPair->value;
             }
-
-            $keys[] = '%%' . $key . '%%';
-            $values[] = (string)$value;
-
-            if (is_int($value) || is_float($value)) {
-                $keys[] = self::decorateReplacementKey($key, 'string');
-                $values[] = (string)$value;
-                $keys[] = sprintf('"%s"', self::decorateReplacementKey($key));
-                $values[] = (string)$value;
-
-                continue;
-            }
-
-            if (is_bool($value)) {
-                $keys[] = sprintf('"%s"', self::decorateReplacementKey($key));
-                $values[] = $value ? 'true' : 'false';
-
-                continue;
-            }
-
-            $keys[] = sprintf('"%s"', self::decorateReplacementKey($key, 'int'));
-            $values[] = $value === null ? 'null' : (string)(int)$value;
-            $keys[] = sprintf('"%s"', self::decorateReplacementKey($key, 'float'));
-            $values[] = $value === null ? 'null' : (string)(float)$value;
-            $keys[] = sprintf('"%s"', self::decorateReplacementKey($key, 'bool'));
-            $values[] = (bool)$value ? 'true' : 'false';
-
-            if ($value === null) {
-                $keys[] = sprintf('"%s"', self::decorateReplacementKey($key, 'string'));
-                $values[] = 'null';
-                $keys[] = sprintf('"%s"', self::decorateReplacementKey($key));
-                $values[] = 'null';
-
-                continue;
-            }
-
-            $keys[] = self::decorateReplacementKey($key);
-            $values[] = (string)$value;
         }
 
         return str_replace($keys, $values, $jsonString);
+    }
+
+
+    /**
+     * @return ReplacementPair[]
+     */
+    private static function getReplacementPairs(string $key, mixed $value): array
+    {
+        $replacementPairs = [];
+        if (is_array($value)) {
+            $replacementPairs[] = new ReplacementPair(
+                sprintf('"%s"', self::decorateReplacementKey($key)),
+                Json::encode($value),
+            );
+
+            return $replacementPairs;
+        }
+
+        $replacementPairs[] = new ReplacementPair(
+            '%%' . $key . '%%',
+            (string)$value,
+        );
+
+        if (is_int($value) || is_float($value)) {
+            $replacementPairs[] = new ReplacementPair(
+                self::decorateReplacementKey($key, 'string'),
+                (string)$value,
+            );
+            $replacementPairs[] = new ReplacementPair(
+                sprintf('"%s"', self::decorateReplacementKey($key)),
+                (string)$value,
+            );
+
+            return $replacementPairs;
+        }
+
+        if (is_bool($value)) {
+            $replacementPairs[] = new ReplacementPair(
+                sprintf('"%s"', self::decorateReplacementKey($key)),
+                $value ? 'true' : 'false',
+            );
+
+            return $replacementPairs;
+        }
+
+        $replacementPairs[] = new ReplacementPair(
+            sprintf('"%s"', self::decorateReplacementKey($key, 'int')),
+            $value === null ? 'null' : (string)(int)$value,
+        );
+
+        $replacementPairs[] = new ReplacementPair(
+            sprintf('"%s"', self::decorateReplacementKey($key, 'float')),
+            $value === null ? 'null' : (string)(float)$value,
+        );
+
+        $replacementPairs[] = new ReplacementPair(
+            sprintf('"%s"', self::decorateReplacementKey($key, 'bool')),
+            (bool)$value ? 'true' : 'false',
+        );
+
+        if ($value === null) {
+            $replacementPairs[] = new ReplacementPair(
+                sprintf('"%s"', self::decorateReplacementKey($key, 'string')),
+                'null',
+            );
+
+            $replacementPairs[] = new ReplacementPair(
+                sprintf('"%s"', self::decorateReplacementKey($key)),
+                'null',
+            );
+
+            return $replacementPairs;
+        }
+
+        $replacementPairs[] = new ReplacementPair(
+            self::decorateReplacementKey($key),
+            (string)$value,
+        );
+
+        return $replacementPairs;
     }
 
 

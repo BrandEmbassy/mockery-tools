@@ -17,7 +17,7 @@ class EnumValueMatcherTest extends TestCase
      *
      * @param mixed $expectedEnumValue
      */
-    public function testMatching(bool $expectedResult, $expectedEnumValue, Enum $enumToMatch): void
+    public function testMatching(bool $expectedResult, string|int $expectedEnumValue, Enum $enumToMatch): void
     {
         $matcher = new EnumValueMatcher($expectedEnumValue);
 

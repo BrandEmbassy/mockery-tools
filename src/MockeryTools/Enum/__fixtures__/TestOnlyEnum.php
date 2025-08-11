@@ -10,6 +10,8 @@ use MabeEnum\Enum;
 class TestOnlyEnum extends Enum
 {
     public const STRING_VALUE = 'string-value';
+
     public const INTEGER_AS_STRING_VALUE = '551';
+
     public const INTEGER_VALUE = 551;
 }

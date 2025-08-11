@@ -24,9 +24,13 @@ use const PHP_EOL;
 class ConsoleOutputWriter
 {
     public const COLOR_NOTICE = '0;97';
+
     public const COLOR_WARNING = '0;93';
+
     public const COLOR_ERROR = '0;31';
+
     public const COLOR_SUCCESS = '0;92';
+
     private const TRUNCATED_VALUE_MAX_LENGTH = 200;
 
 

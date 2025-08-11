@@ -8,6 +8,7 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\RequestOptions;
 use Mockery;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Mockery\MockInterface;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
@@ -19,10 +20,9 @@ use function array_merge_recursive;
  */
 class HttpClientMockBuilder
 {
-    /**
-     * @var ClientInterface&MockInterface
-     */
-    private $httpClientMock;
+    use MockeryPHPUnitIntegration;
+
+    private ClientInterface&MockInterface $httpClientMock;
 
     private string $basePath;
 
@@ -150,15 +150,9 @@ class HttpClientMockBuilder
         $expectedRequestBody = $expectedRequestData !== null ? Json::encode($expectedRequestData) : '';
         $requestMatcher = $this->createRequestMatcher($expectedHttpMethod, $expectedEndpoint, $expectedRequestBody);
 
-        if ($options !== null) {
-            $this->httpClientMock->expects('send')
-                ->with($requestMatcher, $options)
-                ->andReturn(new Response($statusCodeToReturn, [], $responseBody));
-        } else {
-            $this->httpClientMock->expects('send')
-                ->with($requestMatcher)
-                ->andReturn(new Response($statusCodeToReturn, [], $responseBody));
-        }
+        $this->httpClientMock->expects('send')
+            ->with(...($options === null ? [$requestMatcher] : [$requestMatcher, $options]))
+            ->andReturn(new Response($statusCodeToReturn, [], $responseBody));
 
         return $this;
     }

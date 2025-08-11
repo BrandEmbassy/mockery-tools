@@ -26,7 +26,7 @@ class StringStartsWithMatcher extends MatcherAbstract
      */
     public function match(&$actual): bool
     {
-        return Strings::startsWith($actual, $this->_expected);
+        return str_starts_with($actual, $this->_expected);
     }
 
 

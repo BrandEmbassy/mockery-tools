@@ -23,7 +23,9 @@ class HttpClientMockBuilderTest extends TestCase
     use MockeryPHPUnitIntegration;
 
     private const BASE_PATH = 'https://api.com/v2';
+
     private const HEADERS = ['Authorization' => 'Bearer thisIsSomeToken'];
+
     private const OPTIONS = ['testOption' => 'testValue'];
 
 

@@ -20,6 +20,7 @@ use const E_USER_DEPRECATED;
 class ResponseAssertions
 {
     private const HEADER_LOCATION = 'Location';
+
     private const STATUS_CODE_200 = 200;
 
 
