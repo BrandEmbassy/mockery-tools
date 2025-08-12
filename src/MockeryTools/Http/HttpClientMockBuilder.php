@@ -62,7 +62,7 @@ class HttpClientMockBuilder
 
 
     /**
-     * @param array<string, mixed> $responseDataToReturn
+     * @param mixed[] $responseDataToReturn
      * @param array<string, mixed>|stdClass|null $expectedRequestData
      * @param array<string, mixed> $expectedRequestOptions
      *
