@@ -72,6 +72,8 @@ jobs:
     needs: [ phpstan, ecs, phpunit ]
     if: always()
     uses: BrandEmbassy/github-actions/.github/workflows/library-health-status.yml@feature/library-health-status-workflow
+    secrets:
+      BE_TECH_ACCOUNT: ${{ secrets.BE_TECH_ACCOUNT }}
     with:
       CI_RESULTS: >
         [
@@ -81,4 +83,3 @@ jobs:
           {"name":"rector", "status":"${{ needs.rector.result }}"}
         ]
       TEAMS_WEBHOOK_URL: ${{ vars.LIBRARY_HEALTH_MS_TEAMS_WEBHOOK }}
-      GITHUB_ACCESS_TOKEN: ${{ secrets.BE_TECH_ACCOUNT }}
