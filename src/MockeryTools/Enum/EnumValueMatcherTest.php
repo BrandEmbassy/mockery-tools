@@ -14,8 +14,6 @@ class EnumValueMatcherTest extends TestCase
 {
     /**
      * @dataProvider uuidDataProvider
-     *
-     * @param mixed $expectedEnumValue
      */
     public function testMatching(bool $expectedResult, string|int $expectedEnumValue, Enum $enumToMatch): void
     {

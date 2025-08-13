@@ -3,7 +3,7 @@
 namespace BrandEmbassy\MockeryTools\String;
 
 use Mockery\Matcher\MatcherAbstract;
-use Nette\Utils\Strings;
+use function str_starts_with;
 
 /**
  * @property string $_expected
