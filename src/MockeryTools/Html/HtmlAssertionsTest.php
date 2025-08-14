@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
 class HtmlAssertionsTest extends TestCase
 {
     private const EXPECTED_HTML_STRING = '<p>Lorem ipsum dolor sit amet.</p>';
+
     private const ACTUAL_HTML_STRING = "<p>\rLorem\t ipsum\n dolor sit amet  .</p>";
 
 

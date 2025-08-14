@@ -96,10 +96,8 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
     /**
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
-     *
-     * @param mixed $service
      */
-    protected function replaceService(string $serviceName, $service): void
+    protected function replaceService(string $serviceName, object $service): void
     {
         $this->container->removeService($serviceName);
         $this->container->addService($serviceName, $service);
@@ -138,9 +136,8 @@ abstract class PseudoIntegrationTestCase extends TestCase
     ) {
         $psrResponse = new PsrResponse(200, [], $responseBody);
 
-        return $this->httpClientMock->shouldReceive('request')
+        return $this->httpClientMock->expects('request')
             ->with($method, $url, $requestOptionsMatcher)
-            ->once()
             ->andReturn($psrResponse);
     }
 
@@ -287,9 +284,8 @@ abstract class PseudoIntegrationTestCase extends TestCase
 
         $guzzleException = RequestException::create(new PsrRequest($method, $url), $psrResponse);
 
-        return $this->httpClientMock->shouldReceive('request')
+        return $this->httpClientMock->expects('request')
             ->with($method, $url, $requestOptionsMatcher)
-            ->once()
             ->andThrow($guzzleException);
     }
 

@@ -3,7 +3,7 @@
 namespace BrandEmbassy\MockeryTools\String;
 
 use Mockery\Matcher\MatcherAbstract;
-use Nette\Utils\Strings;
+use function str_starts_with;
 
 /**
  * @property string $_expected
@@ -26,7 +26,7 @@ class StringStartsWithMatcher extends MatcherAbstract
      */
     public function match(&$actual): bool
     {
-        return Strings::startsWith($actual, $this->_expected);
+        return str_starts_with($actual, $this->_expected);
     }
 
 

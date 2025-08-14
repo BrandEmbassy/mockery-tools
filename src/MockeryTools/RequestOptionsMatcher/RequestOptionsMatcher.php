@@ -26,6 +26,7 @@ class RequestOptionsMatcher implements MatcherInterface
         if (isset($requestOptions[RequestOptions::BODY]) && is_string($requestOptions[RequestOptions::BODY])) {
             $requestOptions[RequestOptions::BODY] = $this->getSortedBody($requestOptions[RequestOptions::BODY]);
         }
+
         $this->sortedExpectedRequestOptions = self::sortRequestOptions($requestOptions);
     }
 
@@ -245,7 +246,7 @@ class RequestOptionsMatcher implements MatcherInterface
     }
 
 
-    public function __toString()
+    public function __toString(): string
     {
         return '<RequestOptionsMatcher>';
     }

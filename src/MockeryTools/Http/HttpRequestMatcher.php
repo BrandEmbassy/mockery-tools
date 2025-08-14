@@ -19,7 +19,7 @@ class HttpRequestMatcher extends MatcherAbstract
     /**
      * @var array<string, string|array<int, string>>
      */
-    private array $expectedHeaders;
+    private array $expectedHeaders = [];
 
     private string $expectedBody;
 
@@ -38,8 +38,6 @@ class HttpRequestMatcher extends MatcherAbstract
         $this->expectedMethod = $expectedMethod;
         $this->expectedUri = $expectedUri;
         $this->expectedBody = $expectedBody;
-
-        $this->expectedHeaders = [];
         foreach ($expectedHeaders as $headerName => $headerValue) {
             $this->expectedHeaders[$headerName] = is_array($headerValue) ? $headerValue : [$headerValue];
         }
@@ -59,9 +57,8 @@ class HttpRequestMatcher extends MatcherAbstract
         $isMatching = $actual->getMethod() === $this->expectedMethod;
         $isMatching = $isMatching && (string)$actual->getUri() === $this->expectedUri;
         $isMatching = $isMatching && $this->containsExpectedHeaders($actual);
-        $isMatching = $isMatching && (string)$actual->getBody() === $this->expectedBody;
 
-        return $isMatching;
+        return $isMatching && (string)$actual->getBody() === $this->expectedBody;
     }
 
 
@@ -78,6 +75,7 @@ class HttpRequestMatcher extends MatcherAbstract
             if (!isset($requestHeaders[$headerName])) {
                 return false;
             }
+
             if ($requestHeaders[$headerName][0] !== $headerValues[0]) {
                 return false;
             }

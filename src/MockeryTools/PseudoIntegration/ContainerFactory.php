@@ -25,6 +25,7 @@ class ContainerFactory
                 foreach ($configs as $config) {
                     $compiler->loadConfig($config);
                 }
+
                 $compiler->addExtension('extensions', new ExtensionsExtension());
             },
             $key,

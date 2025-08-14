@@ -41,6 +41,7 @@ class ExceptionAssertions
                     ),
                 );
             }
+
             if ($expectedExceptionMessage !== null
                 && strpos($exception->getMessage(), $expectedExceptionMessage) === false
             ) {
@@ -52,6 +53,7 @@ class ExceptionAssertions
                     ),
                 );
             }
+
             if ($expectedExceptionCode !== null && $exception->getCode() !== $expectedExceptionCode) {
                 TestCase::fail(
                     sprintf(
@@ -66,6 +68,7 @@ class ExceptionAssertions
 
             return;
         }
+
         TestCase::fail(sprintf('Exception "%s" expected, none thrown.', $expectedExceptionClassName));
     }
 }
