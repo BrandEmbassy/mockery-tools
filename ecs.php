@@ -2,7 +2,7 @@
 
 use Symplify\EasyCodingStandard\Config\ECSConfig;
 
-$defaultEcsConfigurationSetup = require 'vendor/brandembassy/coding-standard/default-ecs.php';
+$defaultEcsConfigurationSetup = require __DIR__ . '/vendor/brandembassy/coding-standard/default-ecs.php';
 
 return static function (ECSConfig $ecsConfig) use ($defaultEcsConfigurationSetup): void {
     $defaultSkipList = $defaultEcsConfigurationSetup($ecsConfig, __DIR__);

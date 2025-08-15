@@ -4,7 +4,7 @@ use Rector\Caching\ValueObject\Storage\FileCacheStorage;
 use Rector\Config\RectorConfig;
 
 $rectorConfigBuilder = RectorConfig::configure();
-$defaultRectorConfigurationSetup = require 'vendor/brandembassy/coding-standard/default-rector.php';
+$defaultRectorConfigurationSetup = require __DIR__ . '/vendor/brandembassy/coding-standard/default-rector.php';
 
 $defaultSkipList = $defaultRectorConfigurationSetup($rectorConfigBuilder);
 
@@ -13,6 +13,8 @@ $rectorConfigBuilder
     ->withCache('./var/temp/rector', FileCacheStorage::class)
     ->withPaths([
         __DIR__ . '/src',
+        __DIR__ . '/rector.php',
+        __DIR__ . '/ecs.php',
     ])
     ->withSkip($defaultSkipList);
 
