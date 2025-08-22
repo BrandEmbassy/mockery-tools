@@ -23,7 +23,7 @@
     "marc-mabe/php-enum": "^3.0 || ^4.0",
     "mockery/mockery": "^1.6.7",
     "nette/di": "^2.4 || ^3.0",
-    "nette/utils": "^4.0.7",
+    "nette/utils": "^2.4 || ^3.0 || ^4.0",
     "phpunit/phpunit": "^9.6 || ^10.5",
     "psr/http-client": "^1.0",
     "psr/http-message": "^1.1",
