@@ -14,7 +14,9 @@ use TypeError;
 class UuidMockeryMatcherFactoryTest extends TestCase
 {
     private const DOES_MATCH = true;
+
     private const DOES_NOT_MATCH = false;
+
     private const EXPECTED_UUID_STRING = '072175e1-e39d-492e-8274-ec5a8184d8d5';
 
 

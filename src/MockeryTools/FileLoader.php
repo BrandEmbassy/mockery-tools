@@ -73,7 +73,7 @@ class FileLoader
         try {
             return FileSystem::read($filePath);
         } catch (IOException $exception) {
-            throw new LogicException('Cannot load file ' . $filePath . ': ' . $exception->getMessage());
+            throw new LogicException('Cannot load file ' . $filePath . ': ' . $exception->getMessage(), $exception->getCode(), $exception);
         }
     }
 
@@ -86,7 +86,7 @@ class FileLoader
         try {
             return Json::decode($fileContents, $asArray ? Json::FORCE_ARRAY : 0);
         } catch (JsonException $exception) {
-            throw new LogicException('File ' . $jsonFilePath . ' is not JSON: ' . $exception->getMessage());
+            throw new LogicException('File ' . $jsonFilePath . ' is not JSON: ' . $exception->getMessage(), $exception->getCode(), $exception);
         }
     }
 
