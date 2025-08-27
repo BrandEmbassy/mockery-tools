@@ -81,7 +81,7 @@ class FileLoader
     /**
      * @return mixed[]|stdClass
      */
-    private static function decodeJson(string $jsonFilePath, string $fileContents, bool $asArray)
+    private static function decodeJson(string $jsonFilePath, string $fileContents, bool $asArray): mixed
     {
         try {
             return Json::decode($fileContents, $asArray ? Json::FORCE_ARRAY : 0);
