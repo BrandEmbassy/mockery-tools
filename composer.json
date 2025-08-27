@@ -26,7 +26,7 @@
     "nette/utils": "^2.4 || ^3.0 || ^4.0",
     "phpunit/phpunit": "^9.6 || ^10.5",
     "psr/http-client": "^1.0",
-    "psr/http-message": "^1.1",
+    "psr/http-message": "^1.1 || ^2.0",
     "ramsey/uuid": "^3.0 || ^4.0",
     "sebastian/comparator": "^5.0",
     "spatie/phpunit-snapshot-assertions": "^4.2 || ^5.1"
