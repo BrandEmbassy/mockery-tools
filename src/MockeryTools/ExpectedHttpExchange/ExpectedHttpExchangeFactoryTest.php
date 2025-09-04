@@ -75,6 +75,8 @@ class ExpectedHttpExchangeFactoryTest extends TestCase
 
 
     /**
+     * @dataProvider requestOptionsProvider
+     *
      * @param array<string, mixed> $requestOptions
      */
     #[DataProvider('requestOptionsProvider')]
